@@ -13,8 +13,9 @@ Gherkinシナリオ（scenarios.md）を入力として、他機能にも展開�
 - **関連メモリー**: `.claude/memories/viewpoint-extractor.md`、`.claude/memories/global.md`
 - **スキル一覧**: `.claude/commands/README.md`
 - **成果物出力先**:
-  - `src/test/resources/features/{機能名}/viewpoints.tsv`（観点マスター）
+  - `src/test/resources/features/{機能名}/viewpoints.tsv`（機能別観点マスター）
   - `src/test/resources/features/{機能名}/scenarios_with_viewpoints.md`（観点分岐版Gherkinシナリオ）
+  - `src/test/resources/features/_master/viewpoints.tsv`（観点マスター総合版 — 全機能の観点を蓄積）
 
 ## Instructions
 あなたはAndroidアプリのQA・テスト設計パートナーとして振る舞います。
@@ -25,6 +26,7 @@ Gherkinシナリオ（scenarios.md）を入力として、他機能にも展開�
 > **【必読】このStepを開始する前に、以下のファイルを必ず読み込んでから作業を開始すること：**
 > - `src/test/resources/features/{機能名}/scenarios.md`（`/gherkin-scenario-generator` の成果物）
 > - `C:\Users\mforce0087\workhubRoomSupport` 内の対象機能仕様書 (.md)
+> - `src/test/resources/features/_master/viewpoints.tsv`（観点マスター総合版。存在する場合、既存観点を参照用に読み込む）
 > - `.claude/memories/viewpoint-extractor.md`（存在する場合、過去の指摘事項）
 > - `.claude/memories/global.md`
 
@@ -39,6 +41,14 @@ Gherkinシナリオ（scenarios.md）を入力として、他機能にも展開�
 ### Step 2: テスト観点の抽出 (Extract)
 
 scenarios.md の各シナリオを分析し、汎用的なテスト観点を抽出する。
+
+#### マスター総合版との照合ルール：
+Step 1 で `_master/viewpoints.tsv` を読み込めた場合、以下のルールに従って既存観点を再利用する。
+
+1. **一致判定**: 抽出した観点の「観点名」がマスター総合版に既に存在する場合、マスターの定義（カテゴリ・適用条件・チェック内容）をそのまま引用する。
+2. **要素の補完**: マスターの既存観点に含まれない要素が新たに見つかった場合は、既存の要素リストに追記する形で補完する（マスター側も Step 5 で更新する）。
+3. **新規観点**: マスター総合版に該当する観点が存在しない場合は、新規観点として抽出し、Step 5 でマスターに追加する。
+4. **対象シナリオの扱い**: マスター総合版の「対象シナリオ」列には `{機能名}:{シナリオ名}` の形式で機能プレフィックスをつけて記録する。機能別 viewpoints.tsv にはプレフィックスなしのシナリオ名を記載する。
 
 #### ガードレール（抽出時の適用ルール）：
 
@@ -171,19 +181,30 @@ Step 2 で抽出した観点の「要素」を、scenarios.md の各シナリオ
 2. 仕様書との照合結果（矛盾の有無・修正箇所・赤カード）を報告する。
 3. プレビューの末尾に、カバレッジ確認結果（全シナリオ数と紐づき状況）を報告する。
 4. ユーザーへ以下の選択肢を提示し、フィードバックを求める：
-   - **「✅ 承認（OK）」** → 以下の2ファイルを保存する。
-     - `src/test/resources/features/{機能名}/viewpoints.tsv`（観点マスター）
+   - **「✅ 承認（OK）」** → 以下の3ファイルを保存する。
+     - `src/test/resources/features/{機能名}/viewpoints.tsv`（機能別観点マスター）
      - `src/test/resources/features/{機能名}/scenarios_with_viewpoints.md`（観点分岐版Gherkin）
+     - `src/test/resources/features/_master/viewpoints.tsv`（観点マスター総合版の更新）
    - **「修正指示」** → 指摘内容を反映して Step 2 から再実行する。
-5. 保存後、NotionDBへの取り込み手順を案内する：
+
+5. **観点マスター総合版の更新処理:**
+   - `_master/viewpoints.tsv` が存在しない場合: 今回抽出した全観点で新規作成する。
+   - `_master/viewpoints.tsv` が存在する場合: 以下の差分更新を行う。
+     - **新規観点**: マスターに存在しない観点名の行を末尾に追加する。
+     - **要素の補完**: 既存観点に新たな要素が見つかった場合、要素列にスラッシュ区切りで追記する。
+     - **対象シナリオの追記**: 既存観点の「対象シナリオ」列に、今回の機能のシナリオを `{機能名}:{シナリオ名}` 形式で追記する。
+     - **既存行の削除は行わない**（追記のみ）。
+
+6. 保存後、NotionDBへの取り込み手順を案内する：
    - 「viewpoints.tsv の内容を全選択→コピーし、Notionのデータベースビューにペーストしてください」
+   - 「_master/viewpoints.tsv は観点マスター総合版です。全機能を通した観点一覧として参照・活用してください」
 
 ## Constraints (制約事項)
 - **観点抽出と観点分岐Gherkinの生成:** 本Skillはテスト観点の抽出・整理、および観点分岐版Gherkinシナリオの生成を担当する。テストケースの生成は行わない。
 - **仕様書照合の範囲:** 仕様書との照合はUI挙動（画面遷移・エラーメッセージ・条件分岐）に限定する。内部処理の検証は対象外。
 - **汎用性の維持:** 観点名・適用条件・チェック内容は特定機能に依存しない汎用的な表現とすること。対象シナリオ列のみ機能固有の記述を許容する。
 - **全シナリオカバレッジ:** scenarios.md 内のすべてのシナリオが最低1観点に紐づくことを保証すること。
-- **1機能1ファイル:** 生成される観点マスターは 1機能 = 1 `viewpoints.tsv` ファイル、観点分岐版Gherkinは 1機能 = 1 `scenarios_with_viewpoints.md` ファイルの原則を守ること。
+- **1機能1ファイル + マスター総合版:** 機能別の観点マスターは 1機能 = 1 `viewpoints.tsv`、観点分岐版Gherkinは 1機能 = 1 `scenarios_with_viewpoints.md` の原則を守ること。加えて、`_master/viewpoints.tsv` に全機能横断の観点を蓄積する。
 - **入力の前提:** `src/test/resources/features/{機能名}/scenarios.md` が存在することを前提とする。存在しない場合は `/gherkin-scenario-generator` の実行を案内して終了する。
 
 ---

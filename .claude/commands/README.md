@@ -50,6 +50,10 @@ Git操作（ブランチ作成、コミット、プッシュ、PR作成）を対
 ### 📑 `/sync-qa-docs` - QAドキュメント同期
 外部リポジトリ（ソースコード、ドキュメント）から最新の仕様情報を同期します。
 
+### 🔗 `/bdd-workflow-manager` - BDDテスト設計ワークフロー
+仕様書を起点に、ルール・実例抽出 → Gherkinシナリオ生成 → テスト観点抽出・観点分岐Gherkin生成までの一連のBDDテスト設計プロセスを統合的に実行します。  
+各工程で人間のレビューを挟みながらステップバイステップで進行し、最終的に全成果物をコミットします。
+
 ### 📐 `/rule-example-extractor` - ルール・実例抽出
 仕様書（Markdown）からビジネスルール・実例（正常系・異常系・例外系）を抽出・整理し、テスト設計の基盤となるルール・実例ドキュメント（rules.md）を生成します。  
 `/gherkin-scenario-generator` の入力データを作成する上流工程のSkillです。
@@ -59,8 +63,8 @@ Git操作（ブランチ作成、コミット、プッシュ、PR作成）を対
 宣言的記述（What）の徹底、決定性の担保、観測可能な結果の検証をガードレールとして適用します。
 
 ### 🔭 `/viewpoint-extractor` - テスト観点抽出・観点分岐Gherkin生成
-`/gherkin-scenario-generator` で作成したGherkinシナリオ（scenarios.md）を入力として、汎用的なテスト観点を抽出し、仕様書との照合を経て観点マスター（viewpoints.tsv）と観点分岐版Gherkinシナリオ（scenarios_with_viewpoints.md）を生成します。  
-観点マスターはNotionDBへのコピー＆ペーストに対応したTSV形式で出力します。
+`/gherkin-scenario-generator` で作成したGherkinシナリオ（scenarios.md）を入力として、汎用的なテスト観点を抽出し、仕様書との照合を経て機能別観点マスター（viewpoints.tsv）と観点分岐版Gherkinシナリオ（scenarios_with_viewpoints.md）を生成します。  
+観点マスターはNotionDBへのコピー＆ペーストに対応したTSV形式で出力します。全機能横断の観点マスター総合版（`_master/viewpoints.tsv`）も自動で蓄積・更新します。
 
 ### 🛠️ `/skill-improver` - Skill改善メタスキル
 Skill自体の改善を提案・実行するメタスキル。  
