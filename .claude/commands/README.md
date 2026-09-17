@@ -40,19 +40,31 @@ ISO 25010品質モデルやOWASP Mobile Top 10などの標準モデルを参照�
 既存のテストケース（CSV）を読み込み、品質レビュー・断捨離（冗長ケースの削除提案）を行います。  
 マクロ分析（構造的冗長の検出）とミクロ分析（個別ケースの品質チェック）を組み合わせます。
 
-### 📦 `/submit-qa-work` - QA作業提出
+### 📦 `/end` - QA作業提出
 Git操作（ブランチ作成、コミット、プッシュ、PR作成）を対話的にガイドし、QA作業の成果物を提出します。
 
-### 🔄 `/sync-work-branch` - ブランチ同期
+### 🔄 `/start` - ブランチ同期
 作業ブランチをmainブランチの最新状態と同期します。  
 コンフリクトが発生した場合の解決もガイドします。
 
 ### 📑 `/sync-qa-docs` - QAドキュメント同期
 外部リポジトリ（ソースコード、ドキュメント）から最新の仕様情報を同期します。
 
-### 🧪 `/gherkin-scenario-generator` - Gherkinシナリオ自動生成
-iOS仕様書（Markdown）からビジネスルール・実例を抽出し、BDDガイドラインとテスト設計ルールに則ったGherkinシナリオ（.feature）を一括生成します。  
+### 🔗 `/bdd-workflow-manager` - BDDテスト設計ワークフロー
+仕様書を起点に、ルール・実例抽出 → Gherkinシナリオ生成 → テスト観点抽出・観点分岐Gherkin生成までの一連のBDDテスト設計プロセスを統合的に実行します。  
+各工程で人間のレビューを挟みながらステップバイステップで進行し、最終的に全成果物をコミットします。
+
+### 📐 `/rule-example-extractor` - ルール・実例抽出
+仕様書（Markdown）からビジネスルール・実例（正常系・異常系・例外系）を抽出・整理し、テスト設計の基盤となるルール・実例ドキュメント（rules.md）を生成します。  
+`/gherkin-scenario-generator` の入力データを作成する上流工程のSkillです。
+
+### 🧪 `/gherkin-scenario-generator` - Gherkinシナリオ生成
+`/rule-example-extractor` で作成したルール・実例ドキュメント（rules.md）を入力として、BDDガイドラインとテスト設計ルールに則ったGherkinシナリオ（scenarios.md）を生成します。  
 宣言的記述（What）の徹底、決定性の担保、観測可能な結果の検証をガードレールとして適用します。
+
+### 🔭 `/viewpoint-extractor` - テスト観点抽出・観点分岐Gherkin生成
+`/gherkin-scenario-generator` で作成したGherkinシナリオ（scenarios.md）を入力として、汎用的なテスト観点を抽出し、仕様書との照合を経て機能別観点マスター（viewpoints.tsv）と観点分岐版Gherkinシナリオ（scenarios_with_viewpoints.md）を生成します。  
+観点マスターはNotionDBへのコピー＆ペーストに対応したTSV形式で出力します。全機能横断の観点マスター総合版（`_master/viewpoints.tsv`）も自動で蓄積・更新します。
 
 ### 🛠️ `/skill-improver` - Skill改善メタスキル
 Skill自体の改善を提案・実行するメタスキル。  
@@ -75,7 +87,7 @@ Skill自体の改善を提案・実行するメタスキル。
     ↓
 /review-test-cases    → レビュー・断捨離（任意）
     ↓
-/submit-qa-work       → 成果物の提出（Git操作）
+/end                  → 成果物の提出（Git操作）
 ```
 
 上記の一連の流れは `/qa-workflow-manager` で統合的に管理できます。
@@ -86,6 +98,6 @@ Skill自体の改善を提案・実行するメタスキル。
 |---|---|
 | `/qa-feature-extractor` | ソースコードからの機能情報抽出 |
 | `/qa-domain-element-manager` | テスト用パラメータの管理 |
-| `/sync-work-branch` | ブランチの同期 |
+| `/start` | ブランチの同期 |
 | `/sync-qa-docs` | ドキュメントの同期 |
 | `/skill-improver` | Skill自体の改善 |

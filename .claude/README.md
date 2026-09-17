@@ -17,8 +17,8 @@
 │   ├── qa-feature-extractor.md       # 🏗️ 機能抽出
 │   ├── qa-domain-element-manager.md  # 🌐 ドメイン要素管理
 │   ├── review-test-cases.md          # 📝 テストケースレビュー
-│   ├── submit-qa-work.md             # 📦 QA作業提出
-│   ├── sync-work-branch.md           # 🔄 ブランチ同期
+│   ├── end.md                        # 📦 QA作業提出
+│   ├── start.md                      # 🔄 ブランチ同期
 │   ├── sync-qa-docs.md               # 📑 QAドキュメント同期
 │   └── skill-improver.md             # 🛠️ Skill改善メタスキル
 └── memories/                         # 自己学習メモリー
@@ -42,8 +42,8 @@
 | 機能抽出 | `/qa-feature-extractor` | ソースコードから機能情報を抽出 |
 | ドメイン要素管理 | `/qa-domain-element-manager` | テスト用のドメイン固有パラメータを管理 |
 | テストケースレビュー | `/review-test-cases` | 既存テストケースの品質レビュー・断捨離 |
-| QA作業提出 | `/submit-qa-work` | Git操作でQA作業成果を提出 |
-| ブランチ同期 | `/sync-work-branch` | 作業ブランチをmainと同期 |
+| QA作業提出 | `/end` | Git操作でQA作業成果を提出 |
+| ブランチ同期 | `/start` | 作業ブランチをmainと同期 |
 | QAドキュメント同期 | `/sync-qa-docs` | 外部ドキュメントとの同期 |
 | Skill改善 | `/skill-improver` | Skill自体の改善提案・実行 |
 
