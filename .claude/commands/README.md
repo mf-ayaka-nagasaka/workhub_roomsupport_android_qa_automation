@@ -58,9 +58,9 @@ Git操作（ブランチ作成、コミット、プッシュ、PR作成）を対
 `/rule-example-extractor` で作成したルール・実例ドキュメント（rules.md）を入力として、BDDガイドラインとテスト設計ルールに則ったGherkinシナリオ（scenarios.md）を生成します。  
 宣言的記述（What）の徹底、決定性の担保、観測可能な結果の検証をガードレールとして適用します。
 
-### 🔭 `/viewpoint-extractor` - テスト観点抽出
-`/gherkin-scenario-generator` で作成したGherkinシナリオ（scenarios.md）を入力として、他機能にも展開・再利用できる汎用的なテスト観点を抽出し、観点マスター（viewpoints.tsv）を生成します。  
-NotionDBへのコピー＆ペーストに対応したTSV形式で出力します。
+### 🔭 `/viewpoint-extractor` - テスト観点抽出・観点分岐Gherkin生成
+`/gherkin-scenario-generator` で作成したGherkinシナリオ（scenarios.md）を入力として、汎用的なテスト観点を抽出し、仕様書との照合を経て観点マスター（viewpoints.tsv）と観点分岐版Gherkinシナリオ（scenarios_with_viewpoints.md）を生成します。  
+観点マスターはNotionDBへのコピー＆ペーストに対応したTSV形式で出力します。
 
 ### 🛠️ `/skill-improver` - Skill改善メタスキル
 Skill自体の改善を提案・実行するメタスキル。  
