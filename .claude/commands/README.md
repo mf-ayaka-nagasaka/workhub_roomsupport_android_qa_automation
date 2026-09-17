@@ -50,9 +50,17 @@ Git操作（ブランチ作成、コミット、プッシュ、PR作成）を対
 ### 📑 `/sync-qa-docs` - QAドキュメント同期
 外部リポジトリ（ソースコード、ドキュメント）から最新の仕様情報を同期します。
 
-### 🧪 `/gherkin-scenario-generator` - Gherkinシナリオ自動生成
-iOS仕様書（Markdown）からビジネスルール・実例を抽出し、BDDガイドラインとテスト設計ルールに則ったGherkinシナリオ（.feature）を一括生成します。  
+### 📐 `/rule-example-extractor` - ルール・実例抽出
+仕様書（Markdown）からビジネスルール・実例（正常系・異常系・例外系）を抽出・整理し、テスト設計の基盤となるルール・実例ドキュメント（rules.md）を生成します。  
+`/gherkin-scenario-generator` の入力データを作成する上流工程のSkillです。
+
+### 🧪 `/gherkin-scenario-generator` - Gherkinシナリオ生成
+`/rule-example-extractor` で作成したルール・実例ドキュメント（rules.md）を入力として、BDDガイドラインとテスト設計ルールに則ったGherkinシナリオ（scenarios.md）を生成します。  
 宣言的記述（What）の徹底、決定性の担保、観測可能な結果の検証をガードレールとして適用します。
+
+### 🔭 `/viewpoint-extractor` - テスト観点抽出
+`/gherkin-scenario-generator` で作成したGherkinシナリオ（scenarios.md）を入力として、他機能にも展開・再利用できる汎用的なテスト観点を抽出し、観点マスター（viewpoints.tsv）を生成します。  
+NotionDBへのコピー＆ペーストに対応したTSV形式で出力します。
 
 ### 🛠️ `/skill-improver` - Skill改善メタスキル
 Skill自体の改善を提案・実行するメタスキル。  
