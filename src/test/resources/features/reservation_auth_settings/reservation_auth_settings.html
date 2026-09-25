@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>予約認証の設定を変更して保存する</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #F4F6F9;
+  --lane: #EAEEF3;
+  --surface: #FFFFFF;
+  --ink: #1B2430;
+  --muted: #5E6B7A;
+  --line: #D3DAE3;
+  --flow: #0F7C7B;
+  --flow-soft: #DCF0EE;
+  --save: #3B57C4;
+  --save-soft: #E4E9FA;
+  --err: #C43C3C;
+  --err-soft: #FBE5E5;
+  --hot: #D98E04;
+  --hot-ink: #7E5300;
+  --hot-soft: #FCEFD3;
+  --ok: #2E8B57;
+  --font-display: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-body: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #11161D; --lane: #181F28; --surface: #1F2732; --ink: #E7ECF2; --muted: #9DA9B7; --line: #2E3843;
+    --flow: #4FC3C0; --flow-soft: #163A39; --save: #93A6F5; --save-soft: #232D52;
+    --err: #F08080; --err-soft: #4A2424; --hot: #F2B441; --hot-ink: #F2B441; --hot-soft: #4A3A14; --ok: #6CCB8C;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #11161D; --lane: #181F28; --surface: #1F2732; --ink: #E7ECF2; --muted: #9DA9B7; --line: #2E3843;
+  --flow: #4FC3C0; --flow-soft: #163A39; --save: #93A6F5; --save-soft: #232D52;
+  --err: #F08080; --err-soft: #4A2424; --hot: #F2B441; --hot-ink: #F2B441; --hot-soft: #4A3A14; --ok: #6CCB8C;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  padding-inline: 16px;
+  padding-block: 24px 48px;
+}
+.wrap { max-width: 1400px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.3; }
+h1 { font-size: 26px; font-weight: 700; }
+h2 { font-size: 18px; font-weight: 700; }
+h3 { font-size: 14px; font-weight: 700; }
+p { margin: 0; }
+.eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.lead { color: var(--muted); max-width: 60ch; }
+
+header { display: grid; gap: 8px; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 6px; }
+.controls label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; }
+.controls input { accent-color: var(--flow); width: 16px; height: 16px; }
+#status { font-size: 13px; color: var(--muted); }
+button.link {
+  font: inherit; font-size: 13px; color: var(--flow); background: none; border: 1px solid var(--flow);
+  border-radius: 999px; padding: 3px 12px; cursor: pointer;
+}
+button.link:hover { background: var(--flow-soft); }
+button.link:focus-visible, .hit:focus-visible, .card:focus-visible { outline: 2px solid var(--hot); outline-offset: 2px; }
+
+/* ---- map ---- */
+figure { margin: 0; display: grid; gap: 10px; }
+.scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+svg.map { display: block; min-width: 1100px; width: 100%; height: auto; }
+figcaption { color: var(--muted); font-size: 13px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 12px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 26px; height: 0; border-top: 3px solid; border-radius: 2px; }
+.sw.flow { border-color: var(--flow); }
+.sw.err { border-color: var(--err); }
+
+.lane { fill: var(--lane); stroke: var(--line); }
+.lane-label { font: 700 12px var(--font-display); fill: var(--muted); }
+.screen { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
+.screen-bar { fill: var(--ink); opacity: .85; }
+.step { fill: var(--surface); stroke: var(--flow); stroke-width: 1.6; }
+.step-diamond { fill: var(--flow-soft); stroke: var(--flow); stroke-width: 1.6; }
+.t-name { font: 700 13px var(--font-body); fill: var(--ink); }
+.t-sub { font: 400 11px var(--font-body); fill: var(--muted); }
+.t-screen { font: 700 13px var(--font-display); fill: var(--ink); }
+.flow { fill: none; stroke: var(--flow); stroke-width: 2; }
+.lbl { font: 500 11px var(--font-body); fill: var(--flow); }
+.err { font: 500 11px var(--font-body); fill: var(--err); }
+.err-line { fill: none; stroke: var(--err); stroke-width: 1.6; }
+.arw-flow { fill: var(--flow); }
+.arw-err { fill: var(--err); }
+
+.hit { cursor: pointer; transition: opacity .15s; }
+.hit:hover .step, .hit:hover .screen, .hit:hover .step-diamond { stroke-width: 2.5; }
+.hit.active .step, .hit.active .screen, .hit.active .step-diamond { stroke: var(--hot); stroke-width: 3.5; }
+.has-sel .hit:not(.active) { opacity: .38; }
+@media (prefers-reduced-motion: reduce) { .hit, .card { transition: none; } }
+
+/* ---- test index ---- */
+.index { display: grid; gap: 14px; }
+.hint { font-size: 13px; color: var(--muted); }
+.group { display: grid; gap: 8px; }
+.group h3 { color: var(--muted); font-size: 12px; letter-spacing: .06em; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  display: grid; gap: 6px; cursor: pointer; transition: opacity .15s, border-color .15s;
+}
+.card:hover { border-color: var(--flow); }
+.card .ttl { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; font-weight: 500; line-height: 1.4; }
+.dot { flex: 0 0 auto; width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; }
+.dot.ok { background: var(--ok); }
+.dot.ng { background: var(--err); }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-start; align-content: flex-start; }
+.card { align-content: start; }
+.chip { font-size: 11px; padding: 1px 8px; border-radius: 999px; background: var(--flow-soft); color: var(--flow); font-weight: 500; white-space: nowrap; }
+.chip[data-k="M"], .chip[data-k="E"] { background: var(--lane); color: var(--ink); border: 1px solid var(--line); }
+.has-sel .card:not(.match) { opacity: .3; }
+.has-sel .card.match { border-color: var(--hot); box-shadow: 0 0 0 2px var(--hot-soft); }
+
+/* ---- message table ---- */
+table { border-collapse: collapse; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: 13px; }
+th, td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+th { background: var(--lane); color: var(--muted); font-size: 12px; font-weight: 700; }
+tr:first-child th { border-top: 0; }
+td.msg { font-weight: 500; }
+.tbl-wrap { overflow-x: auto; }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">reservation_auth_settings ／ 全体マップ</p>
+  <h1>予約認証の設定を変更して保存する</h1>
+  <p class="lead">管理者メニューから設定変更画面を開いて、予約に使う認証の方法やルールを変え、保存して管理者メニューに戻るまでに裏で何が順番に起きるかを1枚にしたもの。図の箱やテストケースをクリックすると、対応する場所が光ります。</p>
+  <div class="controls">
+    <button class="link" id="clearBtn" type="button">選択を解除</button>
+    <span id="status">箱をクリックすると、その場所に関係するテストだけが残ります</span>
+  </div>
+</header>
+
+<section>
+<figure>
+  <div class="scroll">
+  <svg class="map" viewBox="0 0 1440 400" role="img" aria-label="予約認証設定の変更の流れ。上段は管理者が見る画面、下段は裏側で起きる処理。管理者メニューから設定変更画面を開き、入力チェック、常時接続推奨、設定保存、コピー確認を経て管理者メニューに戻る。">
+    <defs>
+      <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-flow"/></marker>
+      <marker id="arwE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-err"/></marker>
+    </defs>
+
+    <!-- lanes -->
+    <rect class="lane" x="0" y="16" width="1440" height="150" rx="12"/>
+    <rect class="lane" x="0" y="186" width="1440" height="190" rx="12"/>
+    <text class="lane-label" x="16" y="38">画面（管理者が見るもの）</text>
+    <text class="lane-label" x="16" y="208">裏側で起きていること</text>
+
+    <!-- flow arrows -->
+    <path class="flow" marker-end="url(#arw)" d="M180 84 H270"/>
+    <text class="lbl" x="225" y="74">設定を開く</text>
+
+    <path class="flow" marker-end="url(#arw)" d="M400 116 V176 H365 V224"/>
+    <text class="lbl" x="412" y="172">保存を押す</text>
+
+    <path class="flow" marker-end="url(#arw)" d="M445 258 H490"/>
+    <text class="lbl" x="468" y="248" text-anchor="middle">OK</text>
+
+    <path class="flow" marker-end="url(#arw)" d="M640 258 H700"/>
+
+    <path class="flow" marker-end="url(#arw)" d="M870 258 H930"/>
+    <text class="lbl" x="900" y="248" text-anchor="middle">保存できた</text>
+
+    <path class="flow" marker-end="url(#arw)" d="M1080 258 H1140"/>
+    <text class="lbl" x="1110" y="248" text-anchor="middle">コピーする</text>
+
+    <path class="flow" marker-end="url(#arw)" d="M1010 222 V66 H1300"/>
+    <text class="lbl" x="1155" y="58">コピーしない</text>
+
+    <path class="flow" marker-end="url(#arw)" d="M1225 226 V96 H1300"/>
+    <text class="lbl" x="1262" y="88">完了</text>
+
+    <!-- lane A: screens -->
+    <g class="hit" data-key="M" tabindex="0" role="button" aria-label="管理者メニュー">
+      <rect class="screen" x="30" y="52" width="150" height="64" rx="10"/>
+      <rect class="screen-bar" x="90" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="105" y="92" text-anchor="middle">管理者メニュー</text>
+    </g>
+    <g class="hit" data-key="E" tabindex="0" role="button" aria-label="設定変更画面">
+      <rect class="screen" x="280" y="52" width="240" height="64" rx="10"/>
+      <rect class="screen-bar" x="385" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="400" y="82" text-anchor="middle">設定変更画面</text>
+      <text class="t-sub" x="400" y="100" text-anchor="middle">予約認証の設定を変える</text>
+      <text class="err" x="416" y="132">✕ キャンセル → 管理者メニューへ</text>
+      <text class="err" x="416" y="146">✕ QR認証のみ → 顔認証機能は使えない</text>
+    </g>
+    <g class="hit" data-key="M" tabindex="0" role="button" aria-label="管理者メニュー（戻り）">
+      <rect class="screen" x="1310" y="52" width="120" height="64" rx="10"/>
+      <rect class="screen-bar" x="1355" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="1370" y="82" text-anchor="middle">管理者メニュー</text>
+      <text class="t-sub" x="1370" y="100" text-anchor="middle">＝ 完了して戻る</text>
+    </g>
+
+    <!-- lane B: steps -->
+    <g class="hit" data-key="1" tabindex="0" role="button" aria-label="入力を確認する">
+      <rect class="step" x="285" y="226" width="160" height="64" rx="8"/>
+      <text class="t-name" x="365" y="250" text-anchor="middle">① 入力を確認する</text>
+      <text class="t-sub" x="365" y="268" text-anchor="middle">保存ボタンを押したとき</text>
+      <text class="err" x="285" y="318">✕ 未入力 → 保存できない</text>
+      <text class="err" x="285" y="334">✕ 数値が0以下</text>
+      <text class="err" x="285" y="350">✕ パスワード不一致</text>
+    </g>
+    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="常時接続を勧める？">
+      <polygon class="step-diamond" points="570,222 640,258 570,294 500,258"/>
+      <text class="t-name" x="570" y="255" text-anchor="middle">② 常時接続を</text>
+      <text class="t-name" x="570" y="269" text-anchor="middle">勧める？</text>
+    </g>
+    <g class="hit" data-key="3" tabindex="0" role="button" aria-label="設定を保存する">
+      <rect class="step" x="710" y="226" width="160" height="64" rx="8"/>
+      <text class="t-name" x="790" y="250" text-anchor="middle">③ 設定を保存する</text>
+      <text class="t-sub" x="790" y="268" text-anchor="middle">変更をサーバーに送る</text>
+      <text class="err" x="710" y="318">✕ 保存に失敗した</text>
+    </g>
+    <g class="hit" data-key="4" tabindex="0" role="button" aria-label="コピーする？">
+      <polygon class="step-diamond" points="1010,222 1080,258 1010,294 940,258"/>
+      <text class="t-name" x="1010" y="255" text-anchor="middle">④ コピー</text>
+      <text class="t-name" x="1010" y="269" text-anchor="middle">する？</text>
+    </g>
+    <g class="hit" data-key="5" tabindex="0" role="button" aria-label="コピーを登録する">
+      <rect class="step" x="1150" y="226" width="150" height="64" rx="8"/>
+      <text class="t-name" x="1225" y="250" text-anchor="middle">⑤ コピーを登録する</text>
+      <text class="t-sub" x="1225" y="268" text-anchor="middle">識別名称を付けて保存</text>
+      <text class="err" x="1150" y="318">✕ 名前が空 → 押せない</text>
+      <text class="err" x="1150" y="334">✕ 登録に失敗した</text>
+    </g>
+  </svg>
+  </div>
+  <figcaption>緑の線が「うまくいく道」。赤の ✕ は「ここで失敗するとエラーになる」。</figcaption>
+  <div class="legend">
+    <span><i class="sw flow"></i>うまくいく道</span>
+    <span><i class="sw err"></i>失敗する場所とその理由</span>
+  </div>
+</figure>
+</section>
+
+
+<section class="index">
+  <h2>テストケースは、図のどこの話？</h2>
+  <p class="hint">カードをクリックすると図の該当箇所が光ります。図の箱をクリックすると、その箱に関係するカードだけが残ります。● 緑＝うまくいく確認、● 赤＝失敗したときの確認。</p>
+
+  <div class="group">
+    <h3>ルール① 設定を変更して保存する</h3>
+    <div class="cards">
+      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>設定を変えて保存 → 保存される</div><div class="chips"></div></div>
+      <div class="card" data-keys="3"><div class="ttl"><i class="dot ok"></i>保存した後 → ホーム画面や認証画面に反映</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,3"><div class="ttl"><i class="dot ng"></i>保存に失敗 → エラーが出る</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール② スペースの絞り込み</h3>
+    <div class="cards">
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>予約設定のあるスペースだけ表示される</div><div class="chips"></div></div>
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>予約設定のないスペースは表示されない</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール③ 認証方法と機能の制限</h3>
+    <div class="cards">
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>顔認証を含む方法 → 予約作成が使える</div><div class="chips"></div></div>
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ng"></i>QR認証のみ → 予約作成が使えない＋変更の案内</div><div class="chips"></div></div>
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ng"></i>QR認証のみ → 予約削除が使えない＋変更の案内</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール④ 入力のチェック</h3>
+    <div class="cards">
+      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>必須項目が空 → エラー詳細が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>数値に0以下 → エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>パスワード不一致 → エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>複数セクションにエラー → バッジが出る</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑤ キャンセル</h3>
+    <div class="cards">
+      <div class="card" data-keys="E,M"><div class="ttl"><i class="dot ok"></i>キャンセル → 変更を捨てて管理者メニューへ</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑥ コピーと完了</h3>
+    <div class="cards">
+      <div class="card" data-keys="4,5,M"><div class="ttl"><i class="dot ok"></i>コピーして管理者メニューへ</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,M"><div class="ttl"><i class="dot ok"></i>コピーしないで管理者メニューへ</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,5"><div class="ttl"><i class="dot ng"></i>識別名称が空 → 登録できない</div><div class="chips"></div></div>
+      <div class="card" data-keys="5"><div class="ttl"><i class="dot ng"></i>コピーの登録に失敗 → エラーが出る</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑦ 常時接続推奨</h3>
+    <div class="cards">
+      <div class="card" data-keys="2,3"><div class="ttl"><i class="dot ok"></i>「有効化する」を選ぶ → 常時接続ONで保存へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,3"><div class="ttl"><i class="dot ok"></i>「そのまま保存する」を選ぶ → 常時接続OFFで保存へ</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑧ 既存設定コピー</h3>
+    <div class="cards">
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>テンプレートを選ぶ → 設定が上書きされる</div><div class="chips"></div></div>
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>端末設定を選ぶ → 設定が上書きされる</div><div class="chips"></div></div>
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>キャンセル → 今の入力が残る</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑨ 親子連動の表示制御</h3>
+    <div class="cards">
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>自動ステータス更新ON → 自動キャンセル・延長が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>自動ステータス更新OFF → 子項目すべて消えてデフォルトに戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>自動キャンセルON → 時間と前通知が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>前通知ON → 前通知時間の入力が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>自動延長ON → タイミングと延長時間が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>終了前リマインダーON → 通知時間・繰り返し・音が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>繰り返し「回数を指定」 → 回数の入力が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>解錠「する」 → デバイス選択が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>解錠「しない」 → デバイス選択が消える</div><div class="chips"></div></div>
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>常時接続ON → 対象デバイス選択が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>なりすまし防止ON → モード・期間設定が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>省エネ「カスタム」 → バッテリー・温度の条件が出る</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑩ 数値のチェック（項目別）</h3>
+    <div class="cards">
+      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>数値を正しく変えて保存 → 反映される</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>自動キャンセル時間に0以下 → 専用エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>自動延長タイミングに0以下 → 専用エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>リマインダー回数に0以下 → 専用エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>認証必要時間に負の値 → 専用エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>認証成功類似度に0〜1の範囲外 → 専用エラー</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑪ 単独の切替設定</h3>
+    <div class="cards">
+      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>テナント予約を不許可に変えて保存 → 反映</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>予約情報を非表示に変えて保存 → 反映</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>自動施錠を無効に変えて保存 → 反映</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>解錠タイミングを変えて保存 → 反映</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑫ チェックボックスの切替</h3>
+    <div class="cards">
+      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>認証方法を変えて保存 → 反映</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>認証方法を全部外す → エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>機能制御を個別にON/OFF → 反映</div><div class="chips"></div></div>
+      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>予約作成ON → 解錠タイミングの選択が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>顔認証必要機能を個別にON/OFF → 反映</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑬ Picker選択</h3>
+    <div class="cards">
+      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>解錠デバイスを選んで保存 → 反映</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>常時接続デバイスを選んで保存 → 反映</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>リマインダー音を選んで保存 → 反映</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>終了通知音を選んで保存 → 反映</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑭ 文字数のチェック</h3>
+    <div class="cards">
+      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>メッセージを100文字以内で保存 → 反映</div><div class="chips"></div></div>
+      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>メッセージが101文字以上 → 専用エラー</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>通し（実機で最後まで）</h3>
+    <div class="cards">
+      <div class="card" data-keys="M,E,1,2,3,4"><div class="ttl"><i class="dot ok"></i>管理者メニューから設定を変えて最後まで</div><div class="chips"></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div style="display:grid;gap:10px">
+  <h2>エラーの言葉で、止まった場所がわかる</h2>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>画面に出る言葉</th><th>止まった場所</th></tr>
+    <tr><td class="msg">タブレット名を入力してください 等（必須項目ごと）</td><td>① 入力のチェック</td></tr>
+    <tr><td class="msg">1以上の値を設定してください 等（数値項目ごと）</td><td>① 入力のチェック</td></tr>
+    <tr><td class="msg">自動キャンセル時間は1以上の値を設定してください</td><td>① 入力のチェック（⑩ 数値）</td></tr>
+    <tr><td class="msg">自動延長タイミングは1以上の値を設定してください</td><td>① 入力のチェック（⑩ 数値）</td></tr>
+    <tr><td class="msg">終了前リマインダーの回数は1以上の値を指定してください</td><td>① 入力のチェック（⑩ 数値）</td></tr>
+    <tr><td class="msg">認証必要時間は0以上の値を設定してください</td><td>① 入力のチェック（⑩ 数値）</td></tr>
+    <tr><td class="msg">認証成功類似度は0〜1の間の値を設定してください</td><td>① 入力のチェック（⑩ 数値）</td></tr>
+    <tr><td class="msg">予約認証の認証方法を選択してください</td><td>① 入力のチェック（⑫ 必須選択）</td></tr>
+    <tr><td class="msg">利用時間外メッセージは100文字以内で入力してください</td><td>① 入力のチェック（⑭ 文字数）</td></tr>
+    <tr><td class="msg">パスワードが一致しません</td><td>① 入力のチェック</td></tr>
+    <tr><td class="msg">『タブレットからの機能制御』>『予約作成（今すぐ入室）』が不適切です</td><td>設定変更画面（認証方法の変更中）</td></tr>
+    <tr><td class="msg">『タブレットからの機能制御』>『予約削除』が不適切です</td><td>設定変更画面（認証方法の変更中）</td></tr>
+    <tr><td class="msg">タブレット情報の保存に失敗しました</td><td>③ 設定を保存 ／ ⑤ コピーを登録</td></tr>
+  </table>
+  </div>
+  </div>
+</section>
+
+
+</div>
+
+<script>
+(function () {
+  var LABEL = {
+    M: "管理者メニュー", E: "設定変更画面",
+    1: "① 入力の確認", 2: "② 常時接続？", 3: "③ 設定を保存",
+    4: "④ コピーする？", 5: "⑤ コピーを登録"
+  };
+  var root = document.documentElement;
+  var hits = Array.prototype.slice.call(document.querySelectorAll(".hit"));
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card"));
+  var status = document.getElementById("status");
+
+  cards.forEach(function (c) {
+    var keys = c.getAttribute("data-keys").split(",");
+    var box = c.querySelector(".chips");
+    keys.forEach(function (k) {
+      var s = document.createElement("span");
+      s.className = "chip"; s.setAttribute("data-k", k); s.textContent = LABEL[k] || k;
+      box.appendChild(s);
+    });
+    c.setAttribute("tabindex", "0");
+    c.addEventListener("click", function () { selectCard(c, keys); });
+    c.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectCard(c, keys); } });
+  });
+
+  hits.forEach(function (h) {
+    var k = h.getAttribute("data-key");
+    h.addEventListener("click", function () { selectKey(k); });
+    h.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectKey(k); } });
+  });
+
+  function clear() {
+    root.classList.remove("has-sel");
+    hits.forEach(function (h) { h.classList.remove("active"); });
+    cards.forEach(function (c) { c.classList.remove("match"); });
+    status.textContent = "箱をクリックすると、その場所に関係するテストだけが残ります";
+  }
+  var lastKey = null, lastCard = null;
+  function selectKey(k) {
+    if (lastKey === k && !lastCard) { clear(); lastKey = null; return; }
+    clear(); lastKey = k; lastCard = null;
+    root.classList.add("has-sel");
+    var n = 0;
+    hits.forEach(function (h) { if (h.getAttribute("data-key") === k) h.classList.add("active"); });
+    cards.forEach(function (c) {
+      if (c.getAttribute("data-keys").split(",").indexOf(k) >= 0) { c.classList.add("match"); n++; }
+    });
+    status.textContent = "「" + (LABEL[k] || k) + "」に関係するテスト：" + n + " 件";
+  }
+  function selectCard(c, keys) {
+    if (lastCard === c) { clear(); lastCard = null; lastKey = null; return; }
+    clear(); lastCard = c; lastKey = null;
+    root.classList.add("has-sel");
+    c.classList.add("match");
+    hits.forEach(function (h) { if (keys.indexOf(h.getAttribute("data-key")) >= 0) h.classList.add("active"); });
+    status.textContent = "このテストが通る場所：" + keys.map(function (k) { return LABEL[k] || k; }).join(" → ");
+    var fig = document.querySelector("figure");
+    if (fig && fig.getBoundingClientRect().top < 0) fig.scrollIntoView({ block: "start" });
+  }
+  document.getElementById("clearBtn").addEventListener("click", function () { clear(); lastKey = null; lastCard = null; });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { clear(); lastKey = null; lastCard = null; } });
+
+})();
+</script>
+</body>
+</html>
