@@ -11,11 +11,13 @@
 - **入力（起点）**: `C:\Users\mforce0087\workhubRoomSupport` 配下の対象機能仕様書（.md）
 - **関連メモリー**: `.claude/memories/bdd-workflow-manager.md`、`.claude/memories/global.md`
 - **スキル一覧**: `.claude/commands/README.md`
+- **テンプレート**: `src/test/resources/features/_templates/pbi-flow-map-template.html`
 - **成果物出力先（全体）**:
   - `src/test/resources/features/{機能名}/rules.md`（ルール・実例）
   - `src/test/resources/features/{機能名}/scenarios.md`（Gherkinシナリオ）
   - `src/test/resources/features/{機能名}/viewpoints.tsv`（機能別観点マスター）
   - `src/test/resources/features/{機能名}/scenarios_with_viewpoints.md`（観点分岐版Gherkin）
+  - `src/test/resources/features/{機能名}/{機能名}.html`（処理の全体図）
   - `src/test/resources/features/_master/viewpoints.tsv`（観点マスター総合版）
 
 ## Instructions
@@ -59,7 +61,18 @@
    - `src/test/resources/features/{機能名}/scenarios_with_viewpoints.md`
    - `src/test/resources/features/_master/viewpoints.tsv`
 
-### Step 4: 完了処理（コミット）
+### Step 4: 処理の全体図の生成 (pbi-flow-map)
+
+`/pbi-flow-map {機能名}` スキルの処理を実行し、Step 1〜3 の成果物から処理の全体図を HTML で生成する。
+
+1. `src/test/resources/features/{機能名}/` 配下の rules.md, scenarios.md, scenarios_with_viewpoints.md を読み込む。
+2. テンプレート（`_templates/pbi-flow-map-template.html`）を踏襲し、全体図 HTML を生成する。
+3. 生成結果（スクリーンショット）をユーザーに提示する。
+4. 推測した点があれば質問で潰す。
+5. ユーザーの承認を得たら `src/test/resources/features/{機能名}/{機能名}.html` として保存する。
+6. **【次Step移行確認】** 「Step 5（完了処理・コミット）に進んでよろしいですか？」とユーザーに確認し、合意を待つ。
+
+### Step 5: 完了処理（コミット）
 
 1. 全ステップの成果物を一覧でユーザーに報告する：
 
@@ -75,7 +88,8 @@
 | 2 | `features/{機能名}/scenarios.md` | Gherkinシナリオ |
 | 3 | `features/{機能名}/viewpoints.tsv` | 機能別観点マスター |
 | 4 | `features/{機能名}/scenarios_with_viewpoints.md` | 観点分岐版Gherkin |
-| 5 | `features/_master/viewpoints.tsv` | 観点マスター総合版（更新） |
+| 5 | `features/{機能名}/{機能名}.html` | 処理の全体図 |
+| 6 | `features/_master/viewpoints.tsv` | 観点マスター総合版（更新） |
 ```
 
 2. 「上記の成果物をコミットしてよろしいですか？」とユーザーに承認を求める。
@@ -84,7 +98,7 @@
 
 ## Constraints (制約事項)
 - **進行制御**: ユーザーの「OK」や「次へ進んで」という明確な合意なしに、勝手に次のStepへ進んだり、ファイルを保存・上書きしたりしないこと。
-- **各スキルのルール遵守**: 各Stepでは対応するスキル（rule-example-extractor / gherkin-scenario-generator / viewpoint-extractor）に定義されたガードレール・制約事項をすべて遵守すること。
+- **各スキルのルール遵守**: 各Stepでは対応するスキル（rule-example-extractor / gherkin-scenario-generator / viewpoint-extractor / pbi-flow-map）に定義されたガードレール・制約事項をすべて遵守すること。
 - **スキル定義の参照**: 各Stepの実行時には、対応するスキル定義ファイル（`.claude/commands/{スキル名}.md`）を必ず読み込み、最新のルールに従うこと。
 - **独断による仕様補完の禁止**: 仕様書に記載のない動作を推測で仕様化せず、必ず疑問点（赤カード）としてユーザーに確認すること。
 
