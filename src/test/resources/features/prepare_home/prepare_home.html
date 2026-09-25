@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>起動時に予約データを準備してホームを表示できる</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #F4F6F9;
+  --lane: #EAEEF3;
+  --surface: #FFFFFF;
+  --ink: #1B2430;
+  --muted: #5E6B7A;
+  --line: #D3DAE3;
+  --flow: #0F7C7B;
+  --flow-soft: #DCF0EE;
+  --save: #3B57C4;
+  --save-soft: #E4E9FA;
+  --err: #C43C3C;
+  --err-soft: #FBE5E5;
+  --hot: #D98E04;
+  --hot-ink: #7E5300;
+  --hot-soft: #FCEFD3;
+  --ok: #2E8B57;
+  --font-display: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-body: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #11161D; --lane: #181F28; --surface: #1F2732; --ink: #E7ECF2; --muted: #9DA9B7; --line: #2E3843;
+    --flow: #4FC3C0; --flow-soft: #163A39; --save: #93A6F5; --save-soft: #232D52;
+    --err: #F08080; --err-soft: #4A2424; --hot: #F2B441; --hot-ink: #F2B441; --hot-soft: #4A3A14; --ok: #6CCB8C;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #11161D; --lane: #181F28; --surface: #1F2732; --ink: #E7ECF2; --muted: #9DA9B7; --line: #2E3843;
+  --flow: #4FC3C0; --flow-soft: #163A39; --save: #93A6F5; --save-soft: #232D52;
+  --err: #F08080; --err-soft: #4A2424; --hot: #F2B441; --hot-ink: #F2B441; --hot-soft: #4A3A14; --ok: #6CCB8C;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  padding-inline: 16px;
+  padding-block: 24px 48px;
+}
+.wrap { max-width: 1400px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.3; }
+h1 { font-size: 26px; font-weight: 700; }
+h2 { font-size: 18px; font-weight: 700; }
+h3 { font-size: 14px; font-weight: 700; }
+p { margin: 0; }
+.eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.lead { color: var(--muted); max-width: 60ch; }
+
+header { display: grid; gap: 8px; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 6px; }
+.controls label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; }
+.controls input { accent-color: var(--flow); width: 16px; height: 16px; }
+#status { font-size: 13px; color: var(--muted); }
+button.link {
+  font: inherit; font-size: 13px; color: var(--flow); background: none; border: 1px solid var(--flow);
+  border-radius: 999px; padding: 3px 12px; cursor: pointer;
+}
+button.link:hover { background: var(--flow-soft); }
+button.link:focus-visible, .hit:focus-visible, .card:focus-visible { outline: 2px solid var(--hot); outline-offset: 2px; }
+
+/* ---- map ---- */
+figure { margin: 0; display: grid; gap: 10px; }
+.scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+svg.map { display: block; min-width: 1100px; width: 100%; height: auto; }
+figcaption { color: var(--muted); font-size: 13px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 12px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 26px; height: 0; border-top: 3px solid; border-radius: 2px; }
+.sw.flow { border-color: var(--flow); }
+.sw.save { border-color: var(--save); border-top-style: dashed; }
+.sw.err { border-color: var(--err); }
+
+.lane { fill: var(--lane); stroke: var(--line); }
+.lane-label { font: 700 12px var(--font-display); fill: var(--muted); }
+.screen { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
+.screen-bar { fill: var(--ink); opacity: .85; }
+.step { fill: var(--surface); stroke: var(--flow); stroke-width: 1.6; }
+.step-diamond { fill: var(--flow-soft); stroke: var(--flow); stroke-width: 1.6; }
+.t-name { font: 700 13px var(--font-body); fill: var(--ink); }
+.t-sub { font: 400 11px var(--font-body); fill: var(--muted); }
+.t-screen { font: 700 13px var(--font-display); fill: var(--ink); }
+.flow { fill: none; stroke: var(--flow); stroke-width: 2; }
+.lbl { font: 500 11px var(--font-body); fill: var(--flow); }
+.save { fill: none; stroke: var(--save); stroke-width: 1.6; stroke-dasharray: 5 4; }
+.save-box { fill: var(--save-soft); stroke: var(--save); stroke-width: 1.5; }
+.t-save { font: 700 12px var(--font-body); fill: var(--ink); }
+.t-save-note { font: 500 11px var(--font-body); fill: var(--save); }
+.err { font: 500 11px var(--font-body); fill: var(--err); }
+.err-line { fill: none; stroke: var(--err); stroke-width: 1.6; }
+.arw-flow { fill: var(--flow); }
+.arw-save { fill: var(--save); }
+.arw-err { fill: var(--err); }
+
+.hit { cursor: pointer; transition: opacity .15s; }
+.hit:hover .step, .hit:hover .screen, .hit:hover .step-diamond, .hit:hover .save-box { stroke-width: 2.5; }
+.hit.active .step, .hit.active .screen, .hit.active .step-diamond, .hit.active .save-box { stroke: var(--hot); stroke-width: 3.5; }
+.has-sel .hit:not(.active) { opacity: .38; }
+@media (prefers-reduced-motion: reduce) { .hit, .card { transition: none; } }
+
+/* ---- test index ---- */
+.index { display: grid; gap: 14px; }
+.hint { font-size: 13px; color: var(--muted); }
+.group { display: grid; gap: 8px; }
+.group h3 { color: var(--muted); font-size: 12px; letter-spacing: .06em; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  display: grid; gap: 6px; cursor: pointer; transition: opacity .15s, border-color .15s;
+}
+.card:hover { border-color: var(--flow); }
+.card .ttl { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; font-weight: 500; line-height: 1.4; }
+.dot { flex: 0 0 auto; width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; }
+.dot.ok { background: var(--ok); }
+.dot.ng { background: var(--err); }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-start; align-content: flex-start; }
+.card { align-content: start; }
+.chip { font-size: 11px; padding: 1px 8px; border-radius: 999px; background: var(--flow-soft); color: var(--flow); font-weight: 500; white-space: nowrap; }
+.chip[data-k="L"], .chip[data-k="I"], .chip[data-k="W"], .chip[data-k="S"], .chip[data-k="M"] { background: var(--lane); color: var(--ink); border: 1px solid var(--line); }
+.has-sel .card:not(.match) { opacity: .3; }
+.has-sel .card.match { border-color: var(--hot); box-shadow: 0 0 0 2px var(--hot-soft); }
+
+/* ---- message table ---- */
+table { border-collapse: collapse; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: 13px; }
+th, td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+th { background: var(--lane); color: var(--muted); font-size: 12px; font-weight: 700; }
+tr:first-child th { border-top: 0; }
+td.msg { font-weight: 500; }
+.tbl-wrap { overflow-x: auto; }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">prepare_home ／ 全体マップ</p>
+  <h1>起動時に予約データを準備してホームを表示できる</h1>
+  <p class="lead">ログイン・組織選択のあと、読み込み画面からホーム画面に着くまでに、裏で何が順番に確認されるかを1枚にしたもの。図の箱やテストケースをクリックすると、対応する場所が光ります。</p>
+  <div class="controls">
+    <button class="link" id="clearBtn" type="button">選択を解除</button>
+    <span id="status">箱をクリックすると、その場所に関係するテストだけが残ります</span>
+  </div>
+</header>
+
+<section>
+<figure>
+  <div class="scroll">
+  <svg class="map" viewBox="0 0 1440 400" role="img" aria-label="起動準備の流れ。上段は管理者が見る画面、下段は裏側で起きる確認。端末が登録されているか、初期設定が終わっているか、タブレット名と設置場所が決まっているかを順番に確認し、すべて満たしていれば予約データの到着を最大10秒待ってからホーム画面を表示する。">
+    <defs>
+      <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-flow"/></marker>
+      <marker id="arwS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-save"/></marker>
+      <marker id="arwE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-err"/></marker>
+    </defs>
+
+    <!-- lanes -->
+    <rect class="lane" x="0" y="16" width="1440" height="128" rx="12"/>
+    <rect class="lane" x="0" y="156" width="1440" height="228" rx="12"/>
+    <text class="lane-label" x="16" y="38">画面（管理者が見るもの）</text>
+    <text class="lane-label" x="16" y="178">裏側で起きていること</text>
+
+    <!-- flow arrows -->
+    <path class="flow" marker-end="url(#arw)" d="M90 116 V150 H175 V196"/>
+    <path class="flow" marker-end="url(#arw)" d="M240 232 H315"/>
+    <text class="lbl" x="277" y="224" text-anchor="middle">登録済み</text>
+    <path class="flow" marker-end="url(#arw)" d="M175 196 V84 H230 V108"/>
+    <text class="lbl" x="183" y="150">未登録</text>
+    <path class="flow" marker-end="url(#arw)" d="M230 116 V140 H465 V116"/>
+    <text class="lbl" x="238" y="132">「新規設置」を選ぶ</text>
+    <path class="flow" marker-end="url(#arw)" d="M445 232 H520"/>
+    <text class="lbl" x="482" y="224" text-anchor="middle">完了</text>
+    <path class="flow" marker-end="url(#arw)" d="M380 196 V84 H465 V108"/>
+    <text class="lbl" x="388" y="150">未完了</text>
+    <path class="flow" marker-end="url(#arw)" d="M650 232 H705"/>
+    <text class="lbl" x="677" y="224" text-anchor="middle">設定済み</text>
+    <path class="flow" marker-end="url(#arw)" d="M585 196 V84 H675 V108"/>
+    <text class="lbl" x="593" y="150">未設定</text>
+    <path class="flow" marker-end="url(#arw)" d="M875 236 H930 V84 H1000 V116"/>
+    <text class="lbl" x="920" y="76" text-anchor="middle">予約データが届く（または10秒でタイムアウト）→ホームへ</text>
+
+    <!-- error exits -->
+    <text class="err" x="20" y="136">✕ オフライン→読み込み画面のまま進まない</text>
+    <text class="err" x="705" y="288">✕ 10秒待っても届かない→そのままホームへ進み、届き次第自動で反映</text>
+
+    <!-- lane A: screens -->
+    <g class="hit" data-key="L" tabindex="0" role="button" aria-label="読み込み画面">
+      <rect class="screen" x="20" y="52" width="140" height="64" rx="10"/>
+      <rect class="screen-bar" x="65" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="90" y="88" text-anchor="middle">読み込み画面</text>
+    </g>
+    <g class="hit" data-key="I" tabindex="0" role="button" aria-label="インストール確認ダイアログ">
+      <rect class="screen" x="140" y="52" width="180" height="64" rx="10"/>
+      <rect class="screen-bar" x="215" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="230" y="82" text-anchor="middle">インストール確認</text>
+      <text class="t-sub" x="230" y="102" text-anchor="middle">新規設置／再設置を選べる</text>
+    </g>
+    <g class="hit" data-key="W" tabindex="0" role="button" aria-label="初期設定ウィザード">
+      <rect class="screen" x="380" y="52" width="170" height="64" rx="10"/>
+      <rect class="screen-bar" x="450" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="465" y="82" text-anchor="middle">初期設定ウィザード</text>
+      <text class="t-sub" x="465" y="102" text-anchor="middle">認証方式・テンプレ選び</text>
+    </g>
+    <g class="hit" data-key="S" tabindex="0" role="button" aria-label="設定画面">
+      <rect class="screen" x="600" y="52" width="150" height="64" rx="10"/>
+      <rect class="screen-bar" x="660" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="675" y="82" text-anchor="middle">設定画面</text>
+      <text class="t-sub" x="675" y="102" text-anchor="middle">名前・設置場所を入れる</text>
+    </g>
+    <g class="hit" data-key="M" tabindex="0" role="button" aria-label="ホーム画面">
+      <rect class="screen" x="1000" y="52" width="170" height="64" rx="10"/>
+      <rect class="screen-bar" x="1070" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="1085" y="82" text-anchor="middle">ホーム画面</text>
+      <text class="t-sub" x="1085" y="102" text-anchor="middle">空室／待機中／使用中で表示が変わる</text>
+    </g>
+
+    <!-- lane B: steps -->
+    <g class="hit" data-key="1" tabindex="0" role="button" aria-label="登録されている？">
+      <polygon class="step-diamond" points="175,196 240,232 175,268 110,232"/>
+      <text class="t-name" x="175" y="229" text-anchor="middle">①登録</text>
+      <text class="t-name" x="175" y="245" text-anchor="middle">されている？</text>
+    </g>
+    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="初期設定は終わっている？">
+      <polygon class="step-diamond" points="380,196 445,232 380,268 315,232"/>
+      <text class="t-name" x="380" y="229" text-anchor="middle">②初期設定</text>
+      <text class="t-name" x="380" y="245" text-anchor="middle">は終わってる？</text>
+    </g>
+    <g class="hit" data-key="3" tabindex="0" role="button" aria-label="名前と場所は決まっている？">
+      <polygon class="step-diamond" points="585,196 650,232 585,268 520,232"/>
+      <text class="t-name" x="585" y="229" text-anchor="middle">③名前・場所</text>
+      <text class="t-name" x="585" y="245" text-anchor="middle">は決まってる？</text>
+    </g>
+    <g class="hit" data-key="4" tabindex="0" role="button" aria-label="予約データの到着を待つ">
+      <rect class="step" x="705" y="204" width="170" height="64" rx="8"/>
+      <text class="t-name" x="790" y="228" text-anchor="middle">④予約データの</text>
+      <text class="t-name" x="790" y="246" text-anchor="middle">到着を待つ（最大10秒）</text>
+    </g>
+  </svg>
+  </div>
+  <figcaption>緑の線が「うまくいく道」。赤の ✕ は「ここで進めなくなる、または待たされる理由」。</figcaption>
+  <div class="legend">
+    <span><i class="sw flow"></i>うまくいく道</span>
+    <span><i class="sw err"></i>進めない・待たされる場所とその理由</span>
+  </div>
+</figure>
+</section>
+
+
+<section class="index">
+  <h2>テストケースは、図のどこの話？</h2>
+  <p class="hint">カードをクリックすると図の該当箇所が光ります。図の箱をクリックすると、その箱に関係するカードだけが残ります。● 緑＝うまくいく確認、● 赤＝進めない・止まる確認。</p>
+
+  <div class="group">
+    <h3>ルール① 端末の登録・設定状態で行き先が決まる</h3>
+    <div class="cards">
+      <div class="card" data-keys="L,1,2,3,4,M"><div class="ttl"><i class="dot ok"></i>登録・初期設定・名前/場所設定が全部済み → ホームへ</div><div class="chips"></div></div>
+      <div class="card" data-keys="L,1,I"><div class="ttl"><i class="dot ng"></i>端末が未登録 → インストール確認が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="L,1,2,W"><div class="ttl"><i class="dot ng"></i>初期設定ウィザードが未完了 → ウィザードへ</div><div class="chips"></div></div>
+      <div class="card" data-keys="L,1,2,3,S"><div class="ttl"><i class="dot ng"></i>名前または設置場所が未設定 → 設定画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="L"><div class="ttl"><i class="dot ng"></i>オフラインで起動 → 読み込み画面のまま進めない（WiFiオフ／機内モード／SIM無効／不安定な回線／DNS失敗のいずれでも同じ）</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール② 予約データの到着を待ってからホームへ進む</h3>
+    <div class="cards">
+      <div class="card" data-keys="L,1,2,3,4,M"><div class="ttl"><i class="dot ok"></i>予約データが10秒以内に届く → 反映された状態でホームへ</div><div class="chips"></div></div>
+      <div class="card" data-keys="L,1,2,3,4,M"><div class="ttl"><i class="dot ok"></i>予約データが10秒待っても届かない → そのままホームへ進み、届き次第自動で反映</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール③ 予約データの状態でホームの見た目が決まる</h3>
+    <div class="cards">
+      <div class="card" data-keys="M"><div class="ttl"><i class="dot ok"></i>予約がない → 空室状態で表示</div><div class="chips"></div></div>
+      <div class="card" data-keys="M"><div class="ttl"><i class="dot ok"></i>予約はあるがまだ入室していない → 待機中状態で表示</div><div class="chips"></div></div>
+      <div class="card" data-keys="M"><div class="ttl"><i class="dot ok"></i>入室済みの予約がある → 使用中状態で表示</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>通し（実機で最後まで）</h3>
+    <div class="cards">
+      <div class="card" data-keys="L,1,2,3,4,M"><div class="ttl"><i class="dot ok"></i>起動準備から予約データを反映したホーム表示までが正常に完了する</div><div class="chips"></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div style="display:grid;gap:10px">
+  <h2>エラーの言葉で、止まった場所がわかる</h2>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>画面に出る言葉</th><th>止まった場所</th></tr>
+    <tr><td class="msg">（この機能にはエラーメッセージの表示はない）</td><td>オフライン時は読み込み画面のまま、無言で進まない</td></tr>
+  </table>
+  </div>
+  </div>
+</section>
+
+
+</div>
+
+<script>
+(function () {
+  var LABEL = {
+    L: "読み込み画面", I: "インストール確認", W: "初期設定ウィザード", S: "設定画面", M: "ホーム画面",
+    1: "①登録されている？", 2: "②初期設定は終わってる？", 3: "③名前・場所は決まってる？", 4: "④予約データを待つ"
+  };
+  var root = document.documentElement;
+  var hits = Array.prototype.slice.call(document.querySelectorAll(".hit"));
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card"));
+  var status = document.getElementById("status");
+
+  cards.forEach(function (c) {
+    var keys = c.getAttribute("data-keys").split(",");
+    var box = c.querySelector(".chips");
+    keys.forEach(function (k) {
+      var s = document.createElement("span");
+      s.className = "chip"; s.setAttribute("data-k", k); s.textContent = LABEL[k] || k;
+      box.appendChild(s);
+    });
+    c.setAttribute("tabindex", "0");
+    c.addEventListener("click", function () { selectCard(c, keys); });
+    c.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectCard(c, keys); } });
+  });
+
+  hits.forEach(function (h) {
+    var k = h.getAttribute("data-key");
+    h.addEventListener("click", function () { selectKey(k); });
+    h.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectKey(k); } });
+  });
+
+  function clear() {
+    root.classList.remove("has-sel");
+    hits.forEach(function (h) { h.classList.remove("active"); });
+    cards.forEach(function (c) { c.classList.remove("match"); });
+    status.textContent = "箱をクリックすると、その場所に関係するテストだけが残ります";
+  }
+  var lastKey = null, lastCard = null;
+  function selectKey(k) {
+    if (lastKey === k && !lastCard) { clear(); lastKey = null; return; }
+    clear(); lastKey = k; lastCard = null;
+    root.classList.add("has-sel");
+    var n = 0;
+    hits.forEach(function (h) { if (h.getAttribute("data-key") === k) h.classList.add("active"); });
+    cards.forEach(function (c) {
+      if (c.getAttribute("data-keys").split(",").indexOf(k) >= 0) { c.classList.add("match"); n++; }
+    });
+    status.textContent = "「" + (LABEL[k] || k) + "」に関係するテスト：" + n + " 件";
+  }
+  function selectCard(c, keys) {
+    if (lastCard === c) { clear(); lastCard = null; lastKey = null; return; }
+    clear(); lastCard = c; lastKey = null;
+    root.classList.add("has-sel");
+    c.classList.add("match");
+    hits.forEach(function (h) { if (keys.indexOf(h.getAttribute("data-key")) >= 0) h.classList.add("active"); });
+    status.textContent = "このテストが通る場所：" + keys.map(function (k) { return LABEL[k] || k; }).join(" → ");
+    var fig = document.querySelector("figure");
+    if (fig && fig.getBoundingClientRect().top < 0) fig.scrollIntoView({ block: "start" });
+  }
+  document.getElementById("clearBtn").addEventListener("click", function () { clear(); lastKey = null; lastCard = null; });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { clear(); lastKey = null; lastCard = null; } });
+
+})();
+</script>
+</body>
+</html>
