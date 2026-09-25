@@ -66,6 +66,11 @@ Git操作（ブランチ作成、コミット、プッシュ、PR作成）を対
 `/gherkin-scenario-generator` で作成したGherkinシナリオ（scenarios.md）を入力として、汎用的なテスト観点を抽出し、仕様書との照合を経て機能別観点マスター（viewpoints.tsv）と観点分岐版Gherkinシナリオ（scenarios_with_viewpoints.md）を生成します。  
 観点マスターはNotionDBへのコピー＆ペーストに対応したTSV形式で出力します。全機能横断の観点マスター総合版（`_master/viewpoints.tsv`）も自動で蓄積・更新します。
 
+### 🗺️ `/pbi-flow-map` - 処理の全体図（HTML）生成
+テスト仕様（rules.md, scenarios.md）から、非エンジニア向けの「処理の全体図」を1枚の HTML に生成します。  
+画面／裏側の処理／残るものを段に分けた流れ図と、テストケースをクリックすると図の該当箇所が光る対応表、エラー文言の逆引き表を含みます。  
+テンプレート（完成例）: `src/test/resources/features/_templates/pbi-flow-map-template.html`
+
 ### 🛠️ `/skill-improver` - Skill改善メタスキル
 Skill自体の改善を提案・実行するメタスキル。  
 メモリーに蓄積された指摘事項を分析し、Skillのプロンプトやロジックの改善を行います。
