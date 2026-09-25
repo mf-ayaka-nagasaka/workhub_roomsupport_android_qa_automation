@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>タブレットにログインして組織を選択できる</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #F4F6F9;
+  --lane: #EAEEF3;
+  --surface: #FFFFFF;
+  --ink: #1B2430;
+  --muted: #5E6B7A;
+  --line: #D3DAE3;
+  --flow: #0F7C7B;
+  --flow-soft: #DCF0EE;
+  --save: #3B57C4;
+  --save-soft: #E4E9FA;
+  --err: #C43C3C;
+  --err-soft: #FBE5E5;
+  --hot: #D98E04;
+  --hot-ink: #7E5300;
+  --hot-soft: #FCEFD3;
+  --ok: #2E8B57;
+  --font-display: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-body: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #11161D; --lane: #181F28; --surface: #1F2732; --ink: #E7ECF2; --muted: #9DA9B7; --line: #2E3843;
+    --flow: #4FC3C0; --flow-soft: #163A39; --save: #93A6F5; --save-soft: #232D52;
+    --err: #F08080; --err-soft: #4A2424; --hot: #F2B441; --hot-ink: #F2B441; --hot-soft: #4A3A14; --ok: #6CCB8C;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #11161D; --lane: #181F28; --surface: #1F2732; --ink: #E7ECF2; --muted: #9DA9B7; --line: #2E3843;
+  --flow: #4FC3C0; --flow-soft: #163A39; --save: #93A6F5; --save-soft: #232D52;
+  --err: #F08080; --err-soft: #4A2424; --hot: #F2B441; --hot-ink: #F2B441; --hot-soft: #4A3A14; --ok: #6CCB8C;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  padding-inline: 16px;
+  padding-block: 24px 48px;
+}
+.wrap { max-width: 1400px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.3; }
+h1 { font-size: 26px; font-weight: 700; }
+h2 { font-size: 18px; font-weight: 700; }
+h3 { font-size: 14px; font-weight: 700; }
+p { margin: 0; }
+.eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.lead { color: var(--muted); max-width: 60ch; }
+
+header { display: grid; gap: 8px; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 6px; }
+.controls label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; }
+.controls input { accent-color: var(--flow); width: 16px; height: 16px; }
+#status { font-size: 13px; color: var(--muted); }
+button.link {
+  font: inherit; font-size: 13px; color: var(--flow); background: none; border: 1px solid var(--flow);
+  border-radius: 999px; padding: 3px 12px; cursor: pointer;
+}
+button.link:hover { background: var(--flow-soft); }
+button.link:focus-visible, .hit:focus-visible, .card:focus-visible { outline: 2px solid var(--hot); outline-offset: 2px; }
+
+/* ---- map ---- */
+figure { margin: 0; display: grid; gap: 10px; }
+.scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+svg.map { display: block; min-width: 1100px; width: 100%; height: auto; }
+figcaption { color: var(--muted); font-size: 13px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 12px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 26px; height: 0; border-top: 3px solid; border-radius: 2px; }
+.sw.flow { border-color: var(--flow); }
+.sw.save { border-color: var(--save); border-top-style: dashed; }
+.sw.err { border-color: var(--err); }
+
+.lane { fill: var(--lane); stroke: var(--line); }
+.lane-label { font: 700 12px var(--font-display); fill: var(--muted); }
+.screen { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
+.screen-bar { fill: var(--ink); opacity: .85; }
+.step { fill: var(--surface); stroke: var(--flow); stroke-width: 1.6; }
+.step-diamond { fill: var(--flow-soft); stroke: var(--flow); stroke-width: 1.6; }
+.t-name { font: 700 13px var(--font-body); fill: var(--ink); }
+.t-sub { font: 400 11px var(--font-body); fill: var(--muted); }
+.t-screen { font: 700 13px var(--font-display); fill: var(--ink); }
+.flow { fill: none; stroke: var(--flow); stroke-width: 2; }
+.lbl { font: 500 11px var(--font-body); fill: var(--flow); }
+.save { fill: none; stroke: var(--save); stroke-width: 1.6; stroke-dasharray: 5 4; }
+.save-box { fill: var(--save-soft); stroke: var(--save); stroke-width: 1.5; }
+.t-save { font: 700 12px var(--font-body); fill: var(--ink); }
+.t-save-note { font: 500 11px var(--font-body); fill: var(--save); }
+.err { font: 500 11px var(--font-body); fill: var(--err); }
+.err-line { fill: none; stroke: var(--err); stroke-width: 1.6; }
+.arw-flow { fill: var(--flow); }
+.arw-save { fill: var(--save); }
+.arw-err { fill: var(--err); }
+
+.hit { cursor: pointer; transition: opacity .15s; }
+.hit:hover .step, .hit:hover .screen, .hit:hover .step-diamond, .hit:hover .save-box { stroke-width: 2.5; }
+.hit.active .step, .hit.active .screen, .hit.active .step-diamond, .hit.active .save-box { stroke: var(--hot); stroke-width: 3.5; }
+.has-sel .hit:not(.active) { opacity: .38; }
+@media (prefers-reduced-motion: reduce) { .hit, .card { transition: none; } }
+
+/* ---- test index ---- */
+.index { display: grid; gap: 14px; }
+.hint { font-size: 13px; color: var(--muted); }
+.group { display: grid; gap: 8px; }
+.group h3 { color: var(--muted); font-size: 12px; letter-spacing: .06em; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  display: grid; gap: 6px; cursor: pointer; transition: opacity .15s, border-color .15s;
+}
+.card:hover { border-color: var(--flow); }
+.card .ttl { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; font-weight: 500; line-height: 1.4; }
+.dot { flex: 0 0 auto; width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; }
+.dot.ok { background: var(--ok); }
+.dot.ng { background: var(--err); }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-start; align-content: flex-start; }
+.card { align-content: start; }
+.chip { font-size: 11px; padding: 1px 8px; border-radius: 999px; background: var(--flow-soft); color: var(--flow); font-weight: 500; white-space: nowrap; }
+.chip[data-k="A"], .chip[data-k="B"], .chip[data-k="C"] { background: var(--save-soft); color: var(--save); }
+.chip[data-k="L"], .chip[data-k="O"], .chip[data-k="D"], .chip[data-k="boot"] { background: var(--lane); color: var(--ink); border: 1px solid var(--line); }
+.has-sel .card:not(.match) { opacity: .3; }
+.has-sel .card.match { border-color: var(--hot); box-shadow: 0 0 0 2px var(--hot-soft); }
+
+/* ---- message table ---- */
+table { border-collapse: collapse; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: 13px; }
+th, td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+th { background: var(--lane); color: var(--muted); font-size: 12px; font-weight: 700; }
+tr:first-child th { border-top: 0; }
+td.msg { font-weight: 500; }
+.tbl-wrap { overflow-x: auto; }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">RS-A ／ 全体マップ</p>
+  <h1>タブレットにログインして組織を選択できる</h1>
+  <p class="lead">ログインボタンを押してから「設定読み込み画面」に着くまでに、裏で何が順番に起きるかを1枚にしたもの。図の箱やテストケースをクリックすると、対応する場所が光ります。</p>
+  <div class="controls">
+    <button class="link" id="clearBtn" type="button">選択を解除</button>
+    <span id="status">箱をクリックすると、その場所に関係するテストだけが残ります</span>
+  </div>
+</header>
+
+<section>
+<figure>
+  <div class="scroll">
+  <svg class="map" viewBox="0 0 1440 560" role="img" aria-label="ログインの流れ。上段は管理者が見る画面、中段は裏側で起きる処理、下段はタブレットに保存されるもの。処理は本人確認、所属組織の数の判定、組織の決定、組織へのログイン、予約データの許可取得の順に進む。">
+    <defs>
+      <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-flow"/></marker>
+      <marker id="arwS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-save"/></marker>
+      <marker id="arwE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-err"/></marker>
+    </defs>
+
+    <!-- lanes -->
+    <rect class="lane" x="0" y="16" width="1440" height="128" rx="12"/>
+    <rect class="lane" x="0" y="156" width="1440" height="250" rx="12"/>
+    <rect class="lane" x="0" y="418" width="1440" height="126" rx="12"/>
+    <text class="lane-label" x="16" y="38">画面（管理者が見るもの）</text>
+    <text class="lane-label" x="16" y="178">裏側で起きていること</text>
+    <text class="lane-label" x="16" y="440">タブレットに残るもの</text>
+    <text class="lane-label" x="16" y="456">（再起動したときの戻り先）</text>
+
+    <!-- flow arrows -->
+    <path class="flow" marker-end="url(#arw)" d="M205 116 V194"/>
+    <path class="flow" marker-end="url(#arw)" d="M270 232 H300 V84 H328"/>
+    <text class="lbl" x="306" y="160">保存なし</text>
+    <path class="flow" marker-end="url(#arw)" d="M420 116 V198"/>
+    <text class="lbl" x="428" y="162">ログインを押す</text>
+    <path class="flow" marker-end="url(#arw)" d="M495 232 H538"/>
+    <text class="lbl" x="516" y="224" text-anchor="middle">OK</text>
+    <path class="flow" marker-end="url(#arw)" d="M700 232 H758"/>
+    <text class="lbl" x="756" y="222" text-anchor="end">1件なら自動で</text>
+    <path class="flow" marker-end="url(#arw)" d="M620 190 V84 H743"/>
+    <text class="lbl" x="628" y="150">複数なら選んでもらう</text>
+    <path class="flow" marker-end="url(#arw)" d="M835 116 V198"/>
+    <text class="lbl" x="843" y="162">選んで確定</text>
+    <path class="flow" marker-end="url(#arw)" d="M910 232 H948"/>
+    <path class="flow" marker-end="url(#arw)" d="M1100 232 H1128"/>
+    <path class="flow" marker-end="url(#arw)" d="M1205 200 V84 H1238"/>
+    <text class="lbl" x="1213" y="150">完了</text>
+
+    <!-- error exits -->
+    <path class="err-line" marker-end="url(#arwE)" d="M620 274 V294"/>
+    <text class="err" x="620" y="312" text-anchor="middle">✕ 0件 → 退職済み</text>
+
+    <!-- save links -->
+    <path class="save" marker-end="url(#arwS)" d="M205 268 V465 H343"/>
+    <text class="t-save-note" x="214" y="456">あれば 続きから再開</text>
+    <path class="save" d="M480 264 V445"/>
+    <path class="save" d="M895 264 V445"/>
+    <path class="save" d="M1265 264 V445"/>
+
+    <!-- lane A: screens -->
+    <g class="hit" data-key="boot" tabindex="0" role="button" aria-label="起動">
+      <rect class="screen" x="150" y="52" width="110" height="64" rx="10"/>
+      <rect class="screen-bar" x="190" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="205" y="92" text-anchor="middle">起動</text>
+    </g>
+    <g class="hit" data-key="L" tabindex="0" role="button" aria-label="ログイン画面">
+      <rect class="screen" x="330" y="52" width="180" height="64" rx="10"/>
+      <rect class="screen-bar" x="405" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="420" y="82" text-anchor="middle">ログイン画面</text>
+      <text class="t-sub" x="420" y="102" text-anchor="middle">メールとパスワードを入れる</text>
+      <text class="err" x="330" y="136">✕ 未入力→押せない ／ 形式が変 ／ オフライン</text>
+    </g>
+    <g class="hit" data-key="O" tabindex="0" role="button" aria-label="組織選択画面">
+      <rect class="screen" x="745" y="52" width="180" height="64" rx="10"/>
+      <rect class="screen-bar" x="820" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="835" y="82" text-anchor="middle">組織選択画面</text>
+      <text class="t-sub" x="835" y="102" text-anchor="middle">組織を1つ選ぶ</text>
+      <text class="err" x="745" y="136">✕ 未選択→押せない</text>
+    </g>
+    <g class="hit" data-key="D" tabindex="0" role="button" aria-label="設定読み込み画面">
+      <rect class="screen" x="1240" y="52" width="180" height="64" rx="10"/>
+      <rect class="screen-bar" x="1315" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="1330" y="82" text-anchor="middle">設定読み込み画面</text>
+      <text class="t-sub" x="1330" y="102" text-anchor="middle">＝ ログイン完了</text>
+    </g>
+
+    <!-- lane B: steps -->
+    <g class="hit" data-key="boot" tabindex="0" role="button" aria-label="保存があるか確認">
+      <polygon class="step-diamond" points="205,196 270,232 205,268 140,232"/>
+      <text class="t-name" x="205" y="229" text-anchor="middle">① 保存が</text>
+      <text class="t-name" x="205" y="245" text-anchor="middle">ある？</text>
+    </g>
+    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="本人確認">
+      <rect class="step" x="345" y="200" width="150" height="64" rx="8"/>
+      <text class="t-name" x="420" y="224" text-anchor="middle">② 本人確認</text>
+      <text class="t-sub" x="420" y="242" text-anchor="middle">メール・パスワードが合うか</text>
+      <text class="err" x="345" y="292">✕ ID・パスワード違い</text>
+      <text class="err" x="345" y="308">✕ ロック中</text>
+      <text class="err" x="345" y="324">✕ 途中で通信が切れた</text>
+    </g>
+    <g class="hit" data-key="3" tabindex="0" role="button" aria-label="所属組織はいくつ">
+      <polygon class="step-diamond" points="620,190 700,232 620,274 540,232"/>
+      <text class="t-name" x="620" y="229" text-anchor="middle">③ 所属組織は</text>
+      <text class="t-name" x="620" y="245" text-anchor="middle">いくつ？</text>
+    </g>
+    <g class="hit" data-key="4" tabindex="0" role="button" aria-label="組織を決める">
+      <rect class="step" x="760" y="200" width="150" height="64" rx="8"/>
+      <text class="t-name" x="835" y="224" text-anchor="middle">④ 組織を決める</text>
+      <text class="t-sub" x="835" y="242" text-anchor="middle">使う組織を確定する</text>
+      <text class="err" x="760" y="292">✕ 通信が切れた</text>
+    </g>
+    <g class="hit" data-key="5" tabindex="0" role="button" aria-label="組織に入る">
+      <rect class="step" x="950" y="200" width="150" height="64" rx="8"/>
+      <text class="t-name" x="1025" y="224" text-anchor="middle">⑤ 組織に入る</text>
+      <text class="t-sub" x="1025" y="242" text-anchor="middle">その組織の一員として</text>
+      <text class="err" x="950" y="292">✕ その組織で退職済み</text>
+      <text class="err" x="950" y="308">✕ アカウント情報なし</text>
+      <text class="err" x="950" y="324">✕ 通信が切れた</text>
+    </g>
+    <g class="hit" data-key="6" tabindex="0" role="button" aria-label="予約データを見る許可をもらう">
+      <rect class="step" x="1130" y="200" width="150" height="64" rx="8"/>
+      <text class="t-name" x="1205" y="224" text-anchor="middle">⑥ 予約データを見る</text>
+      <text class="t-sub" x="1205" y="242" text-anchor="middle">許可をもらう</text>
+    </g>
+
+    <!-- lane C: saved things -->
+    <g class="hit" data-key="A" tabindex="0" role="button" aria-label="保存A 本人確認OKの印">
+      <rect class="save-box" x="345" y="445" width="150" height="40" rx="8"/>
+      <text class="t-save" x="420" y="469" text-anchor="middle">残る：本人確認OKの印</text>
+      <text class="t-save-note" x="420" y="506" text-anchor="middle">再起動 → 組織選択画面へ</text>
+      <text class="t-sub" x="420" y="522" text-anchor="middle">ログアウトで消える</text>
+    </g>
+    <g class="hit" data-key="B" tabindex="0" role="button" aria-label="保存B 決めた組織">
+      <rect class="save-box" x="760" y="445" width="150" height="40" rx="8"/>
+      <text class="t-save" x="835" y="469" text-anchor="middle">残る：決めた組織</text>
+      <text class="t-save-note" x="835" y="506" text-anchor="middle">再起動 → ⑤から自動で続き</text>
+    </g>
+    <g class="hit" data-key="C" tabindex="0" role="button" aria-label="保存C 本人・組織・鍵">
+      <rect class="save-box" x="1130" y="445" width="150" height="40" rx="8"/>
+      <text class="t-save" x="1205" y="469" text-anchor="middle">残る：本人・組織・鍵</text>
+      <text class="t-save-note" x="1205" y="506" text-anchor="middle">再起動 → そのまま自動ログイン</text>
+    </g>
+  </svg>
+  </div>
+  <figcaption>緑の線が「うまくいく道」。赤の ✕ は「ここで失敗するとエラーになる」。青の点線は「タブレットに残る → 途中で落ちても戻ってこられる場所」。</figcaption>
+  <div class="legend">
+    <span><i class="sw flow"></i>うまくいく道</span>
+    <span><i class="sw err"></i>失敗する場所とその理由</span>
+    <span><i class="sw save"></i>タブレットに残る（再起動の戻り先）</span>
+  </div>
+</figure>
+</section>
+
+
+<section class="index">
+  <h2>テストケースは、図のどこの話？</h2>
+  <p class="hint">カードをクリックすると図の該当箇所が光ります。図の箱をクリックすると、その箱に関係するカードだけが残ります。● 緑＝うまくいく確認、● 赤＝失敗したときの確認。</p>
+
+  <div class="group">
+    <h3>起動したとき</h3>
+    <div class="cards">
+      <div class="card" data-keys="boot,L"><div class="ttl"><i class="dot ok"></i>保存がない状態で起動 → ログイン画面</div><div class="chips"></div></div>
+      <div class="card" data-keys="boot,C,D"><div class="ttl"><i class="dot ok"></i>保存がある状態で起動 → 自動でログインが戻る</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール① ログインする</h3>
+    <div class="cards">
+      <div class="card" data-keys="L,2,3,4,5,6,D"><div class="ttl"><i class="dot ok"></i>正しい情報・所属1組織 → そのまま完了画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="L,2,3,O"><div class="ttl"><i class="dot ok"></i>正しい情報・所属が複数 → 組織選択画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="2"><div class="ttl"><i class="dot ng"></i>未登録メール／パスワード違い → エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="L"><div class="ttl"><i class="dot ng"></i>未入力 → ボタンが押せない</div><div class="chips"></div></div>
+      <div class="card" data-keys="L"><div class="ttl"><i class="dot ng"></i>メールの形式が変 → エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="L"><div class="ttl"><i class="dot ng"></i>オフラインでログイン → エラー（送る前に止まる）</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,5,6"><div class="ttl"><i class="dot ng"></i>処理の途中で通信が切れる → エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="5"><div class="ttl"><i class="dot ng"></i>アカウント情報が欠けている → エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="2"><div class="ttl"><i class="dot ng"></i>パスワードを何回も間違える → ロック</div><div class="chips"></div></div>
+      <div class="card" data-keys="2"><div class="ttl"><i class="dot ng"></i>ロック中にログイン → エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="3"><div class="ttl"><i class="dot ng"></i>退職済み（どこにも所属なし） → エラー</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール② 組織を選ぶ</h3>
+    <div class="cards">
+      <div class="card" data-keys="O,4,5,6,D"><div class="ttl"><i class="dot ok"></i>組織を選んで確定 → 完了画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="O"><div class="ttl"><i class="dot ok"></i>未選択 → ボタンが押せない</div><div class="chips"></div></div>
+      <div class="card" data-keys="O,A"><div class="ttl"><i class="dot ok"></i>組織選択画面でログアウト → ログイン画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,5"><div class="ttl"><i class="dot ng"></i>確定した後に通信が切れる → エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="O,A"><div class="ttl"><i class="dot ng"></i>組織選択画面で強制終了 → 再起動で組織選択画面</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,A"><div class="ttl"><i class="dot ng"></i>④が終わる前に強制終了 → 再起動で組織選択画面</div><div class="chips"></div></div>
+      <div class="card" data-keys="B,5,6"><div class="ttl"><i class="dot ng"></i>④が終わった後に強制終了 → 再起動で完了画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,5"><div class="ttl"><i class="dot ng"></i>選んだ組織で退職済み → エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="boot,3,O"><div class="ttl"><i class="dot ng"></i>止めている間に所属が変わった → 最新の一覧</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>通し（実機で最後まで）</h3>
+    <div class="cards">
+      <div class="card" data-keys="L,2,3,4,5,6,D"><div class="ttl"><i class="dot ok"></i>所属1組織で最後まで</div><div class="chips"></div></div>
+      <div class="card" data-keys="L,2,3,O,4,5,6,D"><div class="ttl"><i class="dot ok"></i>所属が複数で、選んで最後まで</div><div class="chips"></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div style="display:grid;gap:10px">
+  <h2>エラーの言葉で、止まった場所がわかる</h2>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>画面に出る言葉</th><th>止まった場所</th></tr>
+    <tr><td class="msg">メールアドレスの形式が不正です</td><td>ログイン画面（送る前）</td></tr>
+    <tr><td class="msg">インターネットに接続されていません</td><td>ログイン画面（送る前） ／ ④ 確定した後</td></tr>
+    <tr><td class="msg">メールアドレスまたはパスワードに誤りがあります</td><td>② 本人確認</td></tr>
+    <tr><td class="msg">アカウントがロックされているためログインできません</td><td>② 本人確認</td></tr>
+    <tr><td class="msg">認証中にネットワークエラーが発生しました</td><td>② 〜 ⑥ の途中</td></tr>
+    <tr><td class="msg">組織に所属していないためログインできません</td><td>③ 0件のとき ／ ⑤ 選んだ組織で退職済みのとき</td></tr>
+    <tr><td class="msg">認証処理でエラーが発生しました</td><td>⑤ アカウント情報が欠けているとき</td></tr>
+  </table>
+  </div>
+  </div>
+</section>
+
+
+</div>
+
+<script>
+(function () {
+  var LABEL = {
+    boot: "① 起動", L: "ログイン画面", 2: "② 本人確認", 3: "③ 組織いくつ？", O: "組織選択画面",
+    4: "④ 組織を決める", 5: "⑤ 組織に入る", 6: "⑥ 許可をもらう", D: "完了画面",
+    A: "保存A", B: "保存B", C: "保存C"
+  };
+  var root = document.documentElement;
+  var hits = Array.prototype.slice.call(document.querySelectorAll(".hit"));
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card"));
+  var status = document.getElementById("status");
+
+  cards.forEach(function (c) {
+    var keys = c.getAttribute("data-keys").split(",");
+    var box = c.querySelector(".chips");
+    keys.forEach(function (k) {
+      var s = document.createElement("span");
+      s.className = "chip"; s.setAttribute("data-k", k); s.textContent = LABEL[k] || k;
+      box.appendChild(s);
+    });
+    c.setAttribute("tabindex", "0");
+    c.addEventListener("click", function () { selectCard(c, keys); });
+    c.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectCard(c, keys); } });
+  });
+
+  hits.forEach(function (h) {
+    var k = h.getAttribute("data-key");
+    h.addEventListener("click", function () { selectKey(k); });
+    h.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectKey(k); } });
+  });
+
+  function clear() {
+    root.classList.remove("has-sel");
+    hits.forEach(function (h) { h.classList.remove("active"); });
+    cards.forEach(function (c) { c.classList.remove("match"); });
+    status.textContent = "箱をクリックすると、その場所に関係するテストだけが残ります";
+  }
+  var lastKey = null, lastCard = null;
+  function selectKey(k) {
+    if (lastKey === k && !lastCard) { clear(); lastKey = null; return; }
+    clear(); lastKey = k; lastCard = null;
+    root.classList.add("has-sel");
+    var n = 0;
+    hits.forEach(function (h) { if (h.getAttribute("data-key") === k) h.classList.add("active"); });
+    cards.forEach(function (c) {
+      if (c.getAttribute("data-keys").split(",").indexOf(k) >= 0) { c.classList.add("match"); n++; }
+    });
+    status.textContent = "「" + (LABEL[k] || k) + "」に関係するテスト：" + n + " 件";
+  }
+  function selectCard(c, keys) {
+    if (lastCard === c) { clear(); lastCard = null; lastKey = null; return; }
+    clear(); lastCard = c; lastKey = null;
+    root.classList.add("has-sel");
+    c.classList.add("match");
+    hits.forEach(function (h) { if (keys.indexOf(h.getAttribute("data-key")) >= 0) h.classList.add("active"); });
+    status.textContent = "このテストが通る場所：" + keys.map(function (k) { return LABEL[k] || k; }).join(" → ");
+    var fig = document.querySelector("figure");
+    if (fig && fig.getBoundingClientRect().top < 0) fig.scrollIntoView({ block: "start" });
+  }
+  document.getElementById("clearBtn").addEventListener("click", function () { clear(); lastKey = null; lastCard = null; });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { clear(); lastKey = null; lastCard = null; } });
+
+})();
+</script>
+</body>
+</html>
