@@ -162,7 +162,7 @@ td.msg { font-weight: 500; }
 <section>
 <figure>
   <div class="scroll">
-  <svg class="map" viewBox="0 0 1440 560" role="img" aria-label="初期設定の流れ。上段は管理者が見る画面、中段は裏側で起きる処理、下段はタブレットに残るもの。">
+  <svg class="map" viewBox="0 0 1440 620" role="img" aria-label="初期設定の流れ。上段は管理者が見る画面、中段は裏側で起きる処理、下段はタブレットに残るもの。">
     <defs>
       <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-flow"/></marker>
       <marker id="arwS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-save"/></marker>
@@ -172,7 +172,7 @@ td.msg { font-weight: 500; }
     <!-- lanes -->
     <rect class="lane" x="0" y="16" width="1440" height="128" rx="12"/>
     <rect class="lane" x="0" y="156" width="1440" height="250" rx="12"/>
-    <rect class="lane" x="0" y="418" width="1440" height="126" rx="12"/>
+    <rect class="lane" x="0" y="418" width="1440" height="186" rx="12"/>
     <text class="lane-label" x="16" y="38">画面（管理者が見るもの）</text>
     <text class="lane-label" x="16" y="178">裏側で起きていること</text>
     <text class="lane-label" x="16" y="440">タブレットに残るもの</text>
@@ -180,46 +180,45 @@ td.msg { font-weight: 500; }
 
     <!-- flow arrows (draw before boxes so boxes overlay) -->
     <!-- auth screen → ① diamond -->
-    <path class="flow" marker-end="url(#arw)" d="M105 116 V194"/>
+    <path class="flow" marker-end="url(#arw)" d="M105 116 V212"/>
     <!-- ① → face screen (QR+Face): right of diamond, up to screen lane, right to face -->
-    <path class="flow" marker-end="url(#arw)" d="M170 232 H190 V84 H208"/>
+    <path class="flow" marker-end="url(#arw)" d="M170 250 H190 V84 H208"/>
     <text class="lbl" x="197" y="155">QR＋顔なら</text>
     <!-- ① → ③ type diamond (QR, skip face/②): above step lane -->
-    <path class="flow" marker-end="url(#arw)" d="M170 232 H182 V172 H455 V194"/>
-    <text class="lbl" x="310" y="166">QRなら</text>
+    <path class="flow" marker-end="url(#arw)" d="M170 250 H182 V172 H455 V212"/>
+    <text class="lbl" x="390" y="166">QRなら</text>
     <!-- face screen → ② step -->
-    <path class="flow" marker-end="url(#arw)" d="M280 116 V198"/>
+    <path class="flow" marker-end="url(#arw)" d="M280 116 V216"/>
     <text class="lbl" x="288" y="162">有効にする</text>
     <!-- ② → ③ type diamond (approved) -->
-    <path class="flow" marker-end="url(#arw)" d="M350 232 H388"/>
-    <text class="lbl" x="383" y="224" text-anchor="end">承認</text>
+    <path class="flow" marker-end="url(#arw)" d="M350 250 H388"/>
+    <text class="lbl" x="383" y="242" text-anchor="end">承認</text>
     <!-- type screen → ③ diamond -->
-    <path class="flow" marker-end="url(#arw)" d="M455 116 V194"/>
+    <path class="flow" marker-end="url(#arw)" d="M455 116 V212"/>
     <text class="lbl" x="463" y="160">選ぶ</text>
     <!-- ③ → ④ -->
-    <path class="flow" marker-end="url(#arw)" d="M520 232 H553"/>
+    <path class="flow" marker-end="url(#arw)" d="M520 250 H553"/>
     <!-- ④ → set screen -->
-    <path class="flow" marker-end="url(#arw)" d="M700 200 V84 H728"/>
+    <path class="flow" marker-end="url(#arw)" d="M700 218 V84 H728"/>
     <text class="lbl" x="708" y="145">設定を開く</text>
     <!-- set screen → ⑤ -->
-    <path class="flow" marker-end="url(#arw)" d="M815 116 V198"/>
+    <path class="flow" marker-end="url(#arw)" d="M815 116 V216"/>
     <text class="lbl" x="823" y="160">保存する</text>
     <!-- ⑤ → ⑥ -->
-    <path class="flow" marker-end="url(#arw)" d="M900 232 H1028"/>
-    <text class="lbl" x="960" y="224">保存OK</text>
+    <path class="flow" marker-end="url(#arw)" d="M900 250 H1028"/>
+    <text class="lbl" x="960" y="242">保存OK</text>
     <!-- ⑥ → done screen -->
-    <path class="flow" marker-end="url(#arw)" d="M1180 200 V84 H1263"/>
+    <path class="flow" marker-end="url(#arw)" d="M1180 218 V84 H1263"/>
     <text class="lbl" x="1188" y="145">完了</text>
 
     <!-- error exit from ③ diamond -->
-    <path class="err-line" marker-end="url(#arwE)" d="M455 268 V288"/>
-    <text class="err" x="455" y="306" text-anchor="middle">0件→コピーは出ない</text>
+    <path class="err-line" marker-end="url(#arwE)" d="M455 286 V306"/>
+    <text class="err" x="455" y="324" text-anchor="middle">0件→コピーは出ない</text>
 
-    <!-- save links -->
-    <path class="save" marker-end="url(#arwS)" d="M105 268 V465"/>
-    <text class="t-save-note" x="115" y="432">中断した場所から再開</text>
-    <path class="save" d="M280 264 V445"/>
-    <path class="save" d="M455 268 V445"/>
+    <!-- save links (routed to avoid overlapping error texts and lane labels) -->
+    <path class="save" marker-end="url(#arwS)" d="M105 286 V488"/>
+    <path class="save" d="M345 282 V468 H285 V488"/>
+    <path class="save" d="M505 265 V468 H455 V488"/>
 
     <!-- ====== lane A: screens ====== -->
     <g class="hit" data-key="auth" tabindex="0" role="button" aria-label="認証方式選択画面">
@@ -253,58 +252,58 @@ td.msg { font-weight: 500; }
       <text class="t-sub" x="1335" y="102" text-anchor="middle">＝ 初期設定おわり</text>
     </g>
 
-    <!-- ====== lane B: steps ====== -->
+    <!-- ====== lane B: steps (centered lower in lane) ====== -->
     <g class="hit" data-key="auth" tabindex="0" role="button" aria-label="① 認証方式は？">
-      <polygon class="step-diamond" points="105,196 170,232 105,268 40,232"/>
-      <text class="t-name" x="105" y="229" text-anchor="middle">① 認証</text>
-      <text class="t-name" x="105" y="245" text-anchor="middle">方式は？</text>
+      <polygon class="step-diamond" points="105,214 170,250 105,286 40,250"/>
+      <text class="t-name" x="105" y="247" text-anchor="middle">① 認証</text>
+      <text class="t-name" x="105" y="263" text-anchor="middle">方式は？</text>
     </g>
     <g class="hit" data-key="2" tabindex="0" role="button" aria-label="② 顔認証を有効にする">
-      <rect class="step" x="210" y="200" width="140" height="64" rx="8"/>
-      <text class="t-name" x="280" y="224" text-anchor="middle">② 承認を待つ</text>
-      <text class="t-sub" x="280" y="242" text-anchor="middle">バックエンドに依頼</text>
-      <text class="err" x="210" y="292">✕ キャンセル→方式選択に戻る</text>
+      <rect class="step" x="210" y="218" width="140" height="64" rx="8"/>
+      <text class="t-name" x="280" y="242" text-anchor="middle">② 承認を待つ</text>
+      <text class="t-sub" x="280" y="260" text-anchor="middle">バックエンドに依頼</text>
+      <text class="err" x="210" y="310">✕ キャンセル→方式選択に戻る</text>
     </g>
     <g class="hit" data-key="type" tabindex="0" role="button" aria-label="③ 設定の型は？">
-      <polygon class="step-diamond" points="455,196 520,232 455,268 390,232"/>
-      <text class="t-name" x="455" y="229" text-anchor="middle">③ 設定の</text>
-      <text class="t-name" x="455" y="245" text-anchor="middle">型は？</text>
+      <polygon class="step-diamond" points="455,214 520,250 455,286 390,250"/>
+      <text class="t-name" x="455" y="247" text-anchor="middle">③ 設定の</text>
+      <text class="t-name" x="455" y="263" text-anchor="middle">型は？</text>
     </g>
     <g class="hit" data-key="4" tabindex="0" role="button" aria-label="④ 設定を組み立てる">
-      <rect class="step" x="555" y="200" width="145" height="64" rx="8"/>
-      <text class="t-name" x="627" y="224" text-anchor="middle">④ 設定を組む</text>
-      <text class="t-sub" x="627" y="242" text-anchor="middle">テンプレ/コピー値を適用</text>
+      <rect class="step" x="555" y="218" width="145" height="64" rx="8"/>
+      <text class="t-name" x="627" y="242" text-anchor="middle">④ 設定を組む</text>
+      <text class="t-sub" x="627" y="260" text-anchor="middle">テンプレ/コピー値を適用</text>
     </g>
     <g class="hit" data-key="5" tabindex="0" role="button" aria-label="⑤ チェックして保存する">
-      <rect class="step" x="745" y="200" width="155" height="64" rx="8"/>
-      <text class="t-name" x="822" y="224" text-anchor="middle">⑤ チェックして</text>
-      <text class="t-name" x="822" y="240" text-anchor="middle">保存する</text>
-      <text class="err" x="745" y="292">✕ 必須項目が未入力</text>
-      <text class="err" x="745" y="308">✕ パスワード不一致</text>
-      <text class="err" x="745" y="324">✕ 予約設定なしのスペース</text>
+      <rect class="step" x="745" y="218" width="155" height="64" rx="8"/>
+      <text class="t-name" x="822" y="242" text-anchor="middle">⑤ チェックして</text>
+      <text class="t-name" x="822" y="258" text-anchor="middle">保存する</text>
+      <text class="err" x="745" y="310">✕ 必須項目が未入力</text>
+      <text class="err" x="745" y="326">✕ パスワード不一致</text>
+      <text class="err" x="745" y="342">✕ 予約設定なしのスペース</text>
     </g>
     <g class="hit" data-key="6" tabindex="0" role="button" aria-label="⑥ コピーを登録する">
-      <rect class="step" x="1030" y="200" width="150" height="64" rx="8"/>
-      <text class="t-name" x="1105" y="224" text-anchor="middle">⑥ コピーを登録</text>
-      <text class="t-sub" x="1105" y="242" text-anchor="middle">登録する / しない</text>
-      <text class="err" x="1030" y="292">✕ 識別名称未入力→登録不可</text>
+      <rect class="step" x="1030" y="218" width="150" height="64" rx="8"/>
+      <text class="t-name" x="1105" y="242" text-anchor="middle">⑥ コピーを登録</text>
+      <text class="t-sub" x="1105" y="260" text-anchor="middle">登録する / しない</text>
+      <text class="err" x="1030" y="310">✕ 識別名称未入力→登録不可</text>
     </g>
 
     <!-- ====== lane C: saved things ====== -->
     <g class="hit" data-key="A" tabindex="0" role="button" aria-label="保存A 初期化中の進行状態">
-      <rect class="save-box" x="30" y="445" width="150" height="40" rx="8"/>
-      <text class="t-save" x="105" y="469" text-anchor="middle">残る：初期化中の状態</text>
-      <text class="t-save-note" x="105" y="506" text-anchor="middle">再起動 → 認証方式選択へ</text>
+      <rect class="save-box" x="30" y="488" width="150" height="40" rx="8"/>
+      <text class="t-save" x="105" y="512" text-anchor="middle">残る：初期化中の状態</text>
+      <text class="t-save-note" x="105" y="549" text-anchor="middle">再起動 → 認証方式選択へ</text>
     </g>
     <g class="hit" data-key="B" tabindex="0" role="button" aria-label="保存B 有効化リクエスト">
-      <rect class="save-box" x="210" y="445" width="150" height="40" rx="8"/>
-      <text class="t-save" x="285" y="469" text-anchor="middle">残る：有効化リクエスト</text>
-      <text class="t-save-note" x="285" y="506" text-anchor="middle">再起動 → 有効化画面へ</text>
+      <rect class="save-box" x="210" y="488" width="150" height="40" rx="8"/>
+      <text class="t-save" x="285" y="512" text-anchor="middle">残る：有効化リクエスト</text>
+      <text class="t-save-note" x="285" y="549" text-anchor="middle">再起動 → 有効化画面へ</text>
     </g>
     <g class="hit" data-key="C" tabindex="0" role="button" aria-label="保存C 設定選択中の状態">
-      <rect class="save-box" x="380" y="445" width="150" height="40" rx="8"/>
-      <text class="t-save" x="455" y="469" text-anchor="middle">残る：設定タイプ選択中</text>
-      <text class="t-save-note" x="455" y="506" text-anchor="middle">再起動 → 設定タイプ選択へ</text>
+      <rect class="save-box" x="380" y="488" width="150" height="40" rx="8"/>
+      <text class="t-save" x="455" y="512" text-anchor="middle">残る：設定タイプ選択中</text>
+      <text class="t-save-note" x="455" y="549" text-anchor="middle">再起動 → 設定タイプ選択へ</text>
     </g>
   </svg>
   </div>
