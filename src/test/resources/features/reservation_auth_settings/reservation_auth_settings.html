@@ -332,7 +332,8 @@ td.msg { font-weight: 500; }
   </div>
 
   <div class="group">
-    <h3>ルール⑨ 親子連動の表示制御</h3>
+    <h3>ルール⑨ 設定値の変更</h3>
+    <h4>A. 親子連動の表示制御</h4>
     <div class="cards">
       <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>自動ステータス更新ON → 自動キャンセル・延長が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>自動ステータス更新OFF → 子項目すべて消えてデフォルトに戻る</div><div class="chips"></div></div>
@@ -347,10 +348,7 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>なりすまし防止ON → モード・期間設定が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>省エネ「カスタム」 → バッテリー・温度の条件が出る</div><div class="chips"></div></div>
     </div>
-  </div>
-
-  <div class="group">
-    <h3>ルール⑩ 数値のチェック（項目別）</h3>
+    <h4>※ 数値のチェック（観点フェーズで網羅）</h4>
     <div class="cards">
       <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>数値を正しく変えて保存 → 反映される</div><div class="chips"></div></div>
       <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>自動キャンセル時間に0以下 → 専用エラー</div><div class="chips"></div></div>
@@ -359,20 +357,14 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>認証必要時間に負の値 → 専用エラー</div><div class="chips"></div></div>
       <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>認証成功類似度に0〜1の範囲外 → 専用エラー</div><div class="chips"></div></div>
     </div>
-  </div>
-
-  <div class="group">
-    <h3>ルール⑪ 単独の切替設定</h3>
+    <h4>B. 単独の切替設定</h4>
     <div class="cards">
       <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>テナント予約を不許可に変えて保存 → 反映</div><div class="chips"></div></div>
       <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>予約情報を非表示に変えて保存 → 反映</div><div class="chips"></div></div>
       <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>自動施錠を無効に変えて保存 → 反映</div><div class="chips"></div></div>
       <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>解錠タイミングを変えて保存 → 反映</div><div class="chips"></div></div>
     </div>
-  </div>
-
-  <div class="group">
-    <h3>ルール⑫ チェックボックスの切替</h3>
+    <h4>C. チェックボックスの切替</h4>
     <div class="cards">
       <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>認証方法を変えて保存 → 反映</div><div class="chips"></div></div>
       <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>認証方法を全部外す → エラー</div><div class="chips"></div></div>
@@ -380,20 +372,14 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>予約作成ON → 解錠タイミングの選択が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>顔認証必要機能を個別にON/OFF → 反映</div><div class="chips"></div></div>
     </div>
-  </div>
-
-  <div class="group">
-    <h3>ルール⑬ Picker選択</h3>
+    <h4>D. Picker選択</h4>
     <div class="cards">
       <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>解錠デバイスを選んで保存 → 反映</div><div class="chips"></div></div>
       <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>常時接続デバイスを選んで保存 → 反映</div><div class="chips"></div></div>
       <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>リマインダー音を選んで保存 → 反映</div><div class="chips"></div></div>
       <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>終了通知音を選んで保存 → 反映</div><div class="chips"></div></div>
     </div>
-  </div>
-
-  <div class="group">
-    <h3>ルール⑭ 文字数のチェック</h3>
+    <h4>※ 文字数のチェック（観点フェーズで網羅）</h4>
     <div class="cards">
       <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>メッセージを100文字以内で保存 → 反映</div><div class="chips"></div></div>
       <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>メッセージが101文字以上 → 専用エラー</div><div class="chips"></div></div>
