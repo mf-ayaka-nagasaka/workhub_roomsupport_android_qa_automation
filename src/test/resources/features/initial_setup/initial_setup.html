@@ -66,15 +66,13 @@ p { margin: 0; }
 
 header { display: grid; gap: 8px; }
 .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 6px; }
-.controls label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; }
-.controls input { accent-color: var(--flow); width: 16px; height: 16px; }
-#status { font-size: 13px; color: var(--muted); }
 button.link {
   font: inherit; font-size: 13px; color: var(--flow); background: none; border: 1px solid var(--flow);
   border-radius: 999px; padding: 3px 12px; cursor: pointer;
 }
 button.link:hover { background: var(--flow-soft); }
 button.link:focus-visible, .hit:focus-visible, .card:focus-visible { outline: 2px solid var(--hot); outline-offset: 2px; }
+#status { font-size: 13px; color: var(--muted); }
 
 /* ---- map ---- */
 figure { margin: 0; display: grid; gap: 10px; }
@@ -124,6 +122,7 @@ figcaption { color: var(--muted); font-size: 13px; }
 .card {
   background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
   display: grid; gap: 6px; cursor: pointer; transition: opacity .15s, border-color .15s;
+  align-content: start;
 }
 .card:hover { border-color: var(--flow); }
 .card .ttl { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; font-weight: 500; line-height: 1.4; }
@@ -131,10 +130,9 @@ figcaption { color: var(--muted); font-size: 13px; }
 .dot.ok { background: var(--ok); }
 .dot.ng { background: var(--err); }
 .chips { display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-start; align-content: flex-start; }
-.card { align-content: start; }
 .chip { font-size: 11px; padding: 1px 8px; border-radius: 999px; background: var(--flow-soft); color: var(--flow); font-weight: 500; white-space: nowrap; }
-.chip[data-k="SA"], .chip[data-k="SB"], .chip[data-k="SC"], .chip[data-k="SD"], .chip[data-k="SE"] { background: var(--save-soft); color: var(--save); }
-.chip[data-k="A"], .chip[data-k="F"], .chip[data-k="T"], .chip[data-k="I"], .chip[data-k="K"], .chip[data-k="G"] { background: var(--lane); color: var(--ink); border: 1px solid var(--line); }
+.chip[data-k="A"], .chip[data-k="B"], .chip[data-k="C"] { background: var(--save-soft); color: var(--save); }
+.chip[data-k="auth"], .chip[data-k="type"], .chip[data-k="set"], .chip[data-k="done"] { background: var(--lane); color: var(--ink); border: 1px solid var(--line); }
 .has-sel .card:not(.match) { opacity: .3; }
 .has-sel .card.match { border-color: var(--hot); box-shadow: 0 0 0 2px var(--hot-soft); }
 
@@ -154,7 +152,7 @@ td.msg { font-weight: 500; }
 <header>
   <p class="eyebrow">initial_setup ／ 全体マップ</p>
   <h1>予約認証モードでの初期設定</h1>
-  <p class="lead">認証方式を選んでから初期設定完了画面に着くまでに、裏で何が順番に起きるかを1枚にしたもの。図の箱やテストケースをクリックすると、対応する場所が光ります。</p>
+  <p class="lead">タブレットの初回起動から、認証方式を選び → 設定タイプを選び → 各種設定を入力して保存し → 初期設定を完了するまでの流れを1枚にしたもの。</p>
   <div class="controls">
     <button class="link" id="clearBtn" type="button">選択を解除</button>
     <span id="status">箱をクリックすると、その場所に関係するテストだけが残ります</span>
@@ -164,7 +162,7 @@ td.msg { font-weight: 500; }
 <section>
 <figure>
   <div class="scroll">
-  <svg class="map" viewBox="0 0 1440 560" role="img" aria-label="初期設定の流れ。上段は管理者が見る画面、中段は裏側で起きる処理、下段はタブレットに保存されるもの。認証方式を選び、必要なら顔認証を有効にして、設定のひな形を選んで入力し、保存してコピーを登録する。">
+  <svg class="map" viewBox="0 0 1440 560" role="img" aria-label="初期設定の流れ。上段は管理者が見る画面、中段は裏側で起きる処理、下段はタブレットに残るもの。">
     <defs>
       <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-flow"/></marker>
       <marker id="arwS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-save"/></marker>
@@ -178,141 +176,143 @@ td.msg { font-weight: 500; }
     <text class="lane-label" x="16" y="38">画面（管理者が見るもの）</text>
     <text class="lane-label" x="16" y="178">裏側で起きていること</text>
     <text class="lane-label" x="16" y="440">タブレットに残るもの</text>
+    <text class="lane-label" x="16" y="456">（中断したときの戻り先）</text>
 
-    <!-- flow arrows -->
-    <path class="flow" marker-end="url(#arw)" d="M110 116 V206"/>
-    <path class="flow" marker-end="url(#arw)" d="M175 242 H255"/>
-    <text class="lbl" x="215" y="234" text-anchor="middle">顔認証あり</text>
-    <path class="flow" marker-end="url(#arw)" d="M143 224 H200 V44 H470 V228 H490"/>
-    <text class="lbl" x="335" y="38">QRのみ</text>
-    <path class="flow" marker-end="url(#arw)" d="M330 116 V210"/>
-    <text class="lbl" x="338" y="168">手続きする</text>
-    <path class="flow" marker-end="url(#arw)" d="M405 242 H490"/>
-    <text class="lbl" x="448" y="234" text-anchor="end">完了</text>
-    <path class="flow" marker-end="url(#arw)" d="M565 116 V210"/>
-    <text class="lbl" x="573" y="168">選ぶ</text>
-    <path class="flow" marker-end="url(#arw)" d="M640 242 H720"/>
-    <path class="flow" marker-end="url(#arw)" d="M810 116 V210"/>
-    <text class="lbl" x="818" y="168">保存を押す</text>
-    <path class="flow" marker-end="url(#arw)" d="M900 242 H1025"/>
-    <text class="lbl" x="963" y="234" text-anchor="end">保存OK</text>
-    <path class="flow" marker-end="url(#arw)" d="M1100 116 V210"/>
-    <text class="lbl" x="1108" y="168">選ぶ</text>
-    <path class="flow" marker-end="url(#arw)" d="M1175 242 H1200 V84 H1280"/>
-    <text class="lbl" x="1218" y="168">完了</text>
+    <!-- flow arrows (draw before boxes so boxes overlay) -->
+    <!-- auth screen → ① diamond -->
+    <path class="flow" marker-end="url(#arw)" d="M105 116 V194"/>
+    <!-- ① → face screen (QR+Face): right of diamond, up to screen lane, right to face -->
+    <path class="flow" marker-end="url(#arw)" d="M170 232 H190 V84 H208"/>
+    <text class="lbl" x="197" y="155">QR＋顔なら</text>
+    <!-- ① → ③ type diamond (QR, skip face/②): above step lane -->
+    <path class="flow" marker-end="url(#arw)" d="M170 232 H182 V172 H455 V194"/>
+    <text class="lbl" x="310" y="166">QRなら</text>
+    <!-- face screen → ② step -->
+    <path class="flow" marker-end="url(#arw)" d="M280 116 V198"/>
+    <text class="lbl" x="288" y="162">有効にする</text>
+    <!-- ② → ③ type diamond (approved) -->
+    <path class="flow" marker-end="url(#arw)" d="M350 232 H388"/>
+    <text class="lbl" x="383" y="224" text-anchor="end">承認</text>
+    <!-- type screen → ③ diamond -->
+    <path class="flow" marker-end="url(#arw)" d="M455 116 V194"/>
+    <text class="lbl" x="463" y="160">選ぶ</text>
+    <!-- ③ → ④ -->
+    <path class="flow" marker-end="url(#arw)" d="M520 232 H553"/>
+    <!-- ④ → set screen -->
+    <path class="flow" marker-end="url(#arw)" d="M700 200 V84 H728"/>
+    <text class="lbl" x="708" y="145">設定を開く</text>
+    <!-- set screen → ⑤ -->
+    <path class="flow" marker-end="url(#arw)" d="M815 116 V198"/>
+    <text class="lbl" x="823" y="160">保存する</text>
+    <!-- ⑤ → ⑥ -->
+    <path class="flow" marker-end="url(#arw)" d="M900 232 H1028"/>
+    <text class="lbl" x="960" y="224">保存OK</text>
+    <!-- ⑥ → done screen -->
+    <path class="flow" marker-end="url(#arw)" d="M1180 200 V84 H1263"/>
+    <text class="lbl" x="1188" y="145">完了</text>
 
-    <!-- save links: settings & copy -->
-    <path class="save" marker-end="url(#arwS)" d="M830 274 V445"/>
-    <path class="save" marker-end="url(#arwS)" d="M1115 274 V445"/>
-    <!-- save links: progress checkpoints -->
-    <path class="save" marker-end="url(#arwS)" d="M110 278 V445"/>
-    <path class="save" marker-end="url(#arwS)" d="M330 274 V445"/>
-    <path class="save" marker-end="url(#arwS)" d="M565 274 V445"/>
+    <!-- error exit from ③ diamond -->
+    <path class="err-line" marker-end="url(#arwE)" d="M455 268 V288"/>
+    <text class="err" x="455" y="306" text-anchor="middle">0件→コピーは出ない</text>
 
-    <!-- lane A: screens -->
-    <g class="hit" data-key="A" tabindex="0" role="button" aria-label="方式を選ぶ画面">
-      <rect class="screen" x="30" y="52" width="160" height="64" rx="10"/>
-      <rect class="screen-bar" x="95" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="110" y="82" text-anchor="middle">方式を選ぶ</text>
-      <text class="t-sub" x="110" y="102" text-anchor="middle">QR・顔認証・両方</text>
-    </g>
-    <g class="hit" data-key="F" tabindex="0" role="button" aria-label="有効化画面">
-      <rect class="screen" x="240" y="52" width="180" height="64" rx="10"/>
-      <rect class="screen-bar" x="315" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="330" y="82" text-anchor="middle">有効化画面</text>
-      <text class="t-sub" x="330" y="102" text-anchor="middle">顔認証を使えるようにする</text>
-    </g>
-    <g class="hit" data-key="T" tabindex="0" role="button" aria-label="ひな形を選ぶ画面">
-      <rect class="screen" x="480" y="52" width="170" height="64" rx="10"/>
-      <rect class="screen-bar" x="550" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="565" y="82" text-anchor="middle">ひな形を選ぶ</text>
-      <text class="t-sub" x="565" y="102" text-anchor="middle">テンプレ・流用・手入力</text>
-    </g>
-    <g class="hit" data-key="I" tabindex="0" role="button" aria-label="設定画面">
-      <rect class="screen" x="720" y="52" width="180" height="64" rx="10"/>
-      <rect class="screen-bar" x="795" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="810" y="82" text-anchor="middle">設定画面</text>
-      <text class="t-sub" x="810" y="102" text-anchor="middle">名前・場所・パスワード等</text>
-    </g>
-    <g class="hit" data-key="K" tabindex="0" role="button" aria-label="コピー確認画面">
-      <rect class="screen" x="1015" y="52" width="170" height="64" rx="10"/>
-      <rect class="screen-bar" x="1085" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="1100" y="82" text-anchor="middle">コピー確認</text>
-      <text class="t-sub" x="1100" y="102" text-anchor="middle">設定を残すか選ぶ</text>
-    </g>
-    <g class="hit" data-key="G" tabindex="0" role="button" aria-label="完了画面">
-      <rect class="screen" x="1280" y="52" width="140" height="64" rx="10"/>
-      <rect class="screen-bar" x="1335" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="1350" y="82" text-anchor="middle">完了画面</text>
-      <text class="t-sub" x="1350" y="102" text-anchor="middle">＝ 初期設定完了</text>
-    </g>
+    <!-- save links -->
+    <path class="save" marker-end="url(#arwS)" d="M105 268 V465"/>
+    <text class="t-save-note" x="115" y="432">中断した場所から再開</text>
+    <path class="save" d="M280 264 V445"/>
+    <path class="save" d="M455 268 V445"/>
 
-    <!-- lane B: steps -->
-    <g class="hit" data-key="1" tabindex="0" role="button" aria-label="方式は？">
-      <polygon class="step-diamond" points="110,206 175,242 110,278 45,242"/>
-      <text class="t-name" x="110" y="245" text-anchor="middle">① 方式は？</text>
+    <!-- ====== lane A: screens ====== -->
+    <g class="hit" data-key="auth" tabindex="0" role="button" aria-label="認証方式選択画面">
+      <rect class="screen" x="30" y="52" width="150" height="64" rx="10"/>
+      <rect class="screen-bar" x="90" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="105" y="82" text-anchor="middle">認証方式選択</text>
+      <text class="t-sub" x="105" y="102" text-anchor="middle">QR / QR＋顔を選ぶ</text>
     </g>
-    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="有効にする">
-      <rect class="step" x="255" y="210" width="150" height="64" rx="8"/>
-      <text class="t-name" x="330" y="234" text-anchor="middle">② 有効にする</text>
-      <text class="t-sub" x="330" y="252" text-anchor="middle">顔認証の手続き</text>
-      <text class="err" x="255" y="302">✕ 中断→やり直し</text>
+    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="顔認証有効化画面">
+      <rect class="screen" x="210" y="52" width="140" height="64" rx="10"/>
+      <rect class="screen-bar" x="265" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="280" y="82" text-anchor="middle">顔認証有効化</text>
+      <text class="t-sub" x="280" y="102" text-anchor="middle">承認を待つ</text>
     </g>
-    <g class="hit" data-key="3" tabindex="0" role="button" aria-label="ひな形を選ぶ">
-      <rect class="step" x="490" y="210" width="150" height="64" rx="8"/>
-      <text class="t-name" x="565" y="234" text-anchor="middle">③ ひな形を選ぶ</text>
-      <text class="t-sub" x="565" y="252" text-anchor="middle">設定値を当てはめる</text>
-      <text class="err" x="490" y="302">✕ 流用元なし→選べない</text>
+    <g class="hit" data-key="type" tabindex="0" role="button" aria-label="設定タイプ選択画面">
+      <rect class="screen" x="380" y="52" width="150" height="64" rx="10"/>
+      <rect class="screen-bar" x="440" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="455" y="82" text-anchor="middle">設定タイプ選択</text>
+      <text class="t-sub" x="455" y="102" text-anchor="middle">テンプレ / コピー / カスタム</text>
     </g>
-    <g class="hit" data-key="4" tabindex="0" role="button" aria-label="チェックして保存">
-      <rect class="step" x="720" y="210" width="180" height="64" rx="8"/>
-      <text class="t-name" x="810" y="234" text-anchor="middle">④ チェックして保存</text>
-      <text class="t-sub" x="810" y="252" text-anchor="middle">必須項目・予約設定を確認</text>
-      <text class="err" x="720" y="302">✕ 必須項目が空</text>
-      <text class="err" x="720" y="318">✕ パスワード不一致</text>
-      <text class="err" x="720" y="334">✕ 予約設定なし</text>
+    <g class="hit" data-key="set" tabindex="0" role="button" aria-label="設定画面">
+      <rect class="screen" x="730" y="52" width="170" height="64" rx="10"/>
+      <rect class="screen-bar" x="800" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="815" y="82" text-anchor="middle">設定画面</text>
+      <text class="t-sub" x="815" y="102" text-anchor="middle">各項目を入力・選択する</text>
     </g>
-    <g class="hit" data-key="5" tabindex="0" role="button" aria-label="コピーを登録">
-      <rect class="step" x="1025" y="210" width="150" height="64" rx="8"/>
-      <text class="t-name" x="1100" y="234" text-anchor="middle">⑤ コピーを登録</text>
-      <text class="t-sub" x="1100" y="252" text-anchor="middle">名前をつけて保存</text>
-      <text class="err" x="1025" y="302">✕ 名前が空→押せない</text>
+    <g class="hit" data-key="done" tabindex="0" role="button" aria-label="完了画面">
+      <rect class="screen" x="1265" y="52" width="140" height="64" rx="10"/>
+      <rect class="screen-bar" x="1320" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="1335" y="82" text-anchor="middle">完了</text>
+      <text class="t-sub" x="1335" y="102" text-anchor="middle">＝ 初期設定おわり</text>
     </g>
 
-    <!-- lane C: progress checkpoints -->
-    <g class="hit" data-key="SC" tabindex="0" role="button" aria-label="進み具合：開始直後">
-      <rect class="save-box" x="30" y="445" width="160" height="40" rx="8"/>
-      <text class="t-save" x="110" y="469" text-anchor="middle">進み具合：開始直後</text>
-      <text class="t-save-note" x="110" y="506" text-anchor="middle">再開 → 方式を選ぶ</text>
+    <!-- ====== lane B: steps ====== -->
+    <g class="hit" data-key="auth" tabindex="0" role="button" aria-label="① 認証方式は？">
+      <polygon class="step-diamond" points="105,196 170,232 105,268 40,232"/>
+      <text class="t-name" x="105" y="229" text-anchor="middle">① 認証</text>
+      <text class="t-name" x="105" y="245" text-anchor="middle">方式は？</text>
     </g>
-    <g class="hit" data-key="SD" tabindex="0" role="button" aria-label="進み具合：顔認証中">
-      <rect class="save-box" x="240" y="445" width="180" height="40" rx="8"/>
-      <text class="t-save" x="330" y="469" text-anchor="middle">進み具合：顔認証中</text>
-      <text class="t-save-note" x="330" y="506" text-anchor="middle">再開 → 有効化画面</text>
+    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="② 顔認証を有効にする">
+      <rect class="step" x="210" y="200" width="140" height="64" rx="8"/>
+      <text class="t-name" x="280" y="224" text-anchor="middle">② 承認を待つ</text>
+      <text class="t-sub" x="280" y="242" text-anchor="middle">バックエンドに依頼</text>
+      <text class="err" x="210" y="292">✕ キャンセル→方式選択に戻る</text>
     </g>
-    <g class="hit" data-key="SE" tabindex="0" role="button" aria-label="進み具合：設定選択中">
-      <rect class="save-box" x="455" y="445" width="180" height="40" rx="8"/>
-      <text class="t-save" x="545" y="469" text-anchor="middle">進み具合：設定選択中</text>
-      <text class="t-save-note" x="545" y="506" text-anchor="middle">再開 → ひな形を選ぶ</text>
+    <g class="hit" data-key="type" tabindex="0" role="button" aria-label="③ 設定の型は？">
+      <polygon class="step-diamond" points="455,196 520,232 455,268 390,232"/>
+      <text class="t-name" x="455" y="229" text-anchor="middle">③ 設定の</text>
+      <text class="t-name" x="455" y="245" text-anchor="middle">型は？</text>
     </g>
-    <!-- lane C: saved things -->
-    <g class="hit" data-key="SA" tabindex="0" role="button" aria-label="保存された設定">
-      <rect class="save-box" x="735" y="445" width="150" height="40" rx="8"/>
-      <text class="t-save" x="810" y="469" text-anchor="middle">残る：保存した設定</text>
-      <text class="t-save-note" x="810" y="506" text-anchor="middle">初期設定完了 → 通常モードへ</text>
+    <g class="hit" data-key="4" tabindex="0" role="button" aria-label="④ 設定を組み立てる">
+      <rect class="step" x="555" y="200" width="145" height="64" rx="8"/>
+      <text class="t-name" x="627" y="224" text-anchor="middle">④ 設定を組む</text>
+      <text class="t-sub" x="627" y="242" text-anchor="middle">テンプレ/コピー値を適用</text>
     </g>
-    <g class="hit" data-key="SB" tabindex="0" role="button" aria-label="設定コピー">
-      <rect class="save-box" x="1025" y="445" width="150" height="40" rx="8"/>
-      <text class="t-save" x="1100" y="469" text-anchor="middle">残る：設定コピー</text>
-      <text class="t-save-note" x="1100" y="506" text-anchor="middle">別のタブレットで流用できる</text>
+    <g class="hit" data-key="5" tabindex="0" role="button" aria-label="⑤ チェックして保存する">
+      <rect class="step" x="745" y="200" width="155" height="64" rx="8"/>
+      <text class="t-name" x="822" y="224" text-anchor="middle">⑤ チェックして</text>
+      <text class="t-name" x="822" y="240" text-anchor="middle">保存する</text>
+      <text class="err" x="745" y="292">✕ 必須項目が未入力</text>
+      <text class="err" x="745" y="308">✕ パスワード不一致</text>
+      <text class="err" x="745" y="324">✕ 予約設定なしのスペース</text>
+    </g>
+    <g class="hit" data-key="6" tabindex="0" role="button" aria-label="⑥ コピーを登録する">
+      <rect class="step" x="1030" y="200" width="150" height="64" rx="8"/>
+      <text class="t-name" x="1105" y="224" text-anchor="middle">⑥ コピーを登録</text>
+      <text class="t-sub" x="1105" y="242" text-anchor="middle">登録する / しない</text>
+      <text class="err" x="1030" y="292">✕ 識別名称未入力→登録不可</text>
+    </g>
+
+    <!-- ====== lane C: saved things ====== -->
+    <g class="hit" data-key="A" tabindex="0" role="button" aria-label="保存A 初期化中の進行状態">
+      <rect class="save-box" x="30" y="445" width="150" height="40" rx="8"/>
+      <text class="t-save" x="105" y="469" text-anchor="middle">残る：初期化中の状態</text>
+      <text class="t-save-note" x="105" y="506" text-anchor="middle">再起動 → 認証方式選択へ</text>
+    </g>
+    <g class="hit" data-key="B" tabindex="0" role="button" aria-label="保存B 有効化リクエスト">
+      <rect class="save-box" x="210" y="445" width="150" height="40" rx="8"/>
+      <text class="t-save" x="285" y="469" text-anchor="middle">残る：有効化リクエスト</text>
+      <text class="t-save-note" x="285" y="506" text-anchor="middle">再起動 → 有効化画面へ</text>
+    </g>
+    <g class="hit" data-key="C" tabindex="0" role="button" aria-label="保存C 設定選択中の状態">
+      <rect class="save-box" x="380" y="445" width="150" height="40" rx="8"/>
+      <text class="t-save" x="455" y="469" text-anchor="middle">残る：設定タイプ選択中</text>
+      <text class="t-save-note" x="455" y="506" text-anchor="middle">再起動 → 設定タイプ選択へ</text>
     </g>
   </svg>
   </div>
-  <figcaption>緑の線が「うまくいく道」。赤の ✕ は「ここで失敗するとエラーになる」。青の点線は「タブレットに残るもの」。</figcaption>
+  <figcaption>緑の線が「うまくいく道」。赤の ✕ は「ここで失敗するとエラーになる」。青の点線は「タブレットに残る → 途中で落ちても戻ってこられる場所」。</figcaption>
   <div class="legend">
     <span><i class="sw flow"></i>うまくいく道</span>
     <span><i class="sw err"></i>失敗する場所とその理由</span>
-    <span><i class="sw save"></i>タブレットに残るもの</span>
+    <span><i class="sw save"></i>タブレットに残る（中断時の戻り先）</span>
   </div>
 </figure>
 </section>
@@ -325,63 +325,105 @@ td.msg { font-weight: 500; }
   <div class="group">
     <h3>ルール① 認証方式を選ぶ</h3>
     <div class="cards">
-      <div class="card" data-keys="A,1,T,3"><div class="ttl"><i class="dot ok"></i>QR認証を選ぶ → ひな形選択に進む</div><div class="chips"></div></div>
-      <div class="card" data-keys="A,1,F,2"><div class="ttl"><i class="dot ok"></i>顔認証を選ぶ → 有効化の手続きに進む</div><div class="chips"></div></div>
-      <div class="card" data-keys="A,1,F,2"><div class="ttl"><i class="dot ok"></i>QR＋顔認証を選ぶ → 有効化の手続きに進む</div><div class="chips"></div></div>
-      <div class="card" data-keys="A,1,SC"><div class="ttl"><i class="dot ok"></i>方式選択中に終了 → 方式選択から再開</div><div class="chips"></div></div>
+      <div class="card" data-keys="auth,type"><div class="ttl"><i class="dot ok"></i>QR認証 → 設定タイプ選択に進める</div><div class="chips"></div></div>
+      <div class="card" data-keys="auth,2"><div class="ttl"><i class="dot ok"></i>QR＋顔認証 → 顔認証有効化へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="auth,A"><div class="ttl"><i class="dot ok"></i>認証方式選択中に中断 → 再開で方式選択から</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
     <h3>ルール② 顔認証を有効にする</h3>
     <div class="cards">
-      <div class="card" data-keys="F,2,T,3"><div class="ttl"><i class="dot ok"></i>有効化を完了 → ひな形選択に進む</div><div class="chips"></div></div>
-      <div class="card" data-keys="F,2,A"><div class="ttl"><i class="dot ok"></i>有効化をキャンセル → 方式選択に戻る</div><div class="chips"></div></div>
-      <div class="card" data-keys="F,2"><div class="ttl"><i class="dot ng"></i>手続き中にアプリが止まる → 最初からやり直し</div><div class="chips"></div></div>
-      <div class="card" data-keys="F,2"><div class="ttl"><i class="dot ng"></i>有効化をスキップしようとする → できない</div><div class="chips"></div></div>
-      <div class="card" data-keys="A,1,F,SC"><div class="ttl"><i class="dot ok"></i>顔認証説明画面で終了 → 方式選択に戻る</div><div class="chips"></div></div>
-      <div class="card" data-keys="F,2,SD"><div class="ttl"><i class="dot ok"></i>有効化リクエスト送信後に終了 → 有効化から再開</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,type"><div class="ttl"><i class="dot ok"></i>有効化が承認される → 設定タイプ選択へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,auth"><div class="ttl"><i class="dot ok"></i>有効化をキャンセル → 認証方式選択に戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,A"><div class="ttl"><i class="dot ok"></i>説明画面で中断 → 再開で認証方式選択に戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,B"><div class="ttl"><i class="dot ok"></i>有効化リクエスト後に中断 → 再開で有効化画面へ</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール③ ひな形を選ぶ</h3>
+    <h3>ルール③ 設定タイプを選ぶ</h3>
     <div class="cards">
-      <div class="card" data-keys="T,3,I"><div class="ttl"><i class="dot ok"></i>テンプレートを選ぶ → 設定画面に進む</div><div class="chips"></div></div>
-      <div class="card" data-keys="T,3,I"><div class="ttl"><i class="dot ok"></i>既存の設定を流用 → 設定画面に進む</div><div class="chips"></div></div>
-      <div class="card" data-keys="T,3,I"><div class="ttl"><i class="dot ok"></i>手入力を選ぶ → 設定画面に進む</div><div class="chips"></div></div>
-      <div class="card" data-keys="T,3"><div class="ttl"><i class="dot ng"></i>流用できる設定がない → 流用の選択肢が出ない</div><div class="chips"></div></div>
-      <div class="card" data-keys="T,3,SE"><div class="ttl"><i class="dot ok"></i>設定タイプ選択中に終了 → 設定タイプから再開</div><div class="chips"></div></div>
-      <div class="card" data-keys="T,3,SE"><div class="ttl"><i class="dot ok"></i>ひな型選択中に終了 → 設定タイプに戻る</div><div class="chips"></div></div>
-      <div class="card" data-keys="T,3,SE"><div class="ttl"><i class="dot ok"></i>コピー元選択中に終了 → 設定タイプに戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="type,4,set"><div class="ttl"><i class="dot ok"></i>テンプレート → テンプレの値で設定画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="type,4,set"><div class="ttl"><i class="dot ok"></i>カスタム → 手入力の設定画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="type,C"><div class="ttl"><i class="dot ok"></i>設定タイプ選択中に中断 → 再開でタイプ選択から</div><div class="chips"></div></div>
+      <div class="card" data-keys="type,4,C"><div class="ttl"><i class="dot ok"></i>ひな型選択中に中断 → 再開で設定タイプ選択に戻る</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール④⑤ チェックして保存</h3>
+    <h3>ルール④ コピー元を選ぶ</h3>
     <div class="cards">
-      <div class="card" data-keys="I,4,SA,K"><div class="ttl"><i class="dot ok"></i>全項目を入力して保存 → コピー確認に進む</div><div class="chips"></div></div>
-      <div class="card" data-keys="I,4"><div class="ttl"><i class="dot ng"></i>認証方法を選んでいない → エラー</div><div class="chips"></div></div>
-      <div class="card" data-keys="I,4"><div class="ttl"><i class="dot ng"></i>タブレット名が空 → エラー</div><div class="chips"></div></div>
-      <div class="card" data-keys="I,4"><div class="ttl"><i class="dot ng"></i>スペースを選んでいない → エラー</div><div class="chips"></div></div>
-      <div class="card" data-keys="I,4"><div class="ttl"><i class="dot ng"></i>パスワードと確認が違う → エラー</div><div class="chips"></div></div>
-      <div class="card" data-keys="I,4"><div class="ttl"><i class="dot ng"></i>予約設定のないスペース → エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="type,4,set"><div class="ttl"><i class="dot ok"></i>コピー元を選ぶ → コピー値で設定画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="4"><div class="ttl"><i class="dot ok"></i>名称検索・利用タイプ・認証モードで絞り込み</div><div class="chips"></div></div>
+      <div class="card" data-keys="4"><div class="ttl"><i class="dot ok"></i>不要な既存設定を削除できる</div><div class="chips"></div></div>
+      <div class="card" data-keys="4"><div class="ttl"><i class="dot ok"></i>予約認証モードの端末がない → 一覧に表示なし</div><div class="chips"></div></div>
+      <div class="card" data-keys="type"><div class="ttl"><i class="dot ok"></i>既存設定が0件 → コピー選択肢が出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,C"><div class="ttl"><i class="dot ok"></i>コピー元選択中に中断 → 再開で設定タイプ選択に戻る</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール⑥ コピーを登録</h3>
+    <h3>ルール⑤ 予約設定を確認して保存</h3>
     <div class="cards">
-      <div class="card" data-keys="K,5,SB,G"><div class="ttl"><i class="dot ok"></i>名前をつけてコピーする → 完了</div><div class="chips"></div></div>
-      <div class="card" data-keys="K,5,G"><div class="ttl"><i class="dot ok"></i>コピーしないで進む → 完了</div><div class="chips"></div></div>
-      <div class="card" data-keys="K,5"><div class="ttl"><i class="dot ng"></i>名前が空 → 登録ボタンが押せない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,5,6"><div class="ttl"><i class="dot ok"></i>予約設定があるスペース → 保存OK</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,5"><div class="ttl"><i class="dot ng"></i>予約設定なしのスペース → 保存が拒否される</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>通し（最初から最後まで）</h3>
+    <h3>ルール⑥ 必須項目をチェック</h3>
     <div class="cards">
-      <div class="card" data-keys="A,1,T,3,I,4,SA,K,5,G"><div class="ttl"><i class="dot ok"></i>初回起動から予約認証モードで完了まで</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,5"><div class="ttl"><i class="dot ng"></i>予約認証方法・タブレット名・スペース未入力 → エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,5"><div class="ttl"><i class="dot ng"></i>パスワード不一致 → 保存が拒否される</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑦ 親子連動（ON/OFFで子項目が出る）</h3>
+    <div class="cards">
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>自動ステータス更新ON → 自動キャンセル・延長が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>自動ステータス更新OFF → 子項目が消えてデフォルトに戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>自動キャンセルON → 時間＋前通知が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>前通知ON → 前通知時間が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>自動延長ON → タイミング＋時間が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>終了前リマインダーON → 通知時間・繰返し・音が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>リマインダー繰返し→回数指定 → 回数入力が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>解錠ON → デバイスPickerが出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>解錠OFF → デバイスPickerが消える</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>常時接続ON → 対象デバイスPickerが出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>なりすまし防止ON → モード＋期間が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>省エネ→カスタム → 条件Pickerが出る</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑦ 単独切替・CheckBox・Picker</h3>
+    <div class="cards">
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>テナント従業員予約 → 不許可に切替</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>予約情報 → 非表示に切替</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>解錠タイミング → 選択肢を切替</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>機能制御を個別にON/OFF → CheckBox状態が変わる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>予約作成ON → 解錠タイミング選択が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>顔認証機能を個別にON/OFF → CheckBox状態が変わる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>Pickerからデバイス・音を選ぶと選択値が反映</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑧ 設定コピーの登録</h3>
+    <div class="cards">
+      <div class="card" data-keys="6,done"><div class="ttl"><i class="dot ok"></i>識別名称を入力してコピー登録 → 完了</div><div class="chips"></div></div>
+      <div class="card" data-keys="6,done"><div class="ttl"><i class="dot ok"></i>コピーしない → そのまま完了</div><div class="chips"></div></div>
+      <div class="card" data-keys="6"><div class="ttl"><i class="dot ng"></i>識別名称未入力 → 登録ボタンが押せない</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>通し（実機で最後まで）</h3>
+    <div class="cards">
+      <div class="card" data-keys="auth,type,4,set,5,6,done"><div class="ttl"><i class="dot ok"></i>テンプレートで全動線 → 初期設定完了</div><div class="chips"></div></div>
+      <div class="card" data-keys="auth,type,4,set,5,6,done"><div class="ttl"><i class="dot ok"></i>コピーで全動線 → 初期設定完了</div><div class="chips"></div></div>
     </div>
   </div>
 </section>
@@ -392,11 +434,11 @@ td.msg { font-weight: 500; }
   <div class="tbl-wrap">
   <table>
     <tr><th>画面に出る言葉</th><th>止まった場所</th></tr>
-    <tr><td class="msg">予約認証の認証方法を選択してください</td><td>④ 認証方法を選んでいないとき</td></tr>
-    <tr><td class="msg">タブレット名を入力してください</td><td>④ タブレット名が空のとき</td></tr>
-    <tr><td class="msg">空間を選択してください</td><td>④ スペースを選んでいないとき</td></tr>
-    <tr><td class="msg">パスワードが一致しません</td><td>④ パスワードと確認が違うとき</td></tr>
-    <tr><td class="msg">{スペース名}は予約設定がされていません</td><td>④ 予約設定のないスペースを選んだとき</td></tr>
+    <tr><td class="msg">予約認証の認証方法を選択してください</td><td>⑤ 認証方法が未選択のとき</td></tr>
+    <tr><td class="msg">タブレット名を入力してください</td><td>⑤ タブレット名が空のとき</td></tr>
+    <tr><td class="msg">空間を選択してください</td><td>⑤ スペースが未選択のとき</td></tr>
+    <tr><td class="msg">パスワードが一致しません</td><td>⑤ パスワードと確認パスワードが違うとき</td></tr>
+    <tr><td class="msg">{スペース名}は予約設定がされていません</td><td>⑤ 予約設定のないスペースを選んだとき</td></tr>
   </table>
   </div>
   </div>
@@ -408,12 +450,9 @@ td.msg { font-weight: 500; }
 <script>
 (function () {
   var LABEL = {
-    A: "方式選択", F: "有効化", T: "ひな形", I: "設定画面",
-    K: "コピー確認", G: "完了",
-    1: "① 方式は？", 2: "② 有効にする", 3: "③ ひな形を選ぶ",
-    4: "④ チェック＆保存", 5: "⑤ コピー登録",
-    SA: "保存A", SB: "保存B",
-    SC: "進み具合①", SD: "進み具合②", SE: "進み具合③"
+    auth: "① 認証方式選択", "2": "② 顔認証有効化", type: "③ 設定タイプ選択",
+    "4": "④ 設定を組む", set: "設定画面", "5": "⑤ 保存チェック",
+    "6": "⑥ コピー登録", done: "完了", A: "保存A", B: "保存B", C: "保存C"
   };
   var root = document.documentElement;
   var hits = Array.prototype.slice.call(document.querySelectorAll(".hit"));
