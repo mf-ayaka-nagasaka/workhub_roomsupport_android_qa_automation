@@ -20,10 +20,12 @@
 │   ├── end.md                        # 📦 QA作業提出
 │   ├── start.md                      # 🔄 ブランチ同期
 │   ├── sync-qa-docs.md               # 📑 QAドキュメント同期
+│   ├── quality-criteria-generator.md # 📏 品質判定基準生成
 │   └── skill-improver.md             # 🛠️ Skill改善メタスキル
 └── memories/                         # 自己学習メモリー
     ├── global.md                     # 全体共通の学習メモリー
     ├── qa-workflow-manager.md         # ワークフロー管理の学習ログ
+    ├── quality-criteria-generator.md  # 品質判定基準生成の学習ログ
     ├── skill-improver.md              # Skill改善の学習ログ
     ├── qa-case-exporter.md            # CSVエクスポートの学習ログ
     ├── qa-impact-analyzer.md          # 影響範囲分析の学習ログ
@@ -45,6 +47,7 @@
 | QA作業提出 | `/end` | Git操作でQA作業成果を提出 |
 | ブランチ同期 | `/start` | 作業ブランチをmainと同期 |
 | QAドキュメント同期 | `/sync-qa-docs` | 外部ドキュメントとの同期 |
+| 品質判定基準生成 | `/quality-criteria-generator` | 利用文脈から品質判定基準ドラフトを生成 |
 | Skill改善 | `/skill-improver` | Skill自体の改善提案・実行 |
 
 ## 自己学習メモリーシステム
