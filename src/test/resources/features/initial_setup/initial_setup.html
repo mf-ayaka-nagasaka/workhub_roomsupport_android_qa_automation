@@ -132,7 +132,7 @@ figcaption { color: var(--muted); font-size: 13px; }
 .chips { display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-start; align-content: flex-start; }
 .chip { font-size: 11px; padding: 1px 8px; border-radius: 999px; background: var(--flow-soft); color: var(--flow); font-weight: 500; white-space: nowrap; }
 .chip[data-k="A"], .chip[data-k="B"], .chip[data-k="C"] { background: var(--save-soft); color: var(--save); }
-.chip[data-k="auth"], .chip[data-k="type"], .chip[data-k="set"], .chip[data-k="done"] { background: var(--lane); color: var(--ink); border: 1px solid var(--line); }
+.chip[data-k="auth"], .chip[data-k="face"], .chip[data-k="how"], .chip[data-k="type"], .chip[data-k="tpl"], .chip[data-k="copy"], .chip[data-k="set"], .chip[data-k="done"] { background: var(--lane); color: var(--ink); border: 1px solid var(--line); }
 .has-sel .card:not(.match) { opacity: .3; }
 .has-sel .card.match { border-color: var(--hot); box-shadow: 0 0 0 2px var(--hot-soft); }
 
@@ -201,15 +201,11 @@ td.msg { font-weight: 500; }
     <text class="lbl" x="890" y="236">元の値を入れる</text>
     <path class="flow" marker-end="url(#arw)" d="M1050 120 V268"/>
     <text class="lbl" x="1058" y="200">保存を押す</text>
-    <path class="flow" marker-end="url(#arw)" d="M1060 304 H1066"/>
-    <path class="flow" marker-end="url(#arw)" d="M1230 304 H1256"/>
-    <text class="lbl" x="1243" y="296" text-anchor="middle">ある</text>
+    <path class="flow" marker-end="url(#arw)" d="M1060 304 H1256"/>
     <path class="flow" marker-end="url(#arw)" d="M1340 268 V124"/>
     <text class="lbl" x="1348" y="200">保存できたら</text>
 
     <!-- error exits -->
-    <path class="err-line" marker-end="url(#arwE)" d="M1150 346 V366"/>
-    <text class="err" x="1150" y="384" text-anchor="middle">✕ その空間に予約の設定がない</text>
 
     <!-- save links -->
     <path class="save" marker-end="url(#arwS)" d="M200 532 H60 V126"/>
@@ -263,7 +259,8 @@ td.msg { font-weight: 500; }
       <rect class="screen-bar" x="1035" y="62" width="30" height="3" rx="1.5"/>
       <text class="t-screen" x="1050" y="86" text-anchor="middle">各項目を入れる</text>
       <text class="t-sub" x="1050" y="106" text-anchor="middle">名前・空間・合いことば ほか</text>
-      <text class="err" x="960" y="140">✕ 入力に不備があると保存できない</text>
+      <text class="t-sub" x="1050" y="138" text-anchor="middle">空間は予約の設定があるものだけ出る</text>
+      <text class="err" x="960" y="158">✕ 入力に不備 ／ 選べる空間が0件</text>
     </g>
     <g class="hit" data-key="done" tabindex="0" role="button" aria-label="仕上げてホームへ">
       <rect class="screen" x="1200" y="56" width="200" height="64" rx="10"/>
@@ -295,14 +292,9 @@ td.msg { font-weight: 500; }
       <text class="err" x="900" y="380">✕ 数が小さすぎる</text>
       <text class="err" x="900" y="396">✕ 文字数が多すぎる</text>
     </g>
-    <g class="hit" data-key="4" tabindex="0" role="button" aria-label="その空間に予約の設定があるか">
-      <polygon class="step-diamond" points="1150,262 1230,304 1150,346 1070,304"/>
-      <text class="t-name" x="1150" y="299" text-anchor="middle">④ その空間に</text>
-      <text class="t-name" x="1150" y="315" text-anchor="middle">予約の設定は？</text>
-    </g>
-    <g class="hit" data-key="5" tabindex="0" role="button" aria-label="設定を保存して仕上げる">
+    <g class="hit" data-key="4" tabindex="0" role="button" aria-label="設定を保存して仕上げる">
       <rect class="step" x="1260" y="272" width="160" height="64" rx="8"/>
-      <text class="t-name" x="1340" y="296" text-anchor="middle">⑤ 設定を保存する</text>
+      <text class="t-name" x="1340" y="296" text-anchor="middle">④ 設定を保存する</text>
       <text class="t-sub" x="1340" y="314" text-anchor="middle">押している間は操作できない</text>
     </g>
 
@@ -420,34 +412,34 @@ td.msg { font-weight: 500; }
   </div>
 
   <div class="group">
-    <h3>ルール⑧ その空間に予約の設定があるか</h3>
+    <h3>ルール⑧ 使う空間を選ぶ</h3>
     <div class="cards">
-      <div class="card" data-keys="set,4,5"><div class="ttl"><i class="dot ok"></i>予約の設定がある空間 → 保存できる</div><div class="chips"></div></div>
-      <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ng"></i>予約の設定がない空間 → 保存できない</div><div class="chips"></div></div>
-      <div class="card" data-keys="set,4,5"><div class="ttl"><i class="dot ok"></i>空間を選び直して保存 → 保存できる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>予約の設定がある空間だけ選べる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ng"></i>選べる空間が0件 → 空間を選べない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,3,4"><div class="ttl"><i class="dot ok"></i>出てきた空間を選んで保存できる</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
     <h3>ルール⑨ 必ず入れる項目</h3>
     <div class="cards">
-      <div class="card" data-keys="set,3,5"><div class="ttl"><i class="dot ok"></i>必要な項目をすべて入れる → 保存できる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,3,4"><div class="ttl"><i class="dot ok"></i>必要な項目をすべて入れる → 保存できる</div><div class="chips"></div></div>
       <div class="card" data-keys="set,3"><div class="ttl"><i class="dot ng"></i>名前・空間・認証のしかた・カギが空 → 保存できない</div><div class="chips"></div></div>
       <div class="card" data-keys="set,3"><div class="ttl"><i class="dot ng"></i>合いことばと確認用が違う → 保存できない</div><div class="chips"></div></div>
       <div class="card" data-keys="set,3"><div class="ttl"><i class="dot ng"></i>足りない項目が複数 → まとめて知らせる</div><div class="chips"></div></div>
-      <div class="card" data-keys="set,3,5"><div class="ttl"><i class="dot ok"></i>直してもう一度保存 → 保存できる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,3,4"><div class="ttl"><i class="dot ok"></i>直してもう一度保存 → 保存できる</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
     <h3>ルール⑩ 数と文字数の決まり</h3>
     <div class="cards">
-      <div class="card" data-keys="set,3,5"><div class="ttl"><i class="dot ok"></i>いちばん小さい値ちょうど → 保存できる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,3,4"><div class="ttl"><i class="dot ok"></i>いちばん小さい値ちょうど → 保存できる</div><div class="chips"></div></div>
       <div class="card" data-keys="set,3"><div class="ttl"><i class="dot ng"></i>0・マイナス・空 → 項目ごとの言葉で止まる</div><div class="chips"></div></div>
       <div class="card" data-keys="set,3"><div class="ttl"><i class="dot ng"></i>決まった範囲から外れた値 → 保存できない</div><div class="chips"></div></div>
-      <div class="card" data-keys="set,3,5"><div class="ttl"><i class="dot ok"></i>文字数が上限以内 → 保存できる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,3,4"><div class="ttl"><i class="dot ok"></i>文字数が上限以内 → 保存できる</div><div class="chips"></div></div>
       <div class="card" data-keys="set,3"><div class="ttl"><i class="dot ng"></i>文字数が上限を超える → 保存できない</div><div class="chips"></div></div>
-      <div class="card" data-keys="set,3,5"><div class="ttl"><i class="dot ok"></i>隠した項目は見られず、もとの値で残る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,3,4"><div class="ttl"><i class="dot ok"></i>隠した項目は見られず、もとの値で残る</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -468,7 +460,6 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>顔が必要な操作を1つずつ切り替える</div><div class="chips"></div></div>
       <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>一覧から機器や音を選ぶと反映される</div><div class="chips"></div></div>
       <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>つなぎっぱなしの機器は複数選べる</div><div class="chips"></div></div>
-      <div class="card" data-keys="set,3"><div class="ttl"><i class="dot ng"></i>選べる空間が0件 → 空間なしでは保存できない</div><div class="chips"></div></div>
       <div class="card" data-keys="set,B"><div class="ttl"><i class="dot ng"></i>入れかけで止める → 入れた内容は残らない</div><div class="chips"></div></div>
     </div>
   </div>
@@ -476,9 +467,9 @@ td.msg { font-weight: 500; }
   <div class="group">
     <h3>ルール⑫ 保存している間</h3>
     <div class="cards">
-      <div class="card" data-keys="set,5"><div class="ttl"><i class="dot ok"></i>保存中は画面を操作できない</div><div class="chips"></div></div>
-      <div class="card" data-keys="set,5"><div class="ttl"><i class="dot ok"></i>続けて押しても保存は1回だけ</div><div class="chips"></div></div>
-      <div class="card" data-keys="set,5,done"><div class="ttl"><i class="dot ok"></i>保存が終わると次の確認へ進む</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>保存中は画面を操作できない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>続けて押しても保存は1回だけ</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,4,done"><div class="ttl"><i class="dot ok"></i>保存が終わると次の確認へ進む</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -505,9 +496,9 @@ td.msg { font-weight: 500; }
   <div class="group">
     <h3>通し（実機で最後まで）</h3>
     <div class="cards">
-      <div class="card" data-keys="auth,how,type,tpl,2,set,3,4,5,done,C"><div class="ttl"><i class="dot ok"></i>ひな形で最後まで → ホームに着く</div><div class="chips"></div></div>
-      <div class="card" data-keys="auth,how,copy,2,set,3,4,5,done,C"><div class="ttl"><i class="dot ok"></i>コピーで最後まで → ホームに着く</div><div class="chips"></div></div>
-      <div class="card" data-keys="auth,how,type,set,3,4,5,done,C"><div class="ttl"><i class="dot ok"></i>カスタムで最後まで → 名前を付けて残す</div><div class="chips"></div></div>
+      <div class="card" data-keys="auth,how,type,tpl,2,set,3,4,done,C"><div class="ttl"><i class="dot ok"></i>ひな形で最後まで → ホームに着く</div><div class="chips"></div></div>
+      <div class="card" data-keys="auth,how,copy,2,set,3,4,done,C"><div class="ttl"><i class="dot ok"></i>コピーで最後まで → ホームに着く</div><div class="chips"></div></div>
+      <div class="card" data-keys="auth,how,type,set,3,4,done,C"><div class="ttl"><i class="dot ok"></i>カスタムで最後まで → 名前を付けて残す</div><div class="chips"></div></div>
       <div class="card" data-keys="C,done"><div class="ttl"><i class="dot ok"></i>終わったあとに再起動 → ホームに着く</div><div class="chips"></div></div>
     </div>
   </div>
@@ -519,10 +510,9 @@ td.msg { font-weight: 500; }
   <div class="tbl-wrap">
   <table>
     <tr><th>画面に出る言葉</th><th>止まった場所</th></tr>
-    <tr><td class="msg">{空間名}は予約設定がされていません</td><td>④ その空間に予約の設定は？</td></tr>
     <tr><td class="msg">予約認証の認証方法を選択してください</td><td>③ 入力を点検する</td></tr>
     <tr><td class="msg">タブレット名を入力してください</td><td>③ 入力を点検する</td></tr>
-    <tr><td class="msg">空間を選択してください</td><td>③ 入力を点検する（選べる空間が0件のときも）</td></tr>
+    <tr><td class="msg">空間を選択してください</td><td>③ 入力を点検する</td></tr>
     <tr><td class="msg">パスワードが一致しません</td><td>③ 入力を点検する</td></tr>
     <tr><td class="msg">タブレットでのカギの解錠をするかを選択してください</td><td>③ 入力を点検する</td></tr>
     <tr><td class="msg">自動キャンセル時間は1以上の値を設定してください</td><td>③ 入力を点検する</td></tr>
@@ -550,7 +540,7 @@ td.msg { font-weight: 500; }
     type: "使い方のタイプ", tpl: "ひな形を選ぶ", copy: "コピー元を選ぶ",
     set: "各項目を入れる", done: "仕上げてホームへ",
     "1": "① 使えるようになった？", "2": "② 元になる値を取り込む",
-    "3": "③ 入力を点検する", "4": "④ 予約の設定は？", "5": "⑤ 設定を保存する",
+    "3": "③ 入力を点検する", "4": "④ 設定を保存する",
     A: "残る：認証のしかた", B: "残る：始め方まで",
     C: "残る：仕上がった設定"
   };
