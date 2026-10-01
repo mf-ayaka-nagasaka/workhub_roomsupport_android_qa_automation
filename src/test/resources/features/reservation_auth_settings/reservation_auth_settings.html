@@ -86,6 +86,7 @@ figcaption { color: var(--muted); font-size: 13px; }
 .sw { width: 26px; height: 0; border-top: 3px solid; border-radius: 2px; }
 .sw.flow { border-color: var(--flow); }
 .sw.err { border-color: var(--err); }
+.sw.save { border-color: var(--save); border-top-style: dashed; }
 
 .lane { fill: var(--lane); stroke: var(--line); }
 .lane-label { font: 700 12px var(--font-display); fill: var(--muted); }
@@ -102,10 +103,15 @@ figcaption { color: var(--muted); font-size: 13px; }
 .err-line { fill: none; stroke: var(--err); stroke-width: 1.6; }
 .arw-flow { fill: var(--flow); }
 .arw-err { fill: var(--err); }
+.save { fill: none; stroke: var(--save); stroke-width: 1.6; stroke-dasharray: 5 4; }
+.save-box { fill: var(--save-soft); stroke: var(--save); stroke-width: 1.5; }
+.t-save { font: 700 12px var(--font-body); fill: var(--ink); }
+.t-save-note { font: 500 11px var(--font-body); fill: var(--save); }
+.arw-save { fill: var(--save); }
 
 .hit { cursor: pointer; transition: opacity .15s; }
-.hit:hover .step, .hit:hover .screen, .hit:hover .step-diamond { stroke-width: 2.5; }
-.hit.active .step, .hit.active .screen, .hit.active .step-diamond { stroke: var(--hot); stroke-width: 3.5; }
+.hit:hover .step, .hit:hover .screen, .hit:hover .step-diamond, .hit:hover .save-box { stroke-width: 2.5; }
+.hit.active .step, .hit.active .screen, .hit.active .step-diamond, .hit.active .save-box { stroke: var(--hot); stroke-width: 3.5; }
 .has-sel .hit:not(.active) { opacity: .38; }
 @media (prefers-reduced-motion: reduce) { .hit, .card { transition: none; } }
 
@@ -127,7 +133,8 @@ figcaption { color: var(--muted); font-size: 13px; }
 .chips { display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-start; align-content: flex-start; }
 .card { align-content: start; }
 .chip { font-size: 11px; padding: 1px 8px; border-radius: 999px; background: var(--flow-soft); color: var(--flow); font-weight: 500; white-space: nowrap; }
-.chip[data-k="M"], .chip[data-k="E"] { background: var(--lane); color: var(--ink); border: 1px solid var(--line); }
+.chip[data-k="A"] { background: var(--save-soft); color: var(--save); }
+.chip[data-k="menu"], .chip[data-k="set"], .chip[data-k="copy"], .chip[data-k="confirm"], .chip[data-k="back"] { background: var(--lane); color: var(--ink); border: 1px solid var(--line); }
 .has-sel .card:not(.match) { opacity: .3; }
 .has-sel .card.match { border-color: var(--hot); box-shadow: 0 0 0 2px var(--hot-soft); }
 
@@ -146,8 +153,8 @@ td.msg { font-weight: 500; }
 
 <header>
   <p class="eyebrow">reservation_auth_settings ／ 全体マップ</p>
-  <h1>予約認証の設定を変更して保存する</h1>
-  <p class="lead">管理者メニューから設定変更画面を開いて、予約に使う認証の方法やルールを変え、保存して管理者メニューに戻るまでに裏で何が順番に起きるかを1枚にしたもの。図の箱やテストケースをクリックすると、対応する場所が光ります。</p>
+  <h1>予約認証設定の変更</h1>
+  <p class="lead">管理者メニューから設定の画面を開いて、各項目を入れ替えて保存し、元の画面に戻るまでの流れを1枚にしたもの。図の箱やテストケースをクリックすると、対応する場所が光ります。</p>
   <div class="controls">
     <button class="link" id="clearBtn" type="button">選択を解除</button>
     <span id="status">箱をクリックすると、その場所に関係するテストだけが残ります</span>
@@ -157,101 +164,134 @@ td.msg { font-weight: 500; }
 <section>
 <figure>
   <div class="scroll">
-  <svg class="map" viewBox="0 0 1440 400" role="img" aria-label="予約認証設定の変更の流れ。上段は管理者が見る画面、下段は裏側で起きる処理。管理者メニューから設定変更画面を開き、入力チェック、常時接続推奨、設定保存、コピー確認を経て管理者メニューに戻る。">
+  <svg class="map" viewBox="0 0 1440 640" role="img" aria-label="設定変更の流れ。上段は管理者が見る画面、中段は裏側で起きる処理、下段はタブレットに残るもの。管理者メニューから設定の画面を開き、今の設定を読み込み、入力を点検し、常時接続をすすめるか判定し、保存してコピーを残すか決め、元の画面に戻る。">
     <defs>
       <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-flow"/></marker>
+      <marker id="arwS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-save"/></marker>
       <marker id="arwE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-err"/></marker>
     </defs>
 
     <!-- lanes -->
-    <rect class="lane" x="0" y="16" width="1440" height="150" rx="12"/>
-    <rect class="lane" x="0" y="186" width="1440" height="190" rx="12"/>
+    <rect class="lane" x="0" y="16" width="1440" height="200" rx="12"/>
+    <rect class="lane" x="0" y="228" width="1440" height="250" rx="12"/>
+    <rect class="lane" x="0" y="490" width="1440" height="130" rx="12"/>
     <text class="lane-label" x="16" y="38">画面（管理者が見るもの）</text>
-    <text class="lane-label" x="16" y="208">裏側で起きていること</text>
+    <text class="lane-label" x="16" y="250">裏側で起きていること</text>
+    <text class="lane-label" x="16" y="512">タブレットに残るもの</text>
+    <text class="lane-label" x="16" y="528">（中断したときの戻り先）</text>
 
-    <!-- flow arrows -->
-    <path class="flow" marker-end="url(#arw)" d="M180 84 H270"/>
-    <text class="lbl" x="225" y="74">設定を開く</text>
+    <!-- flow arrows (draw before boxes so boxes overlay) -->
+    <path class="flow" marker-end="url(#arw)" d="M170 88 H236"/>
+    <text class="lbl" x="203" y="46" text-anchor="middle">設定を開く</text>
+    <path class="flow" marker-end="url(#arw)" d="M236 108 H176"/>
+    <text class="lbl" x="206" y="126" text-anchor="middle">キャンセル</text>
+    <path class="flow" marker-end="url(#arw)" d="M110 120 V276"/>
+    <text class="lbl" x="118" y="210">開いたとき</text>
+    <path class="flow" marker-end="url(#arw)" d="M270 312 H300 V124"/>
+    <text class="lbl" x="308" y="250">今の値を入れる</text>
+    <path class="flow" marker-end="url(#arw)" d="M440 88 H560 V276"/>
+    <text class="lbl" x="500" y="80" text-anchor="middle">保存を押す</text>
+    <path class="flow" marker-end="url(#arw)" d="M640 312 H676"/>
+    <path class="flow" marker-end="url(#arw)" d="M840 312 H876"/>
+    <text class="lbl" x="858" y="304" text-anchor="middle">確認後</text>
+    <path class="flow" marker-end="url(#arw)" d="M1000 280 V124"/>
+    <text class="lbl" x="1008" y="210">保存できたら</text>
+    <path class="flow" marker-end="url(#arw)" d="M1050 124 V250 H1180 V276"/>
+    <text class="lbl" x="1058" y="244">名前を付けて残す</text>
+    <path class="flow" marker-end="url(#arw)" d="M1260 312 H1290 V124"/>
+    <path class="flow" marker-end="url(#arw)" d="M1090 88 H1176"/>
+    <text class="lbl" x="1133" y="80" text-anchor="middle">残さない</text>
+    <path class="flow" marker-end="url(#arw)" d="M300 120 V128"/>
+    <path class="flow" marker-end="url(#arw)" d="M380 132 V124"/>
+    <text class="lbl" x="450" y="190">コピーして入れ替える</text>
 
-    <path class="flow" marker-end="url(#arw)" d="M400 116 V176 H365 V224"/>
-    <text class="lbl" x="412" y="172">保存を押す</text>
-
-    <path class="flow" marker-end="url(#arw)" d="M445 258 H490"/>
-    <text class="lbl" x="468" y="248" text-anchor="middle">OK</text>
-
-    <path class="flow" marker-end="url(#arw)" d="M640 258 H700"/>
-
-    <path class="flow" marker-end="url(#arw)" d="M870 258 H930"/>
-    <text class="lbl" x="900" y="248" text-anchor="middle">保存できた</text>
-
-    <path class="flow" marker-end="url(#arw)" d="M1080 258 H1140"/>
-    <text class="lbl" x="1110" y="248" text-anchor="middle">コピーする</text>
-
-    <path class="flow" marker-end="url(#arw)" d="M1010 222 V66 H1300"/>
-    <text class="lbl" x="1155" y="58">コピーしない</text>
-
-    <path class="flow" marker-end="url(#arw)" d="M1225 226 V96 H1300"/>
-    <text class="lbl" x="1262" y="88">完了</text>
+    <!-- save links -->
+    <path class="save" d="M960 344 V512"/>
+    <path class="save" marker-end="url(#arwS)" d="M880 536 H185 V348"/>
+    <text class="t-save-note" x="195" y="430">前回保存した値</text>
 
     <!-- lane A: screens -->
-    <g class="hit" data-key="M" tabindex="0" role="button" aria-label="管理者メニュー">
-      <rect class="screen" x="30" y="52" width="150" height="64" rx="10"/>
-      <rect class="screen-bar" x="90" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="105" y="92" text-anchor="middle">管理者メニュー</text>
+    <g class="hit" data-key="menu" tabindex="0" role="button" aria-label="管理者メニュー">
+      <rect class="screen" x="20" y="56" width="150" height="64" rx="10"/>
+      <rect class="screen-bar" x="80" y="62" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="95" y="86" text-anchor="middle">管理者メニュー</text>
+      <text class="t-sub" x="95" y="106" text-anchor="middle">設定の入口</text>
     </g>
-    <g class="hit" data-key="E" tabindex="0" role="button" aria-label="設定変更画面">
-      <rect class="screen" x="280" y="52" width="240" height="64" rx="10"/>
-      <rect class="screen-bar" x="385" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="400" y="82" text-anchor="middle">設定変更画面</text>
-      <text class="t-sub" x="400" y="100" text-anchor="middle">予約認証の設定を変える</text>
-      <text class="err" x="416" y="132">✕ キャンセル → 管理者メニューへ</text>
-      <text class="err" x="416" y="146">✕ QR認証のみ → 顔認証機能は使えない</text>
+    <g class="hit" data-key="set" tabindex="0" role="button" aria-label="設定の画面">
+      <rect class="screen" x="240" y="56" width="200" height="64" rx="10"/>
+      <rect class="screen-bar" x="325" y="62" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="340" y="86" text-anchor="middle">設定の画面</text>
+      <text class="t-sub" x="340" y="106" text-anchor="middle">各項目を入れ替える</text>
     </g>
-    <g class="hit" data-key="M" tabindex="0" role="button" aria-label="管理者メニュー（戻り）">
-      <rect class="screen" x="1310" y="52" width="120" height="64" rx="10"/>
-      <rect class="screen-bar" x="1355" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="1370" y="82" text-anchor="middle">管理者メニュー</text>
-      <text class="t-sub" x="1370" y="100" text-anchor="middle">＝ 完了して戻る</text>
+    <g class="hit" data-key="copy" tabindex="0" role="button" aria-label="ほかの設定をまるごと持ってくる">
+      <rect class="screen" x="240" y="132" width="200" height="64" rx="10"/>
+      <rect class="screen-bar" x="325" y="138" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="340" y="162" text-anchor="middle">ほかの設定を持ってくる</text>
+      <text class="t-sub" x="340" y="182" text-anchor="middle">ひな形／コピーした端末</text>
+      <text class="err" x="240" y="212">✕ 元にできる設定が0件 → 選べない</text>
+    </g>
+    <g class="hit" data-key="confirm" tabindex="0" role="button" aria-label="コピーとして残すかの確認">
+      <rect class="screen" x="900" y="56" width="190" height="64" rx="10"/>
+      <rect class="screen-bar" x="980" y="62" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="995" y="86" text-anchor="middle">コピーとして残す？</text>
+      <text class="t-sub" x="995" y="106" text-anchor="middle">名前を付けるか、残さないか</text>
+      <text class="err" x="900" y="140">✕ 名前が空だと残せない</text>
+    </g>
+    <g class="hit" data-key="back" tabindex="0" role="button" aria-label="戻り先">
+      <rect class="screen" x="1180" y="56" width="200" height="64" rx="10"/>
+      <rect class="screen-bar" x="1265" y="62" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="1280" y="86" text-anchor="middle">元の画面に戻る</text>
+      <text class="t-sub" x="1280" y="106" text-anchor="middle">管理者メニュー／トップ画面</text>
     </g>
 
     <!-- lane B: steps -->
-    <g class="hit" data-key="1" tabindex="0" role="button" aria-label="入力を確認する">
-      <rect class="step" x="285" y="226" width="160" height="64" rx="8"/>
-      <text class="t-name" x="365" y="250" text-anchor="middle">① 入力を確認する</text>
-      <text class="t-sub" x="365" y="268" text-anchor="middle">保存ボタンを押したとき</text>
-      <text class="err" x="285" y="318">✕ 未入力 → 保存できない</text>
-      <text class="err" x="285" y="334">✕ 数値が0以下</text>
-      <text class="err" x="285" y="350">✕ パスワード不一致</text>
+    <g class="hit" data-key="1" tabindex="0" role="button" aria-label="今の設定を読み込む">
+      <rect class="step" x="100" y="280" width="170" height="64" rx="8"/>
+      <text class="t-name" x="185" y="304" text-anchor="middle">① 今の設定を読み込む</text>
+      <text class="t-sub" x="185" y="322" text-anchor="middle">全項目に今の値を入れる</text>
+      <text class="err" x="100" y="372">✕ 空間の一覧が出てこない</text>
     </g>
-    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="常時接続を勧める？">
-      <polygon class="step-diamond" points="570,222 640,258 570,294 500,258"/>
-      <text class="t-name" x="570" y="255" text-anchor="middle">② 常時接続を</text>
-      <text class="t-name" x="570" y="269" text-anchor="middle">勧める？</text>
+    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="入力を点検する">
+      <rect class="step" x="480" y="280" width="160" height="64" rx="8"/>
+      <text class="t-name" x="560" y="304" text-anchor="middle">② 入力を点検する</text>
+      <text class="t-sub" x="560" y="322" text-anchor="middle">出ている項目だけ見る</text>
+      <text class="err" x="480" y="372">✕ 必須が空・未選択</text>
+      <text class="err" x="480" y="388">✕ 数や文字数が範囲外</text>
+      <text class="err" x="480" y="404">✕ 顔なしで予約作成をON</text>
     </g>
-    <g class="hit" data-key="3" tabindex="0" role="button" aria-label="設定を保存する">
-      <rect class="step" x="710" y="226" width="160" height="64" rx="8"/>
-      <text class="t-name" x="790" y="250" text-anchor="middle">③ 設定を保存する</text>
-      <text class="t-sub" x="790" y="268" text-anchor="middle">変更をサーバーに送る</text>
-      <text class="err" x="710" y="318">✕ 保存に失敗した</text>
+    <g class="hit" data-key="3" tabindex="0" role="button" aria-label="つなぎっぱなしをすすめるか">
+      <polygon class="step-diamond" points="760,270 840,312 760,354 680,312"/>
+      <text class="t-name" x="760" y="307" text-anchor="middle">③ つなぎっぱなしを</text>
+      <text class="t-name" x="760" y="323" text-anchor="middle">すすめる？</text>
+      <text class="t-sub" x="660" y="404">出ない条件：すでに有効／機器が2台／別の型の機器</text>
     </g>
-    <g class="hit" data-key="4" tabindex="0" role="button" aria-label="コピーする？">
-      <polygon class="step-diamond" points="1010,222 1080,258 1010,294 940,258"/>
-      <text class="t-name" x="1010" y="255" text-anchor="middle">④ コピー</text>
-      <text class="t-name" x="1010" y="269" text-anchor="middle">する？</text>
+    <g class="hit" data-key="4" tabindex="0" role="button" aria-label="設定を保存する">
+      <rect class="step" x="880" y="280" width="160" height="64" rx="8"/>
+      <text class="t-name" x="960" y="304" text-anchor="middle">④ 設定を保存する</text>
+      <text class="t-sub" x="960" y="322" text-anchor="middle">押している間は操作できない</text>
+      <text class="err" x="880" y="372">✕ 保存に失敗した</text>
     </g>
-    <g class="hit" data-key="5" tabindex="0" role="button" aria-label="コピーを登録する">
-      <rect class="step" x="1150" y="226" width="150" height="64" rx="8"/>
-      <text class="t-name" x="1225" y="250" text-anchor="middle">⑤ コピーを登録する</text>
-      <text class="t-sub" x="1225" y="268" text-anchor="middle">識別名称を付けて保存</text>
-      <text class="err" x="1150" y="318">✕ 名前が空 → 押せない</text>
-      <text class="err" x="1150" y="334">✕ 登録に失敗した</text>
+    <g class="hit" data-key="5" tabindex="0" role="button" aria-label="コピーとして登録する">
+      <rect class="step" x="1100" y="280" width="160" height="64" rx="8"/>
+      <text class="t-name" x="1180" y="304" text-anchor="middle">⑤ コピーを登録する</text>
+      <text class="t-sub" x="1180" y="322" text-anchor="middle">ほかの端末から使える</text>
+      <text class="err" x="1100" y="372">✕ 登録に失敗した</text>
+    </g>
+
+    <!-- lane C: saved things -->
+    <g class="hit" data-key="A" tabindex="0" role="button" aria-label="残る 保存した設定">
+      <rect class="save-box" x="880" y="516" width="200" height="40" rx="8"/>
+      <text class="t-save" x="980" y="540" text-anchor="middle">残る：保存した設定</text>
+      <text class="t-save-note" x="980" y="576" text-anchor="middle">中断・キャンセル → 保存済みの値に戻る</text>
+      <text class="t-sub" x="980" y="592" text-anchor="middle">変更はホーム画面・カメラ認証画面に効く</text>
     </g>
   </svg>
   </div>
-  <figcaption>緑の線が「うまくいく道」。赤の ✕ は「ここで失敗するとエラーになる」。</figcaption>
+  <figcaption>緑の線が「うまくいく道」。赤の ✕ は「ここで止まると保存できない」。青の点線は「タブレットに残る → 途中で止めても戻ってこられる場所」。</figcaption>
   <div class="legend">
     <span><i class="sw flow"></i>うまくいく道</span>
     <span><i class="sw err"></i>失敗する場所とその理由</span>
+    <span><i class="sw save"></i>タブレットに残る（中断の戻り先）</span>
   </div>
 </figure>
 </section>
@@ -259,160 +299,203 @@ td.msg { font-weight: 500; }
 
 <section class="index">
   <h2>テストケースは、図のどこの話？</h2>
-  <p class="hint">カードをクリックすると図の該当箇所が光ります。図の箱をクリックすると、その箱に関係するカードだけが残ります。● 緑＝うまくいく確認、● 赤＝失敗したときの確認。</p>
+  <p class="hint">カードをクリックすると図の該当箇所が光ります。図の箱をクリックすると、その箱に関係するカードだけが残ります。● 緑＝うまくいく確認、● 赤＝うまくいかないときの確認。</p>
 
   <div class="group">
-    <h3>ルール① 設定を変更して保存する</h3>
+    <h3>ルール① 変えて保存する</h3>
     <div class="cards">
-      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>設定を変えて保存 → 保存される</div><div class="chips"></div></div>
-      <div class="card" data-keys="3"><div class="ttl"><i class="dot ok"></i>保存した後 → ホーム画面や認証画面に反映</div><div class="chips"></div></div>
-      <div class="card" data-keys="1,3"><div class="ttl"><i class="dot ng"></i>保存に失敗 → エラーが出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2,4"><div class="ttl"><i class="dot ok"></i>項目を変えて保存できる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>何も変えずに保存しても保存される</div><div class="chips"></div></div>
+      <div class="card" data-keys="4"><div class="ttl"><i class="dot ok"></i>保存中は画面を操作できない</div><div class="chips"></div></div>
+      <div class="card" data-keys="4"><div class="ttl"><i class="dot ok"></i>続けて押しても保存は1回だけ</div><div class="chips"></div></div>
+      <div class="card" data-keys="4"><div class="ttl"><i class="dot ng"></i>保存に失敗する → その場に留まる</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール② スペースの絞り込み</h3>
+    <h3>ルール② 保存したあとの効き方</h3>
     <div class="cards">
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>予約設定のあるスペースだけ表示される</div><div class="chips"></div></div>
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>予約設定のないスペースは表示されない</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,A"><div class="ttl"><i class="dot ok"></i>変えた内容がホーム画面などに出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,back"><div class="ttl"><i class="dot ok"></i>どこから開いたかで戻り先が変わる</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール③ 認証方法と機能の制限</h3>
+    <h3>ルール③ 開いたときの見え方</h3>
     <div class="cards">
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>顔認証を含む方法 → 予約作成が使える</div><div class="chips"></div></div>
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ng"></i>QR認証のみ → 予約作成が使えない＋変更の案内</div><div class="chips"></div></div>
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ng"></i>QR認証のみ → 予約削除が使えない＋変更の案内</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,set,A"><div class="ttl"><i class="dot ok"></i>今までの値が全部入って表示される</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,set"><div class="ttl"><i class="dot ok"></i>親がONなら、ぶら下がる項目も開いて出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>今のモードに関係ない項目は出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>顔が使えない組織 → 顔のまとまりが出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ng"></i>顔が使えない組織 → 顔の認証を選べない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,menu"><div class="ttl"><i class="dot ok"></i>名前か空間が空だと、やめる操作が出ない</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール④ 入力のチェック</h3>
+    <h3>ルール④ 使う空間を選ぶ</h3>
     <div class="cards">
-      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>必須項目が空 → エラー詳細が出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>数値に0以下 → エラー</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>パスワード不一致 → エラー</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>複数セクションにエラー → バッジが出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,1"><div class="ttl"><i class="dot ok"></i>予約の設定がある空間だけ選べる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,1"><div class="ttl"><i class="dot ng"></i>選べる空間が0件 → 空間を選べない</div><div class="chips"></div></div>
+      <div class="card" data-keys="1"><div class="ttl"><i class="dot ng"></i>空間の一覧が出てこない → 選べない</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール⑤ キャンセル</h3>
+    <h3>ルール⑤ 顔がないとONにできない機能</h3>
     <div class="cards">
-      <div class="card" data-keys="E,M"><div class="ttl"><i class="dot ok"></i>キャンセル → 変更を捨てて管理者メニューへ</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>顔が入っていれば予約作成をONにできる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ng"></i>顔が使えない組織 → そもそも選べない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ng"></i>QRだけでONにする → その場で知らせが出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2"><div class="ttl"><i class="dot ng"></i>直さずに保存 → 保存できない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2,4"><div class="ttl"><i class="dot ok"></i>その場の案内から顔を足す → 直って保存できる</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール⑥ コピーと完了</h3>
+    <h3>ルール⑥ 顔を外したときの巻き添え</h3>
     <div class="cards">
-      <div class="card" data-keys="4,5,M"><div class="ttl"><i class="dot ok"></i>コピーして管理者メニューへ</div><div class="chips"></div></div>
-      <div class="card" data-keys="4,M"><div class="ttl"><i class="dot ok"></i>コピーしないで管理者メニューへ</div><div class="chips"></div></div>
-      <div class="card" data-keys="4,5"><div class="ttl"><i class="dot ng"></i>識別名称が空 → 登録できない</div><div class="chips"></div></div>
-      <div class="card" data-keys="5"><div class="ttl"><i class="dot ng"></i>コピーの登録に失敗 → エラーが出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>顔を外そうとすると、消える項目を教えてくれる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>確認して外す → 関係する項目もまとめてOFF</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>やめる → 顔もほかの項目もそのまま</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>巻き添えが無いときは確認なしで外せる</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール⑦ 常時接続推奨</h3>
+    <h3>ルール⑦ 入力の不備の知らせ方</h3>
     <div class="cards">
-      <div class="card" data-keys="2,3"><div class="ttl"><i class="dot ok"></i>「有効化する」を選ぶ → 常時接続ONで保存へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="2,3"><div class="ttl"><i class="dot ok"></i>「そのまま保存する」を選ぶ → 常時接続OFFで保存へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2"><div class="ttl"><i class="dot ng"></i>不備の数で知らせ方が変わる（1件／3件／4件）</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2"><div class="ttl"><i class="dot ng"></i>どのまとまりに不備があるか数で分かる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2,4"><div class="ttl"><i class="dot ok"></i>直してもう一度保存 → 保存できる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2,4"><div class="ttl"><i class="dot ok"></i>隠した項目は見られず、もとの値で残る</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール⑧ 既存設定コピー</h3>
+    <h3>ルール⑧ やめる</h3>
     <div class="cards">
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>テンプレートを選ぶ → 設定が上書きされる</div><div class="chips"></div></div>
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>端末設定を選ぶ → 設定が上書きされる</div><div class="chips"></div></div>
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>キャンセル → 今の入力が残る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,menu,A"><div class="ttl"><i class="dot ok"></i>変えたあとにやめる → 確認なしで元に戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,menu"><div class="ttl"><i class="dot ok"></i>何も変えずにやめる → 元の画面に戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,1,A"><div class="ttl"><i class="dot ok"></i>やめたあとに開き直す → 前の値のまま</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール⑨ 設定値の変更</h3>
-    <h4>A. 親子連動の表示制御</h4>
+    <h3>ルール⑨ コピーとして残す</h3>
     <div class="cards">
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>自動ステータス更新ON → 自動キャンセル・延長が出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>自動ステータス更新OFF → 子項目すべて消えてデフォルトに戻る</div><div class="chips"></div></div>
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>自動キャンセルON → 時間と前通知が出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>前通知ON → 前通知時間の入力が出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>自動延長ON → タイミングと延長時間が出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>終了前リマインダーON → 通知時間・繰り返し・音が出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>繰り返し「回数を指定」 → 回数の入力が出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>解錠「する」 → デバイス選択が出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>解錠「しない」 → デバイス選択が消える</div><div class="chips"></div></div>
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>常時接続ON → 対象デバイス選択が出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>なりすまし防止ON → モード・期間設定が出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>省エネ「カスタム」 → バッテリー・温度の条件が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="confirm,5,back"><div class="ttl"><i class="dot ok"></i>名前を付けて残す → 元の画面に戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="confirm,back"><div class="ttl"><i class="dot ok"></i>残さないを選ぶ → 元の画面に戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="confirm"><div class="ttl"><i class="dot ng"></i>名前が空 → 残す操作ができない</div><div class="chips"></div></div>
+      <div class="card" data-keys="5"><div class="ttl"><i class="dot ng"></i>残すのに失敗 → 設定の保存自体は済んでいる</div><div class="chips"></div></div>
     </div>
-    <h4>※ 数値のチェック（観点フェーズで網羅）</h4>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑩ つなぎっぱなしのおすすめ</h3>
     <div class="cards">
-      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>数値を正しく変えて保存 → 反映される</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>自動キャンセル時間に0以下 → 専用エラー</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>自動延長タイミングに0以下 → 専用エラー</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>リマインダー回数に0以下 → 専用エラー</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>認証必要時間に負の値 → 専用エラー</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>認証成功類似度に0〜1の範囲外 → 専用エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="3,4"><div class="ttl"><i class="dot ok"></i>すすめに乗る → つなぎっぱなしが有効になって保存</div><div class="chips"></div></div>
+      <div class="card" data-keys="3,4"><div class="ttl"><i class="dot ok"></i>そのまま保存 → 無効のまま保存</div><div class="chips"></div></div>
+      <div class="card" data-keys="3,4"><div class="ttl"><i class="dot ok"></i>条件を満たさないとおすすめは出ない</div><div class="chips"></div></div>
     </div>
-    <h4>B. 単独の切替設定</h4>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑪ ほかの設定を持ってくる</h3>
     <div class="cards">
-      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>テナント予約を不許可に変えて保存 → 反映</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>予約情報を非表示に変えて保存 → 反映</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>自動施錠を無効に変えて保存 → 反映</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>解錠タイミングを変えて保存 → 反映</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,copy"><div class="ttl"><i class="dot ok"></i>ひな形／別の端末の設定で中身を入れ替える</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,copy"><div class="ttl"><i class="dot ok"></i>確認でやめる → 今の入力はそのまま</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,copy"><div class="ttl"><i class="dot ok"></i>入れ替えても名前と空間はそのまま</div><div class="chips"></div></div>
+      <div class="card" data-keys="copy"><div class="ttl"><i class="dot ng"></i>元にできる設定が0件 → 選べない</div><div class="chips"></div></div>
     </div>
-    <h4>C. チェックボックスの切替</h4>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑫ 空間を変えたときの巻き添え</h3>
     <div class="cards">
-      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>認証方法を変えて保存 → 反映</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>認証方法を全部外す → エラー</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>機能制御を個別にON/OFF → 反映</div><div class="chips"></div></div>
-      <div class="card" data-keys="E"><div class="ttl"><i class="dot ok"></i>予約作成ON → 解錠タイミングの選択が出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>顔認証必要機能を個別にON/OFF → 反映</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>空間を変える → 開ける機器の選択が外れる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>つなぎっぱなしの対象からも外れる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>同じ空間を選び直しても外れない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>変えたあとは、その空間の機器だけ出る</div><div class="chips"></div></div>
     </div>
-    <h4>D. Picker選択</h4>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑬ 各項目を入れ替える</h3>
     <div class="cards">
-      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>解錠デバイスを選んで保存 → 反映</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>常時接続デバイスを選んで保存 → 反映</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>リマインダー音を選んで保存 → 反映</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>終了通知音を選んで保存 → 反映</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>親をONにすると、ぶら下がる項目が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>親をOFFにすると隠れる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>隠れた項目はもとの値に戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>使い方のタイプで2台目の機器が出る／出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>単独の切り替えを変えて保存できる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>QRだけ／顔だけ／両方 に変えて保存できる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2"><div class="ttl"><i class="dot ng"></i>認証のしかたを全部外す → 保存できない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>できることを1つずつ切り替えて保存できる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>機器・音・時間帯を選んで保存できる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>同じ機器を2つ選ぶと1台にまとまる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2"><div class="ttl"><i class="dot ng"></i>開けると決めたのに機器が空 → 保存できない</div><div class="chips"></div></div>
     </div>
-    <h4>※ 文字数のチェック（観点フェーズで網羅）</h4>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑭ 数と文字数の決まり</h3>
     <div class="cards">
-      <div class="card" data-keys="E,1,3"><div class="ttl"><i class="dot ok"></i>メッセージを100文字以内で保存 → 反映</div><div class="chips"></div></div>
-      <div class="card" data-keys="E,1"><div class="ttl"><i class="dot ng"></i>メッセージが101文字以上 → 専用エラー</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2,4"><div class="ttl"><i class="dot ok"></i>いちばん小さい値ちょうど → 保存できる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2"><div class="ttl"><i class="dot ng"></i>0・マイナス・空 → 項目ごとの言葉で止まる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2,4"><div class="ttl"><i class="dot ok"></i>決められた範囲の端の値 → 保存できる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2"><div class="ttl"><i class="dot ng"></i>範囲から外れた値 → 保存できない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2,4"><div class="ttl"><i class="dot ok"></i>文字数が上限以内 → 保存できる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2"><div class="ttl"><i class="dot ng"></i>文字数が上限を超える → 保存できない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>合いことばに触らなければ変わらない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>合いことばを入れ替えて保存できる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2"><div class="ttl"><i class="dot ng"></i>合いことばと確認用が違う・空 → 保存できない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2"><div class="ttl"><i class="dot ng"></i>名前を空にする → 保存できない</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑮ 途中で止めたとき</h3>
+    <div class="cards">
+      <div class="card" data-keys="set,A"><div class="ttl"><i class="dot ng"></i>保存せずに止める → 入れかけは残らない</div><div class="chips"></div></div>
+      <div class="card" data-keys="confirm,A"><div class="ttl"><i class="dot ng"></i>残すかの確認で止める → 保存した分は消えない</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
     <h3>通し（実機で最後まで）</h3>
     <div class="cards">
-      <div class="card" data-keys="M,E,1,2,3,4"><div class="ttl"><i class="dot ok"></i>管理者メニューから設定を変えて最後まで</div><div class="chips"></div></div>
+      <div class="card" data-keys="menu,set,2,3,4,confirm,back,A"><div class="ttl"><i class="dot ok"></i>変えて保存 → ホーム画面に効いている</div><div class="chips"></div></div>
+      <div class="card" data-keys="menu,set,2,3,4,confirm,back,A"><div class="ttl"><i class="dot ok"></i>顔を足して保存 → 認証の画面で顔が使える</div><div class="chips"></div></div>
+      <div class="card" data-keys="menu,set,2,3,4,confirm,5,back"><div class="ttl"><i class="dot ok"></i>変えて保存 → 名前を付けてコピーを残す</div><div class="chips"></div></div>
     </div>
   </div>
 </section>
 
 <section>
   <div style="display:grid;gap:10px">
-  <h2>エラーの言葉で、止まった場所がわかる</h2>
+  <h2>画面に出る言葉で、止まった場所がわかる</h2>
   <div class="tbl-wrap">
   <table>
     <tr><th>画面に出る言葉</th><th>止まった場所</th></tr>
-    <tr><td class="msg">タブレット名を入力してください 等（必須項目ごと）</td><td>① 入力のチェック</td></tr>
-    <tr><td class="msg">1以上の値を設定してください 等（数値項目ごと）</td><td>① 入力のチェック</td></tr>
-    <tr><td class="msg">自動キャンセル時間は1以上の値を設定してください</td><td>① 入力のチェック（⑩ 数値）</td></tr>
-    <tr><td class="msg">自動延長タイミングは1以上の値を設定してください</td><td>① 入力のチェック（⑩ 数値）</td></tr>
-    <tr><td class="msg">終了前リマインダーの回数は1以上の値を指定してください</td><td>① 入力のチェック（⑩ 数値）</td></tr>
-    <tr><td class="msg">認証必要時間は0以上の値を設定してください</td><td>① 入力のチェック（⑩ 数値）</td></tr>
-    <tr><td class="msg">認証成功類似度は0〜1の間の値を設定してください</td><td>① 入力のチェック（⑩ 数値）</td></tr>
-    <tr><td class="msg">予約認証の認証方法を選択してください</td><td>① 入力のチェック（⑫ 必須選択）</td></tr>
-    <tr><td class="msg">利用時間外メッセージは100文字以内で入力してください</td><td>① 入力のチェック（⑭ 文字数）</td></tr>
-    <tr><td class="msg">パスワードが一致しません</td><td>① 入力のチェック</td></tr>
-    <tr><td class="msg">『タブレットからの機能制御』>『予約作成（今すぐ入室）』が不適切です</td><td>設定変更画面（認証方法の変更中）</td></tr>
-    <tr><td class="msg">『タブレットからの機能制御』>『予約削除』が不適切です</td><td>設定変更画面（認証方法の変更中）</td></tr>
-    <tr><td class="msg">タブレット情報の保存に失敗しました</td><td>③ 設定を保存 ／ ⑤ コピーを登録</td></tr>
+    <tr><td class="msg">別の設定を変更する必要があります</td><td>設定の画面（ONにした瞬間、同じまとまりの中に出る）</td></tr>
+    <tr><td class="msg">「タブレットからの機能制御」&gt;「予約作成（今すぐ入室）」が不適切です</td><td>② 入力を点検する</td></tr>
+    <tr><td class="msg">「タブレットからの機能制御」&gt;「予約削除」が不適切です</td><td>② 入力を点検する</td></tr>
+    <tr><td class="msg">予約認証の認証方法を選択してください</td><td>② 入力を点検する</td></tr>
+    <tr><td class="msg">タブレット名を入力してください</td><td>② 入力を点検する</td></tr>
+    <tr><td class="msg">パスワードが一致しません</td><td>② 入力を点検する</td></tr>
+    <tr><td class="msg">タブレットでのカギの解錠をするかを選択してください</td><td>② 入力を点検する</td></tr>
+    <tr><td class="msg">自動キャンセル時間は1以上の値を設定してください</td><td>② 入力を点検する</td></tr>
+    <tr><td class="msg">自動キャンセル前通知は1以上の値を設定してください</td><td>② 入力を点検する</td></tr>
+    <tr><td class="msg">自動延長タイミングは1以上の値を設定してください</td><td>② 入力を点検する</td></tr>
+    <tr><td class="msg">延長時間は1以上の値を設定してください</td><td>② 入力を点検する</td></tr>
+    <tr><td class="msg">終了前リマインダーの時間指定は1以上の値を設定してください</td><td>② 入力を点検する</td></tr>
+    <tr><td class="msg">終了前リマインダーの回数は1以上の値を指定してください</td><td>② 入力を点検する</td></tr>
+    <tr><td class="msg">アイドリング開始までの時間は1以上の値を設定してください</td><td>② 入力を点検する</td></tr>
+    <tr><td class="msg">認証必要時間は0以上の値を設定してください</td><td>② 入力を点検する</td></tr>
+    <tr><td class="msg">認証成功類似度は0〜1の間の値を設定してください</td><td>② 入力を点検する（顔が使える組織のみ）</td></tr>
+    <tr><td class="msg">利用時間外メッセージは100文字以内で入力してください</td><td>② 入力を点検する</td></tr>
+    <tr><td class="msg">不正な入力値が存在します。入力値を修正してから再度保存してください。</td><td>② 入力を点検する（不備が複数のとき。3件まで並び、超えると「他N件」）</td></tr>
+    <tr><td class="msg">タブレット情報の保存に失敗しました</td><td>④ 設定を保存する ／ ⑤ コピーを登録する</td></tr>
   </table>
   </div>
   </div>
@@ -424,9 +507,11 @@ td.msg { font-weight: 500; }
 <script>
 (function () {
   var LABEL = {
-    M: "管理者メニュー", E: "設定変更画面",
-    1: "① 入力の確認", 2: "② 常時接続？", 3: "③ 設定を保存",
-    4: "④ コピーする？", 5: "⑤ コピーを登録"
+    menu: "管理者メニュー", set: "設定の画面", copy: "ほかの設定を持ってくる",
+    confirm: "コピーとして残す？", back: "元の画面に戻る",
+    "1": "① 今の設定を読み込む", "2": "② 入力を点検する",
+    "3": "③ つなぎっぱなしをすすめる？", "4": "④ 設定を保存する", "5": "⑤ コピーを登録する",
+    A: "残る：保存した設定"
   };
   var root = document.documentElement;
   var hits = Array.prototype.slice.call(document.querySelectorAll(".hit"));
