@@ -28,6 +28,7 @@ from qase_common import (
     check_cases_exist,
     check_duplicate_ids,
     load_cases,
+    require_allowed_project,
     require_token,
     warn_unannotated,
 )
@@ -93,6 +94,7 @@ def main():
     args = parser.parse_args()
 
     require_token()
+    require_allowed_project()
 
     # ==========================================================================
     # 1. ケース定義の読み込みと事前検証

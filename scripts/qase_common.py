@@ -29,6 +29,17 @@ QASE_PROJECT_CODE = os.environ.get("QASE_PROJECT_CODE", "RSA")
 TEST_LEVEL_FIELD_ID = os.environ.get("QASE_TEST_LEVEL_FIELD_ID", "50")
 COVERAGE_FIELD_ID = os.environ.get("QASE_COVERAGE_FIELD_ID", "49")
 
+# 書き込みを許可するプロジェクトコード。意図しないプロジェクトへの誤爆を防ぐガード。
+#   同期は「コード → Qase の一方向上書き」のため、プロジェクトコードを取り違えると
+#   他プロジェクトのケースを書き換えてしまう。APIトークンの権限が広い場合、
+#   API側では弾けないため、スクリプト側で明示的に許可リストを持つ。
+#   対象を増やすときは QASE_ALLOWED_PROJECT_CODES にカンマ区切りで指定する。
+ALLOWED_PROJECT_CODES = [
+    code.strip()
+    for code in os.environ.get("QASE_ALLOWED_PROJECT_CODES", "RSA").split(",")
+    if code.strip()
+]
+
 AUTOMATION_AUTOMATED = 2  # 0=Manual / 1=To be automated / 2=Automated
 
 _BASE = "https://api.qase.io/v1"
@@ -39,6 +50,16 @@ def require_token():
         sys.exit(
             "❌ 環境変数 QASE_API_TOKEN が設定されていません。\n"
             '   PowerShell: $env:QASE_API_TOKEN = "<your token>"'
+        )
+
+
+def require_allowed_project():
+    """書き込み先が許可リストに含まれるか検証する。含まれなければ中断。"""
+    if QASE_PROJECT_CODE not in ALLOWED_PROJECT_CODES:
+        sys.exit(
+            f"❌ プロジェクトコード '{QASE_PROJECT_CODE}' への書き込みは許可されていません。\n"
+            f"   許可済み: {', '.join(ALLOWED_PROJECT_CODES)}\n"
+            "   意図した対象であれば、環境変数 QASE_ALLOWED_PROJECT_CODES に追加してください。"
         )
 
 

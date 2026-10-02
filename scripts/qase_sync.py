@@ -20,6 +20,7 @@ from qase_common import (
     check_duplicate_ids,
     fetch_all_cases,
     load_cases,
+    require_allowed_project,
     require_token,
     warn_unannotated,
 )
@@ -57,6 +58,7 @@ def main():
     args = parser.parse_args()
 
     require_token()
+    require_allowed_project()
 
     tests, unannotated = load_cases(args.input)
     warn_unannotated(unannotated)

@@ -195,9 +195,7 @@ QAから提供する次の3本を配置します。**Python 3 の標準ライブ
         continue-on-error: true
         env:
           QASE_API_TOKEN: ${{ secrets.QASE_API_TOKEN }}
-          QASE_PROJECT_CODE: <QAから連携します>
-          QASE_TEST_LEVEL_FIELD_ID: <QAから連携します>
-          QASE_COVERAGE_FIELD_ID: <QAから連携します>
+          QASE_PROJECT_CODE: RSA
         run: |
           python tools/qase/extract_qase_annotations.py --source-root . --out build/qase/qase-cases.json
           python tools/qase/send_qase_results.py \
@@ -223,6 +221,10 @@ QAから提供する次の3本を配置します。**Python 3 の標準ライブ
 > artifactのアップロードは送信が失敗したときの調査用に残します。QA側で再送する際の入力にもなります。
 >
 > カバレッジXMLはモジュール単位で出力されます。集約レポートは不要です。スクリプトが全モジュール分を合算します。
+>
+> `QASE_PROJECT_CODE` はスクリプト側の既定値も `RSA` ですが、**書き込み先が差分に現れるよう明示します。** フィールドID（`QASE_TEST_LEVEL_FIELD_ID` / `QASE_COVERAGE_FIELD_ID`）は確認済みの値が既定値に入っているため、指定不要です（4章）。
+>
+> スクリプトには、`RSA` 以外への書き込みを中断する**プロジェクトコードのガード**が入っています。対象を増やす場合は `QASE_ALLOWED_PROJECT_CODES` にカンマ区切りで追加してください。
 
 ### 3.5 コンパイル確認
 
@@ -236,22 +238,28 @@ QAから提供する次の3本を配置します。**Python 3 の標準ライブ
 
 ## 4. Qase側の準備（QA担当作業）
 
-対象のQaseプロジェクトに、次のカスタムフィールドを用意します。
+カスタムフィールドは**作成済みです**（2026-10-02 時点でAPIで確認）。新規に用意する作業はありません。
 
-| 種別 | 名称 | 設定 |
-|---|---|---|
-| ケースのカスタムフィールド | `Test Level` | selectbox。選択肢に `Unit` / `Integration` / `E2E` / `Manual` |
-| Runのカスタムフィールド | `Coverage Rate` | number |
+| 種別 | 名称 | フィールドID | 設定 |
+|---|---|---|---|
+| ケースのカスタムフィールド | `Test Level` | **50** | selectbox。選択肢ID `1=Unit` / `2=Integration` / `3=E2E` / `4=Manual` |
+| Runのカスタムフィールド | `Coverage Rate` | **49** | number |
 
-作成後、**それぞれのフィールドIDと、Test Levelの選択肢IDを控えます。** 次のAPIで確認できます。
+| 設定値 | 値 |
+|---|---|
+| `QASE_PROJECT_CODE` | `RSA`（workhub Room Support_Android） |
+| `QASE_TEST_LEVEL_FIELD_ID` | `50` |
+| `QASE_COVERAGE_FIELD_ID` | `49` |
+
+上記はいずれも `qase_common.py` の既定値と一致しており、`Qase.kt` の `TestLevel` の `optionId`（1〜4）とも一致しています。**設定変更は不要です。**
+
+> ⚠️ **フィールド50・49は `RSA` プロジェクト限定のスコープです**（`projects_codes: ["RSA"]`）。将来ケースを `ROOM`（workhub Room Support）など別プロジェクトへ移す場合は、**Qase側でフィールドのスコープにそのプロジェクトを追加する必要があります。** 忘れると7章のとおり「APIは200を返すが値は黙って無視される」状態になります。
+
+値を再確認したい場合は次のAPIで取得できます。
 
 ```bash
 curl -H "Token: $QASE_API_TOKEN" "https://api.qase.io/v1/custom_field?limit=100"
 ```
-
-控えたIDは、QA側の同期スクリプトの設定値（`QASE_PROJECT_CODE` / `TEST_LEVEL_FIELD_ID` / `COVERAGE_FIELD_ID`）と、`Qase.kt` の `TestLevel` の `optionId` に反映します。
-
-> `Qase.kt` の `optionId` が実際の選択肢IDと異なる場合は、開発チームに修正を依頼するか、同期スクリプト側で読み替えます。
 
 ---
 
@@ -264,9 +272,13 @@ curl -H "Token: $QASE_API_TOKEN" "https://api.qase.io/v1/custom_field?limit=100"
 setx QASE_API_TOKEN "<your token>"
 ```
 
-**本番リポジトリの Secrets に `QASE_API_TOKEN` を登録してください。** 3.4 の送信ステップが参照します。トークンはQAから別途安全な経路でお渡しします（**書き込み権限が必要**です）。
+**本番リポジトリの Secrets に `QASE_API_TOKEN` を登録してください。** 3.4 の送信ステップが参照します。トークンは**CI専用のQaseアカウント**で発行したものを、QAから安全な経路でお渡しします。開発チームにお願いするのは **Secrets への登録のみ**で、発行・失効・ローテーションはQAが管理します。
 
-あわせて `QASE_PROJECT_CODE` / `QASE_TEST_LEVEL_FIELD_ID` / `QASE_COVERAGE_FIELD_ID` の値もQAから連携します。これらは秘匿情報ではないため、ワークフローに直接記載して構いません。
+> **なぜCI専用アカウントなのか**: QaseのAPIトークンは発行したユーザーの権限をそのまま引き継ぎ、トークン単位でプロジェクトを絞ることができません。個人のトークンを使うと全プロジェクトへの書き込み権限をCIに渡すことになるため、**アクセス範囲を `RSA` のみに限定した専用アカウント**を用意します。あわせてスクリプト側にもプロジェクトコードのガードを入れています（3.4）。
+>
+> ⚠️ **Secretsへの登録値は、チャンネルやチケットのコメントに貼らないでください。** 共有ボールト等の安全な経路でお渡しします。
+
+`QASE_PROJECT_CODE` はワークフローに直接記載します（秘匿情報ではありません）。その他の設定値は4章のとおり既定値のままで動作します。
 
 ---
 

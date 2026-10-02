@@ -56,13 +56,15 @@
 | `QASE_PROJECT_CODE` | | `RSA` | Qaseのプロジェクトコード |
 | `QASE_TEST_LEVEL_FIELD_ID` | | `50` | ケースのカスタムフィールド `Test Level` のID |
 | `QASE_COVERAGE_FIELD_ID` | | `49` | Runのカスタムフィールド `Coverage Rate` のID |
+| `QASE_ALLOWED_PROJECT_CODES` | | `RSA` | 書き込みを許可するプロジェクトコード（カンマ区切り）。誤爆防止のガード |
 
 ```powershell
 setx QASE_API_TOKEN "<your token>"
-$env:QASE_PROJECT_CODE = "<本番プロジェクトコード>"
 ```
 
-> 既定値は検証用リポジトリの値です。**本番プロジェクトのIDは必ず確認して設定してください。** 確認方法は `qase_integration_setup.md` の「4. Qase側の準備」にあります。
+> **既定値はすべて本番の設定値と一致しています**（2026-10-02 にAPIで確認）。通常は `QASE_API_TOKEN` だけ設定すれば動作します。値の根拠は `qase_integration_setup.md` の「4. Qase側の準備」にあります。
+>
+> ⚠️ `QASE_ALLOWED_PROJECT_CODES` は、**プロジェクトコードの取り違えによる他プロジェクトへの誤爆を防ぐためのガード**です。同期は「コード → Qase の一方向上書き」のため、取り違えると他プロジェクトのケースを書き換えてしまいます。対象を増やすとき以外は変更しないでください。
 
 ### 2.2 必要なもの
 
@@ -204,6 +206,7 @@ JaCoCoが算出するのは**コードカバレッジ（命令網羅率）**で�
 | `Qase 上に存在しないケースIDが指定されています` | Qase UIでケースを作成し、採番されたIDを転記する |
 | `ケースIDが重複しています` | 複数のテストが同じIDを指している。どちらかを修正 |
 | `TEST-*.xml が見つかりません` | `--test-results` のパス誤り。CIのartifactを展開したか確認 |
+| `への書き込みは許可されていません` | `QASE_PROJECT_CODE` の指定誤り。意図した対象なら `QASE_ALLOWED_PROJECT_CODES` に追加する |
 | 実行結果が「未実行」になる | テストが実行されていないか、クラス名が一致していない（内部クラスなど） |
 | カバレッジが0% | JaCoCo XMLが見つかっていない。`createDevelopDebugCombinedCoverageReport` の実行を確認 |
 | 日本語が文字化けする | Windowsコンソールのcp932。スクリプト側でUTF-8に再設定済み |
