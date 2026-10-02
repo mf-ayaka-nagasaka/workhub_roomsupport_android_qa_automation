@@ -27,18 +27,22 @@
    （タイトル/説明/          （TEST-*.xml と JaCoCo XML を突き合わせ）
      Test Level/steps）
         │                      │
+     【QA が実行】        【本体リポジトリのCIが自動実行】
+        │                      │
         └──────────┬───────────┘
                    ▼
                Qase API
 ```
 
-| スクリプト | 役割 | 実行頻度 |
-|---|---|---|
-| `extract_qase_annotations.py` | テストソースから `@Qase` を抽出しJSON化 | ②③の前に毎回 |
-| `qase_sync.py` | ケース内容（タイトル・説明・Test Level・ステップ）を同期 | `@Qase` を追記・変更したとき |
-| `send_qase_results.py` | Run作成・実行結果の送信・カバレッジ記録 | テスト実行結果を記録したいとき |
+| スクリプト | 役割 | 実行者 | 実行頻度 |
+|---|---|---|---|
+| `extract_qase_annotations.py` | テストソースから `@Qase` を抽出しJSON化 | QA / CI | ②③の前に毎回 |
+| `qase_sync.py` | ケース内容（タイトル・説明・Test Level・ステップ）を同期 | **QA** | `@Qase` を追記・変更したとき |
+| `send_qase_results.py` | Run作成・実行結果の送信・カバレッジ記録 | **CI（自動）** | テスト実行ごと |
 
-> **②と③は別のタイミングで実行します。** ケース同期は仕様変更時のみ、結果送信は実行結果を残したいときです。
+> **②と③は実行者が異なります。** ケース同期はQAが仕様変更時に実行し、結果送信は本体リポジトリのCIがテスト実行をトリガーに自動で行います。
+>
+> ⚠️ **③のQA側での手元実行は、移管が完了するまでの暫定手段です。** 本体リポジトリ `tools/qase/` への配置が完了したあとは、再送・リカバリ時のみ使用し、最終的にQA側からは削除します（`docs/qase_integration_setup.md` 10章）。
 
 ---
 
@@ -121,7 +125,9 @@ python scripts/qase_sync.py --input build/qase/qase-cases.json
 
 同期後、コードに対応するテストが無い自動化ケースを**孤児候補として報告**します。削除はしません。判断は人が行い、Qase UI上で実施してください。
 
-### 3.3 ③ 実行結果とカバレッジの送信
+### 3.3 ③ 実行結果とカバレッジの送信（暫定・再送用）
+
+> **通常はCIが自動で送信するため、この手順は不要です。** CIの送信ステップが失敗したときの再送や、移管が完了するまでの暫定運用として使用します。
 
 ```bash
 python scripts/send_qase_results.py \
@@ -143,7 +149,7 @@ python scripts/send_qase_results.py \
 
 | 取得元 | 方法 |
 |---|---|
-| CI（推奨） | GitHub Actions の artifact `test-results-and-coverage` をダウンロードして展開 |
+| CI（推奨） | GitHub Actions の artifact `test-results-and-coverage` をダウンロードして展開。送信が失敗したときの再送用に残されています |
 | ローカル実行 | 対象リポジトリで `./gradlew testDevelopDebugUnitTest createDevelopDebugCombinedCoverageReport` を実行 |
 
 ---

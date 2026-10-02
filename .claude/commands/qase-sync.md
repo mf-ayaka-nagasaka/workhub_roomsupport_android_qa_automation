@@ -1,5 +1,5 @@
 # Skill: qase-sync
-テストコードの `@Qase` をQaseへ同期し、必要に応じて実行結果とカバレッジを送信します。
+テストコードの `@Qase` をQaseへ同期します。実行結果とカバレッジの送信は本体リポジトリのCIが自動で行うため、`results` モードは再送・リカバリ用の暫定手段です。
 
 ## Usage
 `/qase-sync [cases|results|all] [--module <path>]`
@@ -7,10 +7,12 @@
 例: `/qase-sync results`
 例: `/qase-sync cases --module core/data`
 
-- `cases`: ケース内容（タイトル・説明・Test Level・ステップ）の同期
-- `results`: 実行結果とカバレッジの送信
+- `cases`: ケース内容（タイトル・説明・Test Level・ステップ）の同期（**主用途**）
+- `results`: 実行結果とカバレッジの送信（**暫定・再送用**。下記参照）
 - `all`: 両方を順に実行
 - 省略時は `cases`
+
+> ⚠️ **`results` は暫定モードです。** 結果送信は本体リポジトリ `tools/qase/` へ移管し、テスト実行をトリガーにCIが自動送信する方針です（`docs/qase_integration_setup.md` 0章・10章）。このモードは、CIの送信が失敗したときの再送と、移管が完了するまでの運用にのみ使用してください。**移管完了後はこのモードと `scripts/send_qase_results.py` を削除します。**
 
 ## Context / Scope
 - **運用手順（最優先参照）**: `docs/qase_sync_operation.md`

@@ -9,3 +9,7 @@ build/
 
 # Pythonのキャッシュ
 __pycache__/
+
+# 作業用のスクリーンショット・ローカル設定
+*.png
+*.code-workspace

@@ -55,7 +55,7 @@
 | QAレビュー対象PR抽出 | `/check-qa-prs` | レビュー対象の単体テストPRを抽出 |
 | 単体テストレビュー | `/review-unit-tests` | 単体テストコードのQA視点レビュー |
 | `@Qase` 追記 | `/qase-annotation-writer` | テストコードへのQaseケース紐づけ |
-| Qase同期 | `/qase-sync` | `@Qase` のQaseへの同期・結果送信 |
+| Qase同期 | `/qase-sync` | `@Qase` のQaseへの同期（結果送信はCIが自動実行） |
 | QA作業提出 | `/end` | Git操作でQA作業成果を提出 |
 | ブランチ同期 | `/start` | 作業ブランチをmainと同期 |
 | QAドキュメント同期 | `/sync-qa-docs` | 外部ドキュメントとの同期 |

@@ -55,8 +55,9 @@ ISO 25010品質モデルやOWASP Mobile Top 10などの標準モデルを参照�
 記述ルール: `docs/qase_annotation_rules.md`
 
 ### 🔁 `/qase-sync` - Qase同期
-テストコードの `@Qase` を静的解析してQaseへ同期し、必要に応じて実行結果とカバレッジを送信します。  
+テストコードの `@Qase` を静的解析してQaseへ同期します。  
 送信前に必ず dry-run で内容を提示し、承認を得てから実行します。  
+実行結果とカバレッジの送信は本体リポジトリのCIが自動で行うため、`results` モードは再送・リカバリ用の暫定手段です。  
 運用手順: `docs/qase_sync_operation.md`
 
 ### 📦 `/end` - QA作業提出

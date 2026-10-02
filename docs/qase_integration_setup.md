@@ -3,10 +3,24 @@
 | 項目 | 内容 |
 |---|---|
 | **象限** | 🛠️ ハウツー |
-| **対象者** | 開発チーム（配置作業の担当者）、QA担当 |
-| **ゴール** | 本番リポジトリに `@Qase` アノテーションの基盤を導入し、テストケースの同期と実行結果・カバレッジの連携ができる状態になります |
+| **対象者** | 開発チーム（配置・CI設定・以降の保守の担当者）、QA担当 |
+| **ゴール** | 本番リポジトリに `@Qase` アノテーションの基盤と連携スクリプトを配置し、テスト実行をトリガーに実行結果・カバレッジがQaseへ自動記録される状態になります |
 
 本書は **workhubRoomSupport-Android** に Qase連携を導入する手順です。検証用リポジトリ（RSAcoveragetesting）向けの手順書とは**前提条件が異なります**。本番リポジトリへの導入では本書に従ってください。
+
+---
+
+## 0. この依頼でお願いすること
+
+開発チームへの依頼は、次の3点です。
+
+| # | お願いしたいこと | 該当節 |
+|---|---|---|
+| 1 | `Qase.kt`（アノテーション型定義）と連携スクリプト3本の配置 | 3.1 / 3.2 / 3.3 |
+| 2 | テストCIへの結果送信ステップの追加と、Secretsへのトークン登録 | 3.4 / 5 |
+| 3 | **配置以降のスクリプト保守の引き取り** | 1 |
+
+> 3について補足します。このスクリプトが動かなくなる原因は、Gradleタスク名の変更・モジュールの追加・出力パスの変更など、**いずれも本体リポジトリ側の変更**です。壊れたことに気づけるのも直せるのもCIを運用する開発チームであるため、配置以降の保守は本体リポジトリ側でお願いしたいと考えています。Qase側のケース定義・カスタムフィールド設計・`@Qase` の付与はQAが引き続き担当し、仕様変更が必要なときはQAから依頼します。
 
 ---
 
@@ -16,11 +30,17 @@
 |---|---|---|
 | `Qase.kt`（アノテーション型定義）の配置 | **開発チーム** | 初回のみ |
 | 各モジュールへの依存追加 | **開発チーム** | 初回のみ |
-| CIでの成果物（テスト結果XML・カバレッジXML）出力 | **開発チーム** | 初回のみ |
+| 連携スクリプト3本の `tools/qase/` への配置 | **開発チーム** | 初回のみ |
+| CIへの結果送信ステップの追加・調整 | **開発チーム** | 随時 |
+| 連携スクリプトの保守 | **開発チーム** | 随時 |
 | テストコードへの `@Qase` 追記 | **QA担当** | PRごと |
-| Qaseへのケース同期・結果送信 | **QA担当** | 随時 |
+| Qaseへのケース同期（`qase_sync.py`） | **QA担当** | 随時 |
+| Qase側のフィールド設計・`@Qase` 付与ルールの策定 | **QA担当** | 随時 |
+| 実行結果・カバレッジの送信 | **CI（自動）** | テスト実行ごと |
 
-> 開発チームにお願いするのは**初回の配置作業のみ**です。日常の運用はQA側で行います。
+> **結果送信は実行者＝開発チーム側に寄せます。** テストを実行するのがCIである以上、送信もCIで完結させるのが自然で、QAが手元で送信する運用は再送・リカバリ時のみとします。
+>
+> QAが担当するのは、Qase側のケース定義（何をどう記録するか）と `@Qase` の付与です。スクリプトの初版はQAが用意しますが、**配置後の保守は本体リポジトリ側に移管**します。
 
 ---
 
@@ -58,7 +78,7 @@ JUnit XML（TEST-*.xml）   →  class#method → 実行結果（passed / failed
           case_id + 定義内容 + 実行結果
 ```
 
-この方式により、**JUnit 5 への移行もJUnit 4 用リスナーの実装も不要**になります。突き合わせを行うスクリプトはQA側で管理します。
+この方式により、**JUnit 5 への移行もJUnit 4 用リスナーの実装も不要**になります。突き合わせを行うスクリプトはQAが用意し、本体リポジトリの `tools/qase/` へ配置します（3.3）。
 
 ---
 
@@ -139,9 +159,25 @@ dependencies {
 
 > すべてのモジュールに一度に追加する必要はありません。**`@Qase` を付与するモジュールから順次**で構いません。
 
-### 3.3 CIでの成果物出力
+### 3.3 連携スクリプトの配置
 
-QA側で実行結果とカバレッジを取得するため、CIの成果物をartifactとして出力します。
+QAから提供する次の3本を配置します。**Python 3 の標準ライブラリのみで動作し、追加の依存はありません。**
+
+**配置先**: `tools/qase/`
+
+| ファイル | 役割 | 入力 | 出力 |
+|---|---|---|---|
+| `qase_common.py` | 設定値の読み込みとQase APIの呼び出し（共通部品） | 環境変数 | — |
+| `extract_qase_annotations.py` | テストソースを静的パースし、`@Qase` の定義を抽出 | テストソース（`--source-root`） | 対応表JSON（`class#method` → `case_id` / title / level / steps） |
+| `send_qase_results.py` | 対応表とテスト結果を突合し、QaseにRunを作成して送信 | 対応表JSON／`TEST-*.xml`／JaCoCo XML | Qase上のTest Run（実行結果＋カバレッジ率） |
+
+> **静的パースを採用している理由**は 2.3 のとおりです。テストを実行せずにソースだけを読むため、ビルド構成には影響しません。
+>
+> ケース同期用の `qase_sync.py` は**配置しません。** Qaseへのケース登録はQA側リポジトリから実行します。
+
+### 3.4 CIでの結果送信
+
+テスト実行をトリガーに、結果とカバレッジをQaseへ自動送信します。
 
 **対象ワークフロー**: `.github/workflows/test.yml`
 
@@ -151,7 +187,23 @@ QA側で実行結果とカバレッジを取得するため、CIの成果物をa
 
       # ↓ 追記
       - name: Generate coverage report
+        if: always()
         run: ./gradlew createDevelopDebugCombinedCoverageReport
+
+      - name: Send results to Qase
+        if: always()
+        continue-on-error: true
+        env:
+          QASE_API_TOKEN: ${{ secrets.QASE_API_TOKEN }}
+          QASE_PROJECT_CODE: <QAから連携します>
+          QASE_TEST_LEVEL_FIELD_ID: <QAから連携します>
+          QASE_COVERAGE_FIELD_ID: <QAから連携します>
+        run: |
+          python tools/qase/extract_qase_annotations.py --source-root . --out build/qase/qase-cases.json
+          python tools/qase/send_qase_results.py \
+            --input build/qase/qase-cases.json \
+            --test-results . --jacoco . \
+            --title "CI #${{ github.run_number }} (${{ github.ref_name }})"
 
       - name: Upload test results and coverage
         if: always()
@@ -164,11 +216,15 @@ QA側で実行結果とカバレッジを取得するため、CIの成果物をa
           retention-days: 14
 ```
 
-> `if: always()` を付けるのは、**テストが失敗した場合も結果を取得する**ためです。失敗した結果もQaseに記録します。
+> `if: always()` を付けるのは、**テストが失敗した場合も結果を記録する**ためです。失敗した結果もQaseに残します。
 >
-> カバレッジXMLはモジュール単位で出力されます。集約レポートは不要です。QA側のスクリプトが全モジュール分を合算します。
+> `continue-on-error: true` は、テスト失敗があるとスクリプトが**「送信した上で」終了コード1を返す**ためです。送信の成否とCIの合否判定を切り離します。
+>
+> artifactのアップロードは送信が失敗したときの調査用に残します。QA側で再送する際の入力にもなります。
+>
+> カバレッジXMLはモジュール単位で出力されます。集約レポートは不要です。スクリプトが全モジュール分を合算します。
 
-### 3.4 コンパイル確認
+### 3.5 コンパイル確認
 
 依存を追加したモジュールで、テストコードがコンパイルできることを確認します。
 
@@ -208,7 +264,9 @@ curl -H "Token: $QASE_API_TOKEN" "https://api.qase.io/v1/custom_field?limit=100"
 setx QASE_API_TOKEN "<your token>"
 ```
 
-CI で使う場合は Secrets から環境変数として渡します。
+**本番リポジトリの Secrets に `QASE_API_TOKEN` を登録してください。** 3.4 の送信ステップが参照します。トークンはQAから別途安全な経路でお渡しします（**書き込み権限が必要**です）。
+
+あわせて `QASE_PROJECT_CODE` / `QASE_TEST_LEVEL_FIELD_ID` / `QASE_COVERAGE_FIELD_ID` の値もQAから連携します。これらは秘匿情報ではないため、ワークフローに直接記載して構いません。
 
 ---
 
@@ -217,9 +275,10 @@ CI で使う場合は Secrets から環境変数として渡します。
 | # | 確認内容 | 方法 |
 |---|---|---|
 | 1 | `@Qase` がコンパイルできる | テストに1つ付与して `./gradlew :{module}:compileDevelopDebugUnitTestKotlin` |
-| 2 | 静的パースで対応表が作れる | QA側スクリプトを実行し、`class#method → case_id` が出力されるか |
+| 2 | 静的パースで対応表が作れる | `python tools/qase/extract_qase_annotations.py --source-root .` を実行し、`class#method → case_id` が出力されるか |
 | 3 | CIの成果物が取得できる | Actionsの実行結果から artifact をダウンロードし、`TEST-*.xml` と jacoco XML が含まれるか |
-| 4 | Qaseに反映される | 同期後、API または Qase UI で読み取って確認 |
+| 4 | CIから結果が送信される | 送信ステップのログに突合件数とカバレッジ率が出力され、Qase上にRunが作成されるか |
+| 5 | Qaseに反映される | 同期・送信後、API または Qase UI で読み取って確認 |
 
 ### 反映確認（重要）
 
@@ -266,7 +325,9 @@ curl -H "Token: $QASE_API_TOKEN" "https://api.qase.io/v1/run/<CODE>/<RUN_ID>"
 | カスタムフィールドが反映されない | キー名が `custom_fields`（複数形）になっている |
 | ステップの期待値が入らない | キー名が `expected` になっている（正: `expected_result`） |
 | 日本語・絵文字が文字化けする | Windowsコンソールのcp932。スクリプト側でUTF-8に再設定する |
-| `QASE_API_TOKEN が設定されていません` | `setx` 後にターミナル/IDEを再起動していない |
+| `QASE_API_TOKEN が設定されていません` | ローカルは `setx` 後にターミナル/IDEを再起動していない。CIは Secrets が未登録、または `env:` への受け渡し漏れ |
+| テスト失敗時にCIが送信ステップで止まる | 送信ステップに `continue-on-error: true` が付いていない（終了コード1は仕様。結果は送信済み） |
+| CIの送信だけが失敗した | artifact をダウンロードし、QA側から再送する（`docs/qase_sync_operation.md` 参照） |
 
 ---
 
@@ -279,7 +340,26 @@ curl -H "Token: $QASE_API_TOKEN" "https://api.qase.io/v1/run/<CODE>/<RUN_ID>"
 | `template/kotlin/Qase.kt` | ✅ パッケージを変更して配置 |
 | `template/kotlin/QaseResultCollector.kt` | ❌ **配置しない**（JUnit 4 では動作しない） |
 | `template/resources/...TestExecutionListener` | ❌ **配置しない**（同上） |
-| `template/python/qase_common.py` | ⚠️ QA側リポジトリで管理。設定値を差し替え |
-| `template/python/qase_sync.py` | ⚠️ QA側リポジトリで管理。入力JSONの生成経路を変更 |
-| `template/python/send_coverage.py` | ⚠️ QA側リポジトリで管理。複数モジュールのXML合算に対応 |
-| `template/build.gradle.kts.snippet` | ❌ 不要（JaCoCoは規約プラグイン済み、タスク定義はQA側でスクリプトを直接実行） |
+| `template/python/qase_common.py` | ✅ 本体リポジトリ `tools/qase/` へ配置。設定値は環境変数から読み込み |
+| `template/python/qase_sync.py` | ⚠️ QA側リポジトリで管理（ケース同期はQA主導のため配置しない） |
+| `template/python/send_coverage.py` | ✅ `send_qase_results.py` として本体リポジトリ `tools/qase/` へ配置。複数モジュールのXML合算に対応 |
+| `template/build.gradle.kts.snippet` | ❌ 不要（JaCoCoは規約プラグイン済み、スクリプトはCIから直接実行） |
+| （新規）`extract_qase_annotations.py` | ✅ 本体リポジトリ `tools/qase/` へ配置。JUnit 4 対応のため新設 |
+
+---
+
+## 10. 移管後のQAリポジトリの扱い
+
+配置が完了し、CIからの送信が確認できた時点で、**QA側リポジトリの同一スクリプトは削除します。** 正本を2箇所に置くと、どちらを直せばよいか分からなくなるためです。
+
+| 対象 | 移管後の扱い |
+|---|---|
+| `scripts/qase_common.py` | 削除（正本は本体リポジトリ `tools/qase/`）※ |
+| `scripts/extract_qase_annotations.py` | 削除（同上） |
+| `scripts/send_qase_results.py` | 削除（同上） |
+| `/qase-sync` スキルの `results` モード | 削除（CIが自動送信するため不要） |
+| `scripts/qase_sync.py` | **残す**（ケース同期はQA主導） |
+
+> ※ `qase_sync.py` が `qase_common.py` を参照しているため、共通部品はQA側にも必要な分だけ残します。削除範囲は移管時にあらためて確認します。
+
+移管が完了するまでは、QA側から手元で送信する運用（`/qase-sync results`）を暫定手段として残します。
