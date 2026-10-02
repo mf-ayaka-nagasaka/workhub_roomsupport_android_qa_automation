@@ -17,6 +17,10 @@
 │   ├── qa-feature-extractor.md       # 🏗️ 機能抽出
 │   ├── qa-domain-element-manager.md  # 🌐 ドメイン要素管理
 │   ├── review-test-cases.md          # 📝 テストケースレビュー
+│   ├── check-qa-prs.md               # 🔎 QAレビュー対象PRの抽出
+│   ├── review-unit-tests.md          # 🧫 単体テストレビュー
+│   ├── qase-annotation-writer.md     # 🏷️ @Qase アノテーション追記
+│   ├── qase-sync.md                  # 🔁 Qase同期
 │   ├── end.md                        # 📦 QA作業提出
 │   ├── start.md                      # 🔄 ブランチ同期
 │   ├── sync-qa-docs.md               # 📑 QAドキュメント同期
@@ -29,7 +33,11 @@
     ├── skill-improver.md              # Skill改善の学習ログ
     ├── qa-case-exporter.md            # CSVエクスポートの学習ログ
     ├── qa-impact-analyzer.md          # 影響範囲分析の学習ログ
-    └── review-test-cases.md           # テストケースレビューの学習ログ
+    ├── review-test-cases.md           # テストケースレビューの学習ログ
+    ├── check-qa-prs.md                # PR抽出の学習ログ
+    ├── review-unit-tests.md           # 単体テストレビューの学習ログ
+    ├── qase-annotation-writer.md      # @Qase 追記の学習ログ
+    └── qase-sync.md                   # Qase同期の学習ログ
 ```
 
 ## Skill一覧（概要）
@@ -44,6 +52,10 @@
 | 機能抽出 | `/qa-feature-extractor` | ソースコードから機能情報を抽出 |
 | ドメイン要素管理 | `/qa-domain-element-manager` | テスト用のドメイン固有パラメータを管理 |
 | テストケースレビュー | `/review-test-cases` | 既存テストケースの品質レビュー・断捨離 |
+| QAレビュー対象PR抽出 | `/check-qa-prs` | レビュー対象の単体テストPRを抽出 |
+| 単体テストレビュー | `/review-unit-tests` | 単体テストコードのQA視点レビュー |
+| `@Qase` 追記 | `/qase-annotation-writer` | テストコードへのQaseケース紐づけ |
+| Qase同期 | `/qase-sync` | `@Qase` のQaseへの同期・結果送信 |
 | QA作業提出 | `/end` | Git操作でQA作業成果を提出 |
 | ブランチ同期 | `/start` | 作業ブランチをmainと同期 |
 | QAドキュメント同期 | `/sync-qa-docs` | 外部ドキュメントとの同期 |
