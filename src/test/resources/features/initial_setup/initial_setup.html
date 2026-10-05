@@ -191,10 +191,10 @@ td.msg { font-weight: 500; }
     <text class="lbl" x="718" y="46" text-anchor="middle">5種から</text>
     <path class="flow" marker-end="url(#arw)" d="M450 124 V164 H736"/>
     <text class="lbl" x="560" y="158">コピーする</text>
-    <path class="flow" marker-end="url(#arw)" d="M880 88 H920 V124"/>
-    <path class="flow" marker-end="url(#arw)" d="M880 164 H920 V124"/>
-    <path class="flow" marker-end="url(#arw)" d="M630 120 V196 H946 V124"/>
-    <text class="lbl" x="660" y="190">カスタムなら</text>
+    <path class="flow" marker-end="url(#arw)" d="M880 88 H956"/>
+    <path class="flow" marker-end="url(#arw)" d="M880 164 H920 V104 H956"/>
+    <path class="flow" marker-end="url(#arw)" d="M630 56 V30 H1050 V52"/>
+    <text class="lbl" x="900" y="48" text-anchor="middle">カスタムなら</text>
     <path class="flow" marker-end="url(#arw)" d="M810 120 V268"/>
     <path class="flow" marker-end="url(#arw)" d="M810 196 V268"/>
     <path class="flow" marker-end="url(#arw)" d="M820 280 H880 V240 H1000 V124"/>
@@ -233,7 +233,7 @@ td.msg { font-weight: 500; }
       <rect class="screen-bar" x="435" y="62" width="30" height="3" rx="1.5"/>
       <text class="t-screen" x="450" y="86" text-anchor="middle">設定の始め方</text>
       <text class="t-sub" x="450" y="106" text-anchor="middle">ひな形／コピー</text>
-      <text class="err" x="380" y="140">✕ 元にできる設定が0件 → コピーは押せない</text>
+      <text class="t-sub" x="450" y="140" text-anchor="middle">元にできる設定が0件でもコピーは押せる</text>
     </g>
     <g class="hit" data-key="type" tabindex="0" role="button" aria-label="使い方のタイプを選ぶ画面">
       <rect class="screen" x="560" y="56" width="140" height="64" rx="10"/>
@@ -252,6 +252,7 @@ td.msg { font-weight: 500; }
       <rect class="screen-bar" x="795" y="138" width="30" height="3" rx="1.5"/>
       <text class="t-screen" x="810" y="162" text-anchor="middle">コピー元を選ぶ</text>
       <text class="t-sub" x="810" y="182" text-anchor="middle">探す・絞る・消す</text>
+      <text class="t-sub" x="810" y="202" text-anchor="middle">0件ならその旨を知らせる</text>
       <text class="err" x="740" y="212">✕ 絞り込んで0件 → 出せるものがない</text>
     </g>
     <g class="hit" data-key="set" tabindex="0" role="button" aria-label="各項目を入れる画面">
@@ -299,10 +300,10 @@ td.msg { font-weight: 500; }
     </g>
 
     <!-- lane C: saved things -->
-    <g class="hit" data-key="A" tabindex="0" role="button" aria-label="残る 認証のしかたを選んだところまで">
+    <g class="hit" data-key="A" tabindex="0" role="button" aria-label="顔の申し込みは残らず、中断すると認証のしかたから">
       <rect class="save-box" x="200" y="512" width="170" height="40" rx="8"/>
-      <text class="t-save" x="285" y="536" text-anchor="middle">残る：認証のしかた</text>
-      <text class="t-save-note" x="285" y="572" text-anchor="middle">中断 → 顔を使う準備から</text>
+      <text class="t-save" x="285" y="536" text-anchor="middle">残らない：顔の申し込み</text>
+      <text class="t-save-note" x="285" y="572" text-anchor="middle">中断 → 認証のしかたから</text>
     </g>
     <g class="hit" data-key="B" tabindex="0" role="button" aria-label="残る 設定の始め方まで">
       <rect class="save-box" x="460" y="512" width="170" height="40" rx="8"/>
@@ -349,8 +350,9 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="face,1"><div class="ttl"><i class="dot ok"></i>承認されるまでは先に進めない</div><div class="chips"></div></div>
       <div class="card" data-keys="face,1,how"><div class="ttl"><i class="dot ok"></i>開いたまま承認された → 先に進める</div><div class="chips"></div></div>
       <div class="card" data-keys="face,auth"><div class="ttl"><i class="dot ok"></i>申し込みを取り消す → 前の画面に戻る</div><div class="chips"></div></div>
-      <div class="card" data-keys="face,A"><div class="ttl"><i class="dot ng"></i>準備の途中で止める → 進み具合に応じた画面へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="face,1,A"><div class="ttl"><i class="dot ng"></i>閉じている間に承認された → 開くと承認済み</div><div class="chips"></div></div>
+      <div class="card" data-keys="face,auth,A"><div class="ttl"><i class="dot ng"></i>準備の途中で止める → 認証のしかたの画面に戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="face,auth,A"><div class="ttl"><i class="dot ng"></i>申し込んで待っている間にアプリを落とす → 開くと認証のしかたの画面</div><div class="chips"></div></div>
+      <div class="card" data-keys="face,1,how,A"><div class="ttl"><i class="dot ng"></i>閉じている間に承認された → 開くと始め方の画面から</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -359,7 +361,7 @@ td.msg { font-weight: 500; }
     <div class="cards">
       <div class="card" data-keys="how"><div class="ttl"><i class="dot ok"></i>ひな形／コピー の2つから選べる</div><div class="chips"></div></div>
       <div class="card" data-keys="how,type,copy"><div class="ttl"><i class="dot ok"></i>選んだ始め方で次の行き先が変わる</div><div class="chips"></div></div>
-      <div class="card" data-keys="how"><div class="ttl"><i class="dot ng"></i>元にできる設定が0件 → コピーは押せない</div><div class="chips"></div></div>
+      <div class="card" data-keys="how,copy"><div class="ttl"><i class="dot ok"></i>元にできる設定が0件でもコピーは押せる → 次の画面で「0件」を知らせる</div><div class="chips"></div></div>
       <div class="card" data-keys="how,B"><div class="ttl"><i class="dot ng"></i>選んでいる途中で止める → 同じ画面から再開</div><div class="chips"></div></div>
     </div>
   </div>
@@ -396,7 +398,7 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="copy"><div class="ttl"><i class="dot ng"></i>どれにも当てはまらない条件 → 出せるものがない</div><div class="chips"></div></div>
       <div class="card" data-keys="copy"><div class="ttl"><i class="dot ok"></i>確認して消す → 一覧から消える</div><div class="chips"></div></div>
       <div class="card" data-keys="copy"><div class="ttl"><i class="dot ok"></i>確認でやめる → 消えない</div><div class="chips"></div></div>
-      <div class="card" data-keys="copy,how"><div class="ttl"><i class="dot ok"></i>最後の1件を消す → 始め方の画面に戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="copy"><div class="ttl"><i class="dot ok"></i>最後の1件を消す → 一覧が0件になり、その旨が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="copy,2"><div class="ttl"><i class="dot ng"></i>コピー元の一覧が出てこない → エラー画面</div><div class="chips"></div></div>
       <div class="card" data-keys="copy,B"><div class="ttl"><i class="dot ng"></i>選んでいる途中で止める → 始め方の画面へ</div><div class="chips"></div></div>
     </div>
@@ -541,7 +543,7 @@ td.msg { font-weight: 500; }
     set: "各項目を入れる", done: "仕上げてホームへ",
     "1": "① 使えるようになった？", "2": "② 元になる値を取り込む",
     "3": "③ 入力を点検する", "4": "④ 設定を保存する",
-    A: "残る：認証のしかた", B: "残る：始め方まで",
+    A: "残らない：顔の申し込み", B: "残る：始め方まで",
     C: "残る：仕上がった設定"
   };
   var root = document.documentElement;
