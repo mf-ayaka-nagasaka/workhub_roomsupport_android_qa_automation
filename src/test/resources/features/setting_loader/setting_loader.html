@@ -207,8 +207,10 @@ td.msg { font-weight: 500; }
     <text class="lbl" x="1108" y="166">設定がない</text>
     <path class="flow" marker-end="url(#arw)" d="M1185 232 H1361"/>
     <text class="lbl" x="1357" y="222" text-anchor="end">設定がある</text>
-    <path class="flow" marker-end="url(#arw)" d="M1180 84 H1216"/>
+    <path class="flow" marker-end="url(#arw)" d="M1180 76 H1216"/>
     <text class="lbl" x="1198" y="44" text-anchor="middle">再設置を選ぶ</text>
+    <path class="flow" marker-end="url(#arw)" d="M1220 100 H1184"/>
+    <text class="lbl" x="1202" y="136" text-anchor="middle">戻る</text>
     <path class="flow" marker-end="url(#arw)" d="M1125 116 V326"/>
     <text class="lbl" x="1133" y="306">新規設置を選ぶ</text>
     <path class="flow" marker-end="url(#arw)" d="M1225 358 H1390 V120"/>
@@ -257,6 +259,7 @@ td.msg { font-weight: 500; }
       <rect class="screen-bar" x="1080" y="58" width="30" height="3" rx="1.5"/>
       <text class="t-screen" x="1095" y="82" text-anchor="middle">設置方法の選択</text>
       <text class="t-sub" x="1095" y="102" text-anchor="middle">再設置／新規設置</text>
+      <text class="err" x="1010" y="136">✕ 端末を見分けられないと出たまま</text>
     </g>
     <g class="hit" data-key="REINS" tabindex="0" role="button" aria-label="再設置へ">
       <rect class="screen" x="1220" y="52" width="110" height="64" rx="10"/>
@@ -430,6 +433,8 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="5,DLG"><div class="ttl"><i class="dot ok"></i>設定が無い → 設置方法の選択が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="DLG,REINS,6,INIT"><div class="ttl"><i class="dot ok"></i>再設置 → 再設置へ／新規設置 → 設定を作って初期設定へ</div><div class="chips"></div></div>
       <div class="card" data-keys="6,LOGIN"><div class="ttl"><i class="dot ng"></i>新しい設定を作れない → ログイン画面へ戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="DLG,LD"><div class="ttl"><i class="dot ng"></i>端末を見分けられない → 選択が出たまま、見分けられたら読み込み再開</div><div class="chips"></div></div>
+      <div class="card" data-keys="REINS,DLG"><div class="ttl"><i class="dot ok"></i>再設置から戻る → 設置方法の選択に戻る</div><div class="chips"></div></div>
     </div>
   </div>
 
