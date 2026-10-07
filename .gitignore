@@ -3,3 +3,13 @@ data/*_data/
 
 # 配布用ビルド成果物
 dist/
+
+# Qase連携の中間生成物（テストソースから再生成できるため管理不要）
+build/
+
+# Pythonのキャッシュ
+__pycache__/
+
+# 作業用のスクリーンショット・ローカル設定
+*.png
+*.code-workspace

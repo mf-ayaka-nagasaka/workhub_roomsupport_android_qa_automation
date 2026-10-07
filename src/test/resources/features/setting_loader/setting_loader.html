@@ -154,7 +154,7 @@ td.msg { font-weight: 500; }
 <header>
   <p class="eyebrow">setting_loader ／ 全体マップ</p>
   <h1>setting_loader</h1>
-  <p class="lead">ログインが終わってから、タブレットが「使える状態」に着くまでに裏で何が順番に起きるかを1枚にしたもの。図の箱やテストケースをクリックすると、対応する場所が光ります。</p>
+  <p class="lead">アプリを起動してから、タブレットが「使える状態」に着くまでに裏で何が順番に起きるかを1枚にしたもの。図の箱やテストケースをクリックすると、対応する場所が光ります。</p>
   <div class="controls">
     <button class="link" id="clearBtn" type="button">選択を解除</button>
     <span id="status">箱をクリックすると、その場所に関係するテストだけが残ります</span>
@@ -164,136 +164,195 @@ td.msg { font-weight: 500; }
 <section>
 <figure>
   <div class="scroll">
-  <svg class="map" viewBox="0 0 1440 560" role="img" aria-label="設定値の読み込みの流れ。上段は利用者が見る画面、中段は裏側で起きる処理、下段は残るもの。処理は組織の情報を取る、この端末の設定があるかの判定、初期設定が終わっているかの判定、起動の情報を整えるの順に進む。">
+  <svg class="map" viewBox="0 0 1980 560" role="img" aria-label="起動から設定の読み込みまでの流れ。上段は利用者が見る画面、中段は裏側で起きる処理、下段は残るもの。処理は権限を確かめる、ログインの記録を見る、本人確認をやり直す、組織の情報を取る、この端末の設定があるかの判定、初期設定が終わっているかの判定、起動の情報を整えるの順に進む。">
     <defs>
       <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-flow"/></marker>
       <marker id="arwS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-save"/></marker>
       <marker id="arwE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-err"/></marker>
     </defs>
 
-    <rect class="lane" x="0" y="16" width="1440" height="128" rx="12"/>
-    <rect class="lane" x="0" y="156" width="1440" height="250" rx="12"/>
-    <rect class="lane" x="0" y="418" width="1440" height="126" rx="12"/>
+    <rect class="lane" x="0" y="16" width="1980" height="128" rx="12"/>
+    <rect class="lane" x="0" y="156" width="1980" height="250" rx="12"/>
+    <rect class="lane" x="0" y="418" width="1980" height="126" rx="12"/>
     <text class="lane-label" x="16" y="38">画面（利用者が見るもの）</text>
     <text class="lane-label" x="16" y="178">裏側で起きていること</text>
     <text class="lane-label" x="16" y="440">残るもの</text>
     <text class="lane-label" x="16" y="456">（中断したときの戻り先）</text>
 
-    <path class="flow" marker-end="url(#arw)" d="M110 116 V232 H216"/>
-    <text class="lbl" x="206" y="152">ログインが終わる</text>
-    <path class="flow" marker-end="url(#arw)" d="M295 200 V122"/>
-    <text class="lbl" x="303" y="166">読み込み中と出す</text>
-    <path class="flow" marker-end="url(#arw)" d="M370 232 H476"/>
-    <path class="flow" marker-end="url(#arw)" d="M640 232 H891"/>
-    <text class="lbl" x="885" y="222" text-anchor="end">設定がある</text>
-    <path class="flow" marker-end="url(#arw)" d="M560 196 V84 H596"/>
-    <text class="lbl" x="568" y="152">設定がない</text>
-    <path class="flow" marker-end="url(#arw)" d="M685 116 V326"/>
-    <text class="lbl" x="693" y="306">新規設置を選ぶ</text>
-    <path class="flow" marker-end="url(#arw)" d="M770 84 H781"/>
-    <text class="lbl" x="775" y="42" text-anchor="middle">再設置を選ぶ</text>
-    <path class="flow" marker-end="url(#arw)" d="M770 358 H862 V84 H896"/>
-    <text class="lbl" x="858" y="350" text-anchor="end">設定ができた</text>
-    <path class="flow" marker-end="url(#arw)" d="M980 190 V122"/>
-    <text class="lbl" x="988" y="166">終わっていない</text>
-    <path class="flow" marker-end="url(#arw)" d="M1065 232 H1176"/>
-    <text class="lbl" x="1174" y="222" text-anchor="end">終わっている</text>
-    <path class="flow" marker-end="url(#arw)" d="M1255 200 V122"/>
-    <text class="lbl" x="1263" y="166">完了</text>
+    <path class="flow" marker-end="url(#arw)" d="M20 232 H56"/>
+    <text class="lbl" x="20" y="222">起動する</text>
+    <path class="flow" marker-end="url(#arw)" d="M210 232 H241"/>
+    <path class="flow" marker-end="url(#arw)" d="M135 200 V120"/>
+    <text class="lbl" x="143" y="170">権限が足りない</text>
+    <path class="flow" marker-end="url(#arw)" d="M190 116 V130 H283 V209"/>
+    <text class="lbl" x="279" y="152" text-anchor="end">権限が揃う</text>
+    <path class="flow" marker-end="url(#arw)" d="M415 232 H451"/>
+    <text class="lbl" x="447" y="222" text-anchor="end">記録あり</text>
+    <path class="flow" marker-end="url(#arw)" d="M330 190 V120"/>
+    <text class="lbl" x="338" y="166">記録がない・判定できない</text>
+    <path class="flow" marker-end="url(#arw)" d="M535 200 V120"/>
+    <text class="lbl" x="543" y="170">3回ダメ（つながらない）</text>
+    <path class="flow" marker-end="url(#arw)" d="M450 84 H384"/>
+    <text class="lbl" x="417" y="74" text-anchor="middle">ログイン画面へ</text>
+    <path class="flow" marker-end="url(#arw)" d="M600 116 V196"/>
+    <text class="lbl" x="608" y="160">つながったらやり直す</text>
+    <path class="flow" marker-end="url(#arw)" d="M615 232 H796"/>
+    <text class="lbl" x="792" y="222" text-anchor="end">本人確認ができた</text>
+    <path class="flow" marker-end="url(#arw)" d="M615 250 H660 V400 H1880 V84 H1864"/>
+    <text class="lbl" x="668" y="392">控えがあれば、そのまま使える状態へ</text>
+    <path class="flow" marker-end="url(#arw)" d="M875 200 V120"/>
+    <text class="lbl" x="883" y="166">読み込み中と出す</text>
+    <path class="flow" marker-end="url(#arw)" d="M950 232 H1011"/>
+    <path class="flow" marker-end="url(#arw)" d="M1100 190 V120"/>
+    <text class="lbl" x="1108" y="166">設定がない</text>
+    <path class="flow" marker-end="url(#arw)" d="M1185 232 H1361"/>
+    <text class="lbl" x="1357" y="222" text-anchor="end">設定がある</text>
+    <path class="flow" marker-end="url(#arw)" d="M1180 76 H1216"/>
+    <text class="lbl" x="1198" y="44" text-anchor="middle">再設置を選ぶ</text>
+    <path class="flow" marker-end="url(#arw)" d="M1220 100 H1184"/>
+    <text class="lbl" x="1202" y="136" text-anchor="middle">戻る</text>
+    <path class="flow" marker-end="url(#arw)" d="M1125 116 V326"/>
+    <text class="lbl" x="1133" y="306">新規設置を選ぶ</text>
+    <path class="flow" marker-end="url(#arw)" d="M1225 358 H1390 V120"/>
+    <text class="lbl" x="1386" y="350" text-anchor="end">設定ができた</text>
+    <path class="flow" marker-end="url(#arw)" d="M1450 190 V120"/>
+    <text class="lbl" x="1458" y="166">終わっていない</text>
+    <path class="flow" marker-end="url(#arw)" d="M1535 232 H1696"/>
+    <text class="lbl" x="1692" y="222" text-anchor="end">終わっている</text>
+    <path class="flow" marker-end="url(#arw)" d="M1775 200 V120"/>
+    <text class="lbl" x="1783" y="166">完了</text>
 
-    <path class="err-line" marker-end="url(#arwE)" d="M110 300 V122"/>
-    <text class="err" x="40" y="318">✕ 失敗するとここへ戻る</text>
+    <path class="err-line" marker-end="url(#arwE)" d="M310 300 V120"/>
+    <text class="err" x="240" y="318">✕ 失敗するとここへ戻る</text>
 
-    <path class="save" marker-end="url(#arwS)" d="M295 268 V445"/>
-    <path class="save" d="M560 268 V445"/>
-    <path class="save" d="M980 274 V445"/>
+    <path class="save" marker-end="url(#arwS)" d="M530 264 V441"/>
+    <path class="save" d="M1100 274 V412 H1015 V441"/>
+    <path class="save" d="M1450 274 V412 H1480 V441"/>
+    <path class="save" marker-end="url(#arwS)" d="M1150 249 V420 H1255 V441"/>
 
+    <g class="hit" data-key="PERM" tabindex="0" role="button" aria-label="権限の案内">
+      <rect class="screen" x="40" y="52" width="160" height="64" rx="10"/>
+      <rect class="screen-bar" x="105" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="120" y="82" text-anchor="middle">権限の案内</text>
+      <text class="t-sub" x="120" y="102" text-anchor="middle">揃うまで出続ける</text>
+    </g>
     <g class="hit" data-key="LOGIN" tabindex="0" role="button" aria-label="ログイン画面">
-      <rect class="screen" x="40" y="52" width="140" height="64" rx="10"/>
-      <rect class="screen-bar" x="95" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="110" y="82" text-anchor="middle">ログイン画面</text>
-      <text class="t-sub" x="110" y="102" text-anchor="middle">失敗したらここへ戻る</text>
+      <rect class="screen" x="240" y="52" width="140" height="64" rx="10"/>
+      <rect class="screen-bar" x="295" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="310" y="82" text-anchor="middle">ログイン画面</text>
+      <text class="t-sub" x="310" y="102" text-anchor="middle">失敗したらここへ戻る</text>
+    </g>
+    <g class="hit" data-key="WAIT" tabindex="0" role="button" aria-label="接続を待っています">
+      <rect class="screen" x="450" y="52" width="180" height="64" rx="10"/>
+      <rect class="screen-bar" x="525" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="540" y="82" text-anchor="middle">接続を待っています</text>
+      <text class="t-sub" x="540" y="102" text-anchor="middle">3秒ごとに試し直す</text>
     </g>
     <g class="hit" data-key="LD" tabindex="0" role="button" aria-label="設定を読み込んでいます">
-      <rect class="screen" x="240" y="52" width="180" height="64" rx="10"/>
-      <rect class="screen-bar" x="315" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="330" y="82" text-anchor="middle">設定を読み込んでいます</text>
-      <text class="t-sub" x="330" y="102" text-anchor="middle">終わるまで操作できない</text>
+      <rect class="screen" x="760" y="52" width="180" height="64" rx="10"/>
+      <rect class="screen-bar" x="835" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="850" y="82" text-anchor="middle">設定を読み込んでいます</text>
+      <text class="t-sub" x="850" y="102" text-anchor="middle">終わるまで操作できない</text>
     </g>
     <g class="hit" data-key="DLG" tabindex="0" role="button" aria-label="設置方法の選択">
-      <rect class="screen" x="600" y="52" width="170" height="64" rx="10"/>
-      <rect class="screen-bar" x="670" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="685" y="82" text-anchor="middle">設置方法の選択</text>
-      <text class="t-sub" x="685" y="102" text-anchor="middle">再設置／新規設置</text>
-      <text class="err" x="600" y="136">✕ ほかを触っても閉じない</text>
+      <rect class="screen" x="1010" y="52" width="170" height="64" rx="10"/>
+      <rect class="screen-bar" x="1080" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="1095" y="82" text-anchor="middle">設置方法の選択</text>
+      <text class="t-sub" x="1095" y="102" text-anchor="middle">再設置／新規設置</text>
+      <text class="err" x="1010" y="136">✕ 識別情報が読めないと、ここに出る</text>
     </g>
     <g class="hit" data-key="REINS" tabindex="0" role="button" aria-label="再設置へ">
-      <rect class="screen" x="785" y="52" width="110" height="64" rx="10"/>
-      <rect class="screen-bar" x="825" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="840" y="88" text-anchor="middle">再設置へ</text>
+      <rect class="screen" x="1220" y="52" width="110" height="64" rx="10"/>
+      <rect class="screen-bar" x="1260" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="1275" y="88" text-anchor="middle">再設置へ</text>
     </g>
     <g class="hit" data-key="INIT" tabindex="0" role="button" aria-label="初期設定画面">
-      <rect class="screen" x="900" y="52" width="160" height="64" rx="10"/>
-      <rect class="screen-bar" x="965" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="980" y="82" text-anchor="middle">初期設定画面</text>
-      <text class="t-sub" x="980" y="102" text-anchor="middle">最初の手順では戻れない</text>
+      <rect class="screen" x="1370" y="52" width="160" height="64" rx="10"/>
+      <rect class="screen-bar" x="1435" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="1450" y="88" text-anchor="middle">初期設定画面</text>
     </g>
     <g class="hit" data-key="PREP" tabindex="0" role="button" aria-label="使える状態へ">
-      <rect class="screen" x="1170" y="52" width="180" height="64" rx="10"/>
-      <rect class="screen-bar" x="1245" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="1260" y="82" text-anchor="middle">使える状態へ</text>
-      <text class="t-sub" x="1260" y="102" text-anchor="middle">＝ 読み込み完了</text>
+      <rect class="screen" x="1680" y="52" width="180" height="64" rx="10"/>
+      <rect class="screen-bar" x="1755" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="1770" y="82" text-anchor="middle">使える状態へ</text>
+      <text class="t-sub" x="1770" y="102" text-anchor="middle">＝ 読み込み完了</text>
     </g>
 
-    <g class="hit" data-key="1" tabindex="0" role="button" aria-label="組織の情報を取る">
-      <rect class="step" x="220" y="200" width="150" height="64" rx="8"/>
-      <text class="t-name" x="295" y="224" text-anchor="middle">① 組織の情報を取る</text>
-      <text class="t-sub" x="295" y="242" text-anchor="middle">どの組織の端末か</text>
-      <text class="err" x="220" y="292">✕ 取れない</text>
-      <text class="err" x="220" y="308">→ 取り直さずログインへ</text>
+    <g class="hit" data-key="1" tabindex="0" role="button" aria-label="権限を確かめる">
+      <rect class="step" x="60" y="200" width="150" height="64" rx="8"/>
+      <text class="t-name" x="135" y="224" text-anchor="middle">① 権限を確かめる</text>
+      <text class="t-sub" x="135" y="242" text-anchor="middle">カメラ・Bluetooth</text>
+      <text class="err" x="60" y="292">✕ 権限が足りない</text>
+      <text class="err" x="60" y="308">→ 揃うまで先へ進まない</text>
     </g>
-    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="この端末の設定はあるか">
-      <polygon class="step-diamond" points="560,196 640,232 560,268 480,232"/>
-      <text class="t-name" x="560" y="229" text-anchor="middle">② この端末の</text>
-      <text class="t-name" x="560" y="245" text-anchor="middle">設定はある？</text>
-      <text class="err" x="430" y="306">✕ 取れない・中身がおかしい</text>
-      <text class="err" x="430" y="322">→ 10秒おきに3回まで</text>
-      <text class="err" x="430" y="338">  取り直す</text>
+    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="ログインの記録を見る">
+      <polygon class="step-diamond" points="330,190 415,232 330,274 245,232"/>
+      <text class="t-name" x="330" y="229" text-anchor="middle">② ログインの</text>
+      <text class="t-name" x="330" y="245" text-anchor="middle">記録はある？</text>
     </g>
-    <g class="hit" data-key="5" tabindex="0" role="button" aria-label="新しい設定を作る">
-      <rect class="step" x="610" y="330" width="160" height="56" rx="8"/>
-      <text class="t-name" x="690" y="352" text-anchor="middle">⑤ 新しい設定を作る</text>
-      <text class="t-sub" x="690" y="370" text-anchor="middle">初期設定を行っています</text>
+    <g class="hit" data-key="3" tabindex="0" role="button" aria-label="本人確認をやり直す">
+      <rect class="step" x="455" y="200" width="160" height="64" rx="8"/>
+      <text class="t-name" x="535" y="224" text-anchor="middle">③ 本人確認をやり直す</text>
+      <text class="t-sub" x="535" y="242" text-anchor="middle">30秒で終わらなければ失敗</text>
+      <text class="err" x="440" y="292">✕ 本人確認ができない</text>
+      <text class="err" x="440" y="308">→ 5秒おきに3回まで</text>
+      <text class="err" x="440" y="324">→ ダメなら控えの有無で分かれる</text>
     </g>
-    <g class="hit" data-key="3" tabindex="0" role="button" aria-label="初期設定は終わっているか">
-      <polygon class="step-diamond" points="980,190 1065,232 980,274 895,232"/>
-      <text class="t-name" x="980" y="229" text-anchor="middle">③ 初期設定は</text>
-      <text class="t-name" x="980" y="245" text-anchor="middle">終わっている？</text>
+    <g class="hit" data-key="4" tabindex="0" role="button" aria-label="組織の情報を取る">
+      <rect class="step" x="800" y="200" width="150" height="64" rx="8"/>
+      <text class="t-name" x="875" y="224" text-anchor="middle">④ 組織の情報を取る</text>
+      <text class="t-sub" x="875" y="242" text-anchor="middle">どの組織の端末か</text>
+      <text class="err" x="790" y="292">✕ 取れない</text>
+      <text class="err" x="790" y="308">→ 取り直さずログインへ</text>
     </g>
-    <g class="hit" data-key="4" tabindex="0" role="button" aria-label="起動の情報を整える">
-      <rect class="step" x="1180" y="200" width="150" height="64" rx="8"/>
-      <text class="t-name" x="1255" y="224" text-anchor="middle">④ 起動の情報を整える</text>
-      <text class="t-sub" x="1255" y="242" text-anchor="middle">起動の記録・つなぎ直し</text>
-      <text class="err" x="1120" y="292">✕ 端末の情報が整わない</text>
-      <text class="err" x="1120" y="308">✕ そのほかの失敗</text>
-      <text class="err" x="1120" y="324">→ 3回ダメならログインへ</text>
+    <g class="hit" data-key="5" tabindex="0" role="button" aria-label="この端末の設定はあるか">
+      <polygon class="step-diamond" points="1100,190 1185,232 1100,274 1015,232"/>
+      <text class="t-name" x="1100" y="229" text-anchor="middle">⑤ この端末の</text>
+      <text class="t-name" x="1100" y="245" text-anchor="middle">設定はある？</text>
+      <text class="err" x="1000" y="292">✕ 取れない・中身がおかしい</text>
+      <text class="err" x="1000" y="308">→ 10秒おきに3回まで</text>
+      <text class="err" x="1000" y="324">　 取り直す</text>
+    </g>
+    <g class="hit" data-key="6" tabindex="0" role="button" aria-label="新しい設定を作る">
+      <rect class="step" x="1065" y="330" width="160" height="56" rx="8"/>
+      <text class="t-name" x="1145" y="352" text-anchor="middle">⑥ 新しい設定を作る</text>
+      <text class="t-sub" x="1145" y="370" text-anchor="middle">初期設定を行っています</text>
+    </g>
+    <g class="hit" data-key="7" tabindex="0" role="button" aria-label="初期設定は終わっているか">
+      <polygon class="step-diamond" points="1450,190 1535,232 1450,274 1365,232"/>
+      <text class="t-name" x="1450" y="229" text-anchor="middle">⑦ 初期設定は</text>
+      <text class="t-name" x="1450" y="245" text-anchor="middle">終わっている？</text>
+    </g>
+    <g class="hit" data-key="8" tabindex="0" role="button" aria-label="起動の情報を整える">
+      <rect class="step" x="1700" y="200" width="150" height="64" rx="8"/>
+      <text class="t-name" x="1775" y="224" text-anchor="middle">⑧ 起動の情報を整える</text>
+      <text class="t-sub" x="1775" y="242" text-anchor="middle">起動の記録・つなぎ直し</text>
+      <text class="err" x="1620" y="292">✕ 端末の情報が整わない</text>
+      <text class="err" x="1620" y="308">✕ そのほかの失敗</text>
+      <text class="err" x="1620" y="324">→ 3回ダメならログインへ</text>
     </g>
 
     <g class="hit" data-key="C" tabindex="0" role="button" aria-label="残る ログインの状態">
-      <rect class="save-box" x="220" y="445" width="150" height="40" rx="8"/>
-      <text class="t-save" x="295" y="469" text-anchor="middle">残る：ログインの状態</text>
-      <text class="t-save-note" x="295" y="506" text-anchor="middle">失敗すると消える</text>
-      <text class="t-sub" x="295" y="522" text-anchor="middle">→ ログイン画面から</text>
+      <rect class="save-box" x="455" y="445" width="150" height="40" rx="8"/>
+      <text class="t-save" x="530" y="469" text-anchor="middle">残る：ログインの状態</text>
+      <text class="t-save-note" x="530" y="506" text-anchor="middle">失敗すると消える</text>
+      <text class="t-sub" x="530" y="522" text-anchor="middle">→ ログイン画面から</text>
     </g>
     <g class="hit" data-key="A" tabindex="0" role="button" aria-label="残る この端末の設定">
-      <rect class="save-box" x="485" y="445" width="150" height="40" rx="8"/>
-      <text class="t-save" x="560" y="469" text-anchor="middle">残る：この端末の設定</text>
-      <text class="t-save-note" x="560" y="506" text-anchor="middle">再起動 → 読み込みからやり直し</text>
+      <rect class="save-box" x="940" y="445" width="150" height="40" rx="8"/>
+      <text class="t-save" x="1015" y="469" text-anchor="middle">残る：この端末の設定</text>
+      <text class="t-save-note" x="1015" y="506" text-anchor="middle">再起動 → 読み込みからやり直し</text>
     </g>
     <g class="hit" data-key="B" tabindex="0" role="button" aria-label="残る 初期設定の進み">
-      <rect class="save-box" x="905" y="445" width="150" height="40" rx="8"/>
-      <text class="t-save" x="980" y="469" text-anchor="middle">残る：初期設定の進み</text>
-      <text class="t-save-note" x="980" y="506" text-anchor="middle">再起動 → 途中の手順から</text>
+      <rect class="save-box" x="1405" y="445" width="150" height="40" rx="8"/>
+      <text class="t-save" x="1480" y="469" text-anchor="middle">残る：初期設定の進み</text>
+      <text class="t-save-note" x="1480" y="506" text-anchor="middle">再起動 → 途中の手順から</text>
+    </g>
+    <g class="hit" data-key="D" tabindex="0" role="button" aria-label="残る 設定の控え">
+      <rect class="save-box" x="1180" y="445" width="150" height="40" rx="8"/>
+      <text class="t-save" x="1255" y="469" text-anchor="middle">残る：設定の控え</text>
+      <text class="t-save-note" x="1255" y="506" text-anchor="middle">控えを使う設定のときだけ作られる</text>
+      <text class="t-sub" x="1255" y="522" text-anchor="middle">→ つながらなくても起動できる</text>
     </g>
   </svg>
   </div>
@@ -312,56 +371,96 @@ td.msg { font-weight: 500; }
   <p class="hint">カードをクリックすると図の該当箇所が光ります。図の箱をクリックすると、その箱に関係するカードだけが残ります。● 緑＝うまくいく確認、● 赤＝失敗したときの確認。</p>
 
   <div class="group">
-    <h3>ルール① 設定が読み込まれて使える状態になる</h3>
+    <h3>ルール① 権限が揃うまで先へ進まない</h3>
     <div class="cards">
-      <div class="card" data-keys="LOGIN,LD,1,2,3,4,PREP"><div class="ttl"><i class="dot ok"></i>設定があり初期設定も済み → 読み込んで使える状態へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,PERM"><div class="ttl"><i class="dot ng"></i>権限が足りない → 案内が出続け、先へ進まない</div><div class="chips"></div></div>
+      <div class="card" data-keys="PERM,1,2"><div class="ttl"><i class="dot ok"></i>権限を許可する → 案内が閉じて続きが始まる</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール② ログインの記録で行き先が決まる</h3>
+    <div class="cards">
+      <div class="card" data-keys="2,3,LOGIN"><div class="ttl"><i class="dot ok"></i>記録あり → 本人確認へ／記録なし・判定できない → ログイン画面へ</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール③ 本人確認は3回までやり直す</h3>
+    <div class="cards">
+      <div class="card" data-keys="3,LD,4"><div class="ttl"><i class="dot ok"></i>1回目・やり直しで成功 → 読み込みが始まる</div><div class="chips"></div></div>
+      <div class="card" data-keys="3"><div class="ttl"><i class="dot ng"></i>30秒で終わらない → 失敗として扱われ、やり直しへ</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール④ 3回ダメだったときの行き先</h3>
+    <div class="cards">
+      <div class="card" data-keys="3,C,LOGIN"><div class="ttl"><i class="dot ng"></i>本人確認に必要な情報がない → 案内なしでログイン画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="3,C,LOGIN"><div class="ttl"><i class="dot ng"></i>本人確認を断られた＋控えなし → 言葉が出てからログイン画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="3,D,PREP"><div class="ttl"><i class="dot ng"></i>控えあり → 失敗の種類を問わず、控えを使って使える状態へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="3,WAIT"><div class="ttl"><i class="dot ng"></i>つながらない＋控えなし → 接続待ちになる</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑤ 接続待ちからの進み方</h3>
+    <div class="cards">
+      <div class="card" data-keys="WAIT,LOGIN"><div class="ttl"><i class="dot ok"></i>接続待ちの表示と、ログイン画面へ行く手段がある</div><div class="chips"></div></div>
+      <div class="card" data-keys="WAIT,3,LD,LOGIN"><div class="ttl"><i class="dot ok"></i>つながれば本人確認をやり直して読み込みへ／選べばログイン画面へ</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑥ 設定が読み込まれて使える状態になる</h3>
+    <div class="cards">
+      <div class="card" data-keys="LD,4,5,7,8,PREP"><div class="ttl"><i class="dot ok"></i>設定があり初期設定も済み → 読み込んで使える状態へ</div><div class="chips"></div></div>
       <div class="card" data-keys="LD"><div class="ttl"><i class="dot ok"></i>読み込み中は何も操作できない</div><div class="chips"></div></div>
       <div class="card" data-keys="LD,A,DLG,INIT"><div class="ttl"><i class="dot ng"></i>途中で終了して再起動 → どこから再開するか</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール② 初期設定が終わっていなければ初期設定へ</h3>
+    <h3>ルール⑦ 初期設定が終わっていなければ初期設定へ</h3>
     <div class="cards">
-      <div class="card" data-keys="3,INIT,PREP,B"><div class="ttl"><i class="dot ok"></i>終わっていない → 初期設定へ／終わっている → 使える状態へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="INIT"><div class="ttl"><i class="dot ok"></i>最初の手順では戻れない／2つ目以降は前の手順に戻れる</div><div class="chips"></div></div>
+      <div class="card" data-keys="7,INIT,PREP,B"><div class="ttl"><i class="dot ok"></i>終わっていない → 初期設定へ／終わっている → 使える状態へ</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール③ 設定が無ければ設置方法を選ぶ</h3>
+    <h3>ルール⑧ 設定が無ければ設置方法を選ぶ</h3>
     <div class="cards">
-      <div class="card" data-keys="2,DLG"><div class="ttl"><i class="dot ok"></i>設定が無い → 設置方法の選択が出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="DLG"><div class="ttl"><i class="dot ok"></i>選ばずに他を触っても閉じない</div><div class="chips"></div></div>
-      <div class="card" data-keys="2,A,DLG"><div class="ttl"><i class="dot ok"></i>設定の有無で、選択が出る・出ないが変わる</div><div class="chips"></div></div>
-      <div class="card" data-keys="DLG,REINS,5,INIT"><div class="ttl"><i class="dot ok"></i>再設置 → 再設置へ／新規設置 → 設定を作って初期設定へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="5,LOGIN"><div class="ttl"><i class="dot ng"></i>新しい設定を作れない → ログイン画面へ戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="5,DLG"><div class="ttl"><i class="dot ok"></i>設定が無い → 設置方法の選択が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="DLG,REINS,6,INIT"><div class="ttl"><i class="dot ok"></i>再設置 → 再設置へ／新規設置 → 設定を作って初期設定へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="6,LOGIN"><div class="ttl"><i class="dot ng"></i>新しい設定を作れない → ログイン画面へ戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="DLG,5,LD"><div class="ttl"><i class="dot ng"></i>識別情報が読めない → 代わりの情報で探すため選択が出る／読めたら読み込みをやり直す</div><div class="chips"></div></div>
+      <div class="card" data-keys="DLG,REINS,6"><div class="ttl"><i class="dot ng"></i>読めないまま選ぶと、代わりの情報がこの端末の識別情報として確定する</div><div class="chips"></div></div>
+      <div class="card" data-keys="REINS,DLG"><div class="ttl"><i class="dot ok"></i>再設置から戻る → 設置方法の選択に戻る</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール④ 取れないときは取り直す</h3>
+    <h3>ルール⑨ 取れないときは取り直す</h3>
     <div class="cards">
-      <div class="card" data-keys="2,LD,PREP"><div class="ttl"><i class="dot ng"></i>途中で取れるようになれば、そのまま使える状態へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="2,4,LOGIN,C"><div class="ttl"><i class="dot ng"></i>3回取り直してもダメ → ログイン画面へ戻る</div><div class="chips"></div></div>
-      <div class="card" data-keys="LOGIN,C,LD"><div class="ttl"><i class="dot ng"></i>戻された後：戻る操作はできない／直れば入り直して進める</div><div class="chips"></div></div>
+      <div class="card" data-keys="5,LD,PREP"><div class="ttl"><i class="dot ng"></i>途中で取れるようになれば、そのまま使える状態へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="5,8,LOGIN,C"><div class="ttl"><i class="dot ng"></i>3回取り直してもダメ → ログイン画面へ戻る</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール⑤ 組織の情報が取れないときは取り直さない</h3>
+    <h3>ルール⑩ 組織の情報が取れないときは取り直さない</h3>
     <div class="cards">
-      <div class="card" data-keys="1,LOGIN,C"><div class="ttl"><i class="dot ng"></i>組織の情報が取れない → 取り直さずログイン画面へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="1,LOGIN"><div class="ttl"><i class="dot ng"></i>1回だけの失敗でも取り直さない（②との違い）</div><div class="chips"></div></div>
-      <div class="card" data-keys="1,2,4,5"><div class="ttl"><i class="dot ng"></i>失敗した場所ごとに出る言葉が違う</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,LOGIN,C"><div class="ttl"><i class="dot ng"></i>組織の情報が取れない → 取り直さずログイン画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,LOGIN"><div class="ttl"><i class="dot ng"></i>1回だけの失敗でも取り直さない（⑤との違い）</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
     <h3>通し（実機で最後まで）</h3>
     <div class="cards">
-      <div class="card" data-keys="LOGIN,LD,1,2,3,4,PREP"><div class="ttl"><i class="dot ok"></i>設置済みの端末：起動するだけで使える状態まで</div><div class="chips"></div></div>
-      <div class="card" data-keys="LD,2,DLG,5,INIT"><div class="ttl"><i class="dot ok"></i>未設置の端末：新規設置を選んで初期設定まで</div><div class="chips"></div></div>
+      <div class="card" data-keys="PERM,1,2,3,LD"><div class="ttl"><i class="dot ok"></i>権限が揃いログイン済み：起動するだけで読み込みまで</div><div class="chips"></div></div>
+      <div class="card" data-keys="LOGIN,LD,4,5,7,8,PREP"><div class="ttl"><i class="dot ok"></i>設置済みの端末：起動するだけで使える状態まで</div><div class="chips"></div></div>
+      <div class="card" data-keys="LD,5,DLG,6,INIT"><div class="ttl"><i class="dot ok"></i>未設置の端末：新規設置を選んで初期設定まで</div><div class="chips"></div></div>
     </div>
   </div>
 </section>
@@ -372,10 +471,11 @@ td.msg { font-weight: 500; }
   <div class="tbl-wrap">
   <table>
     <tr><th>画面に出る言葉</th><th>止まった場所</th></tr>
-    <tr><td class="msg">組織情報の取得に失敗しました</td><td>① 組織の情報を取る（取り直しなし・すぐログイン画面へ）</td></tr>
-    <tr><td class="msg">端末情報の取得に失敗しました…(1)</td><td>② 設定が取れない・中身がおかしいとき ／ ④ 端末の情報が整わないとき（いずれも3回取り直した後）</td></tr>
-    <tr><td class="msg">端末情報の取得に失敗しました…(2)</td><td>④ そのほかの失敗（3回取り直した後）</td></tr>
-    <tr><td class="msg">初期設定に失敗しました</td><td>⑤ 新しい設定を作れないとき</td></tr>
+    <tr><td class="msg">token失効により自動ログインに失敗しました</td><td>③ 本人確認を3回やり直してもダメだったとき（断られた場合のみ）</td></tr>
+    <tr><td class="msg">組織情報の取得に失敗しました</td><td>④ 組織の情報を取る（取り直しなし・すぐログイン画面へ）</td></tr>
+    <tr><td class="msg">端末情報の取得に失敗しました…(1)</td><td>⑤ 設定が取れない・中身がおかしいとき ／ ⑧ 端末の情報が整わないとき（いずれも3回取り直した後）</td></tr>
+    <tr><td class="msg">端末情報の取得に失敗しました…(2)</td><td>⑧ そのほかの失敗（3回取り直した後）</td></tr>
+    <tr><td class="msg">初期設定に失敗しました</td><td>⑥ 新しい設定を作れないとき</td></tr>
   </table>
   </div>
   </div>
@@ -387,9 +487,11 @@ td.msg { font-weight: 500; }
 <script>
 (function () {
   var LABEL = {
-    LOGIN: "ログイン画面", LD: "読み込み中", DLG: "設置方法の選択", REINS: "再設置へ", INIT: "初期設定画面", PREP: "使える状態",
-    1: "① 組織の情報", 2: "② 端末の設定", 3: "③ 初期設定済み？", 4: "④ 起動の情報", 5: "⑤ 設定を作る",
-    A: "残る：端末の設定", B: "残る：初期設定の進み", C: "残る：ログインの状態"
+    PERM: "権限の案内", LOGIN: "ログイン画面", WAIT: "接続待ち", LD: "読み込み中", DLG: "設置方法の選択",
+    REINS: "再設置へ", INIT: "初期設定画面", PREP: "使える状態",
+    1: "① 権限を確かめる", 2: "② ログインの記録", 3: "③ 本人確認をやり直す", 4: "④ 組織の情報",
+    5: "⑤ 端末の設定", 6: "⑥ 設定を作る", 7: "⑦ 初期設定済み？", 8: "⑧ 起動の情報",
+    A: "残る：端末の設定", B: "残る：初期設定の進み", C: "残る：ログインの状態", D: "残る：設定の控え"
   };
   var root = document.documentElement;
   var hits = Array.prototype.slice.call(document.querySelectorAll(".hit"));
