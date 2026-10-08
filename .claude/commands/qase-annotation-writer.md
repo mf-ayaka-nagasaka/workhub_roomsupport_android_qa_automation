@@ -16,7 +16,7 @@
 - **Gherkinシナリオ（記載内容の唯一の正本）**: `src/test/resources/features/{feature_name}/scenarios_with_viewpoints.md`
 - **レビュー基準書（UT-6 の判定基準）**: `docs/unit_test_review_criteria.md`
 - **記述ルール**: `docs/qase_annotation_rules.md`
-- **対象リポジトリ**: `C:\Users\mforce0087\workhubRoomSupport-Android`
+- **対象リポジトリ**: `C:\Users\mforce0087\gateaccess-android`（GitHub: `bitkey-service/gateaccess-android`）
 - **学習メモリー**: `.claude/memories/global.md` および `.claude/memories/qase-annotation-writer.md`
 
 ## Instructions
@@ -46,7 +46,7 @@
 見つかった場合は、**完全修飾名（パッケージ）を記録**してください。import文の生成に使用します。
 
 #### 1-2. 対象テストの特定
-- `pr_number` 指定時: `gh pr diff {pr_number} --name-only` でテストファイルを絞り込みます
+- `pr_number` 指定時: `gh pr diff {pr_number} -R bitkey-service/gateaccess-android --name-only` でテストファイルを絞り込みます
 - `file_path` 指定時: そのファイルを読み込みます
 - `src/androidTest/` 配下、`ExampleUnitTest.kt` は対象外です
 
@@ -207,6 +207,7 @@ Gherkinと対象テストを突き合わせ、テストごとに `@Qase` の中�
 - **steps の省略**: 内容が読み取れない場合は `steps` を省略すること。空配列で上書きしないこと。
 - **定義未配置時の中断**: `Qase.kt` が見つからない場合は、ファイルを作らず中断すること。
 - **Qaseへの送信禁止**: 本スキルはコードへの追記までを行います。Qaseへの同期は別スキルの責務です。
+- **リポジトリの明示**: `gh` コマンドには必ず `-R bitkey-service/gateaccess-android` を付与すること。
 
 ---
 
