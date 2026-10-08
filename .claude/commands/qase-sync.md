@@ -18,7 +18,7 @@
 - **運用手順（最優先参照）**: `docs/qase_sync_operation.md`
 - **記述ルール**: `docs/qase_annotation_rules.md`
 - **スクリプト**: `scripts/extract_qase_annotations.py` / `scripts/qase_sync.py` / `scripts/send_qase_results.py`
-- **対象リポジトリ（読み取り専用）**: `C:\Users\mforce0087\workhubRoomSupport-Android`
+- **対象リポジトリ（読み取り専用）**: `C:\Users\mforce0087\gateaccess-android`（GitHub: `bitkey-service/gateaccess-android`）
 - **学習メモリー**: `.claude/memories/global.md` および `.claude/memories/qase-sync.md`
 
 ## Instructions
@@ -52,7 +52,7 @@
 
 ```
 python scripts/extract_qase_annotations.py \
-  --source-root "C:/Users/mforce0087/workhubRoomSupport-Android" \
+  --source-root "C:/Users/mforce0087/gateaccess-android" \
   --out build/qase/qase-cases.json
 ```
 
