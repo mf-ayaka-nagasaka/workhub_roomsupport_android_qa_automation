@@ -198,8 +198,6 @@ td.msg { font-weight: 500; }
     <text class="lbl" x="608" y="160">つながったらやり直す</text>
     <path class="flow" marker-end="url(#arw)" d="M615 232 H796"/>
     <text class="lbl" x="792" y="222" text-anchor="end">本人確認ができた</text>
-    <path class="flow" marker-end="url(#arw)" d="M615 250 H660 V400 H1880 V84 H1864"/>
-    <text class="lbl" x="668" y="392">控えがあれば、そのまま使える状態へ</text>
     <path class="flow" marker-end="url(#arw)" d="M875 200 V120"/>
     <text class="lbl" x="883" y="166">読み込み中と出す</text>
     <path class="flow" marker-end="url(#arw)" d="M950 232 H1011"/>
@@ -280,10 +278,12 @@ td.msg { font-weight: 500; }
 
     <g class="hit" data-key="1" tabindex="0" role="button" aria-label="権限を確かめる">
       <rect class="step" x="60" y="200" width="150" height="64" rx="8"/>
-      <text class="t-name" x="135" y="224" text-anchor="middle">① 権限を確かめる</text>
-      <text class="t-sub" x="135" y="242" text-anchor="middle">カメラ・Bluetooth</text>
+      <text class="t-name" x="135" y="220" text-anchor="middle">① 権限を確かめる</text>
+      <text class="t-sub" x="135" y="238" text-anchor="middle">カメラ・Bluetooth</text>
+      <text class="t-sub" x="135" y="253" text-anchor="middle">位置情報</text>
       <text class="err" x="60" y="292">✕ 権限が足りない</text>
       <text class="err" x="60" y="308">→ 揃うまで先へ進まない</text>
+      <text class="err" x="60" y="324">→ 案内から端末の設定画面へ行ける</text>
     </g>
     <g class="hit" data-key="2" tabindex="0" role="button" aria-label="ログインの記録を見る">
       <polygon class="step-diamond" points="330,190 415,232 330,274 245,232"/>
@@ -296,7 +296,7 @@ td.msg { font-weight: 500; }
       <text class="t-sub" x="535" y="242" text-anchor="middle">30秒で終わらなければ失敗</text>
       <text class="err" x="440" y="292">✕ 本人確認ができない</text>
       <text class="err" x="440" y="308">→ 5秒おきに3回まで</text>
-      <text class="err" x="440" y="324">→ ダメなら控えの有無で分かれる</text>
+      <text class="err" x="440" y="324">→ ダメなら失敗の種類で分かれる</text>
     </g>
     <g class="hit" data-key="4" tabindex="0" role="button" aria-label="組織の情報を取る">
       <rect class="step" x="800" y="200" width="150" height="64" rx="8"/>
@@ -352,7 +352,7 @@ td.msg { font-weight: 500; }
       <rect class="save-box" x="1180" y="445" width="150" height="40" rx="8"/>
       <text class="t-save" x="1255" y="469" text-anchor="middle">残る：設定の控え</text>
       <text class="t-save-note" x="1255" y="506" text-anchor="middle">控えを使う設定のときだけ作られる</text>
-      <text class="t-sub" x="1255" y="522" text-anchor="middle">→ つながらなくても起動できる</text>
+      <text class="t-sub" x="1255" y="522" text-anchor="middle">→ 起動には使われない</text>
     </g>
   </svg>
   </div>
@@ -373,15 +373,21 @@ td.msg { font-weight: 500; }
   <div class="group">
     <h3>ルール① 権限が揃うまで先へ進まない</h3>
     <div class="cards">
-      <div class="card" data-keys="1,PERM"><div class="ttl"><i class="dot ng"></i>権限が足りない → 案内が出続け、先へ進まない</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,PERM"><div class="ttl"><i class="dot ng"></i>権限が足りない → 案内が出続け、先へ進まない（7通りの組み合わせ）</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,PERM"><div class="ttl"><i class="dot ok"></i>OSの確認が権限ごとに出たあと、不足があればアプリの案内が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,2"><div class="ttl"><i class="dot ok"></i>OSの確認で全部許可 → アプリの案内は出ずに続きが始まる</div><div class="chips"></div></div>
       <div class="card" data-keys="PERM,1,2"><div class="ttl"><i class="dot ok"></i>権限を許可する → 案内が閉じて続きが始まる</div><div class="chips"></div></div>
+      <div class="card" data-keys="PERM"><div class="ttl"><i class="dot ok"></i>案内のボタンから端末の権限設定画面を開ける</div><div class="chips"></div></div>
+      <div class="card" data-keys="PERM,1,2"><div class="ttl"><i class="dot ok"></i>設定画面で許可して戻る → 戻り方が違っても同じく続きが始まる</div><div class="chips"></div></div>
+      <div class="card" data-keys="PERM,1"><div class="ttl"><i class="dot ng"></i>設定画面で許可せずに戻る → 案内が出たままで先へ進まない</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
     <h3>ルール② ログインの記録で行き先が決まる</h3>
     <div class="cards">
-      <div class="card" data-keys="2,3,LOGIN"><div class="ttl"><i class="dot ok"></i>記録あり → 本人確認へ／記録なし・判定できない → ログイン画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,3,LOGIN"><div class="ttl"><i class="dot ok"></i>記録あり → 本人確認へ／記録なし → ログイン画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,C,LOGIN"><div class="ttl"><i class="dot ng"></i>記録を読み出せない → 記録なしと同じくログイン画面へ</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -397,9 +403,9 @@ td.msg { font-weight: 500; }
     <h3>ルール④ 3回ダメだったときの行き先</h3>
     <div class="cards">
       <div class="card" data-keys="3,C,LOGIN"><div class="ttl"><i class="dot ng"></i>本人確認に必要な情報がない → 案内なしでログイン画面へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="3,C,LOGIN"><div class="ttl"><i class="dot ng"></i>本人確認を断られた＋控えなし → 言葉が出てからログイン画面へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="3,D,PREP"><div class="ttl"><i class="dot ng"></i>控えあり → 失敗の種類を問わず、控えを使って使える状態へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="3,WAIT"><div class="ttl"><i class="dot ng"></i>つながらない＋控えなし → 接続待ちになる</div><div class="chips"></div></div>
+      <div class="card" data-keys="3,C,LOGIN"><div class="ttl"><i class="dot ng"></i>本人確認を断られた → 言葉が出てからログイン画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="3,WAIT"><div class="ttl"><i class="dot ng"></i>つながらない → 接続待ちになる</div><div class="chips"></div></div>
+      <div class="card" data-keys="3,D,WAIT,LOGIN"><div class="ttl"><i class="dot ng"></i>控えが残っていても行き先は同じ（控えを使った起動はしない）</div><div class="chips"></div></div>
     </div>
   </div>
 
