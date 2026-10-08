@@ -47,11 +47,13 @@ ISO 25010品質モデルやOWASP Mobile Top 10などの標準モデルを参照�
 ### 🧫 `/review-unit-tests` - 単体テストレビュー
 開発チームが作成した単体テストコードを、Gherkinシナリオとの突合を軸にQA視点でレビューします。  
 観点の網羅性（UT-0）とテストコードの品質（UT-1〜UT-6）を判定し、PRコメント用のレポート草案を作成します。投稿前に必ず承認を挟みます。  
+レビュー単位はシナリオです。同じPRに過去のレビューコメントがある場合は**再レビューモード**で動作し、前回指摘の対応状況を突き合わせます。  
 判定基準: `docs/unit_test_review_criteria.md`
 
 ### 🏷️ `/qase-annotation-writer` - `@Qase` アノテーション追記
 レビュー済みの単体テストコードに、Qaseのケースと紐づける `@Qase` アノテーションを追記します。  
 タイトル・Test Level・ステップはGherkinから生成し、ケースIDはQase UIで採番した値を転記します。テストロジックは変更しません。  
+対象は指定シナリオに対応するテストのみです。追記後、**対象PRのブランチへ commit & push** まで行います（各操作で承認を挟みます）。  
 記述ルール: `docs/qase_annotation_rules.md`
 
 ### 🔁 `/qase-sync` - Qase同期
@@ -144,12 +146,13 @@ Skill自体の改善を提案・実行するメタスキル。
 /check-qa-prs            → レビュー対象PRの抽出
     ↓                       （0件ならPRのURLを直接指定）
 /review-unit-tests       → Gherkin突合＋品質レビュー → PRコメント（要承認）
-    ↓
+    ↓                       （修正後の再実行で再レビューモード）
 [Qase UIでケースを作成しID採番]
     ↓
-/qase-annotation-writer  → @Qase をテストコードに追記（要承認）
+/qase-annotation-writer  → @Qase を追記し、PRブランチへ commit & push（要承認）
     ↓
-/qase-sync               → Qaseへ同期（要承認）
+/qase-sync cases         → ケース本体をQaseへ同期（要承認）
+                            ※実行結果とカバレッジはdevelopマージ後にCIが自動送信
 ```
 
 上記の一連の流れは `/unit-test-review-workflow` で統合的に管理できます。

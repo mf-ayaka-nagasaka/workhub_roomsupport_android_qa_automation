@@ -6,7 +6,7 @@
 | **対象者** | QA担当（テストコードへの `@Qase` 追記者） |
 | **ゴール** | Gherkinシナリオから `@Qase` の各フィールドを一意に導出でき、Qaseへ同期しても意図どおりの内容になる書き方が分かるようになります |
 
-本書は、単体テストコードに付与する `@Qase` アノテーションの**書き方の取り決め**です。アノテーションの型定義そのものは対象リポジトリ側（`core/testing`）にあり、本書はその**中身の書式**を定めます。
+本書は、単体テストコードに付与する `@Qase` アノテーションの**書き方の取り決め**です。アノテーションの型定義そのものは対象リポジトリ側（`shared/testing`）にあり、本書はその**中身の書式**を定めます。
 
 ---
 
@@ -39,7 +39,7 @@
 | フィールド | 必須 | 生成元 | 同期時の挙動 |
 |---|---|---|---|
 | `id` | ✅ | **Qase UIでの採番値** | 紐づけキー。同期対象外 |
-| `title` | ✅ | Gherkinのシナリオ名 | Qase側を上書き |
+| `title` | ✅ | Gherkinのシナリオ名（例外は 2.3） | Qase側を上書き |
 | `level` | ✅ | Gherkinの `# @TestLevel:` | Qase側を上書き |
 | `description` | 任意 | Gherkinのルール名・観点名 | Qase側を上書き |
 | `steps` | 任意 | Gherkinの Given / When / Then | **省略時はQase側を変更しない** |
@@ -66,6 +66,34 @@ title = "単一組織のアカウントで正しい認証情報を入力する�
 - 要約・短縮・言い換えをしないでください
 - 英訳しないでください（日本語のまま転記します）
 - シナリオ名を変えたい場合は、**Gherkin側を直してから**転記します
+
+#### 例外: 観点単位でケースが分かれている場合
+
+1つのシナリオの📐観点が複数バリエーションを持ち、それぞれが別テストとして実装されている場合、Qase側は観点のバリエーション単位でケースが採番されることがあります。
+
+```
+Gherkin:  シナリオ [RSA-3] 単数組織に所属するアカウントでログインが完了する
+            └ 📐観点：認証成功
+                 ├ バリエーション: 初回ログイン   → テストA
+                 └ バリエーション: 再ログイン     → テストB
+
+Qase:     RSA-3  「..._初回ログイン」   ← テストA
+          RSA-24 「..._ログイン済み」   ← テストB
+```
+
+この場合、**両方に同じシナリオ名を転記してはいけません。** `title` はQase側を上書きするため、採番時に付けた区別が次回の同期で消えます。
+
+**Qase採番時に付けた実際のタイトルを転記してください。**
+
+| 対象 | `title` の値 |
+|---|---|
+| 1シナリオ＝1ケース | Gherkinのシナリオ名 |
+| 観点のバリエーション単位で複数ケース | **Qase上の実際のタイトル** |
+
+- **サフィックスを自分で考えてはいけません。** Gherkinのバリエーションには名前が無く（`前提` の文があるだけ）、そこから短い名称を作るのは要約にあたります
+- 実際のタイトルが分からない場合は、同じ `title` のまま追記せず確認してください
+
+> 📌 構造的には、Gherkinを観点単位のシナリオに分割するのが本筋です。そうすれば本例外は不要になります。
 
 ### 2.4 `level` — テストレベル
 
@@ -125,9 +153,9 @@ steps = [
 ## 3. 記述例
 
 ```kotlin
-import jp.bitkey.app.gateconnector.core.testing.qase.Qase
-import jp.bitkey.app.gateconnector.core.testing.qase.QaseStep
-import jp.bitkey.app.gateconnector.core.testing.qase.TestLevel
+import jp.bitkey.app.gateaccess.shared.testing.qase.Qase
+import jp.bitkey.app.gateaccess.shared.testing.qase.QaseStep
+import jp.bitkey.app.gateaccess.shared.testing.qase.TestLevel
 
 class LoginViewModelTest {
 
@@ -180,6 +208,6 @@ class LoginViewModelTest {
 
 | 症状 | 原因 |
 |---|---|
-| `Unresolved reference: Qase` | import文の誤り、または対象モジュールに `testImplementation(projects.core.testing)` が未追加 |
+| `Unresolved reference: Qase` | import文の誤り、または対象モジュールに `testImplementation(projects.shared.testing)` が未追加 |
 | `Unresolved reference: TestLevel` | 同上 |
 | 型の不一致 | `id` は `Long` です。`id = 101` のように整数リテラルで記述します |

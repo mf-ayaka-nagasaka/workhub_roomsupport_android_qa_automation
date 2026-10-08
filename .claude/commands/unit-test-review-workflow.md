@@ -166,8 +166,10 @@ feature推定・シナリオ推定が `要確認` のPRは、feature名とシナ
 ### Step 4: `@Qase` アノテーションの追記
 
 ```
-/qase-annotation-writer {PR番号} {feature名}
+/qase-annotation-writer {PR番号} {feature名} {シナリオ}
 ```
+
+> Step 1-4 で確定したシナリオをそのまま渡します。**委譲先は `scenario` 未指定だと停止するため、省略してはいけません。**
 
 委譲先Skillが、以下を順に行います。**各操作の承認は、すべて委譲先Skillのプロセスに従ってください。本スキルが代行してはいけません。**
 
