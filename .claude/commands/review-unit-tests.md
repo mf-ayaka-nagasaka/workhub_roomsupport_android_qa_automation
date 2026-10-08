@@ -2,18 +2,20 @@
 開発チームが作成した単体テストコードを、Gherkinシナリオとの突合を軸にQA視点でレビューし、PRコメント用のレポートを作成します。
 
 ## Usage
-`/review-unit-tests [pr_number|file_path] [feature_name]`
+`/review-unit-tests [pr_number|pr_url|file_path] [feature_name]`
 例: `/review-unit-tests 183 login`
+例: `/review-unit-tests https://github.com/bitkey-service/gateaccess-android/pull/183 login`
 例: `/review-unit-tests core/data/src/test/kotlin/.../AuthServiceImplTest.kt login`
 
 - `pr_number`: レビュー対象のPR番号（`gh pr diff` で差分を取得）
+- `pr_url`: PRのURL。`{owner}/{repo}` とPR番号を抽出し、`pr_number` と同じ扱いにします
 - `file_path`: PR番号の代わりに、ファイルパスを直接指定することも可能
 - `feature_name`: 対象機能のディレクトリ名（省略時はStep -1で特定）
 
 ## Context / Scope
 - **レビュー基準書（最優先参照）**: `docs/unit_test_review_criteria.md`
 - **Gherkinシナリオ（網羅チェックの唯一の正本）**: `src/test/resources/features/{feature_name}/scenarios_with_viewpoints.md`
-- **レビュー対象リポジトリ（読み取り専用）**: `C:\Users\mforce0087\workhubRoomSupport-Android`
+- **レビュー対象リポジトリ（読み取り専用）**: `C:\Users\mforce0087\gateaccess-android`（GitHub: `bitkey-service/gateaccess-android`）
 
 > 同じディレクトリにある `viewpoints.tsv` / `rules.md` / `_master/viewpoints.tsv` は参照しないでください。観点もルール名も `scenarios_with_viewpoints.md` に内包されており、正本を2つ持つと判定がブレます。
 - **学習メモリー**: `.claude/memories/global.md` および `.claude/memories/review-unit-tests.md`
@@ -67,8 +69,14 @@
 
 ### Step 0: レビュー対象の特定
 
+#### 0-0. 引数の正規化
+第1引数がPRのURLだった場合、`{owner}/{repo}` とPR番号を抽出し、以降は `pr_number` として扱います。
+
+- 抽出したリポジトリが `bitkey-service/gateaccess-android` と異なる場合は、**処理を中断**し、対象外のリポジトリである旨を報告してください。
+- 正規化した結果（PR番号）を、処理の冒頭で明示してください。
+
 #### 0-1. 差分の取得
-- `pr_number` が指定された場合: `gh pr diff {pr_number}` で差分を取得します。巨大な差分はコンテキストを圧迫するため、まずファイル一覧（`gh pr diff {pr_number} --name-only`）を取得し、テストコードに絞り込んでから本文を読んでください。
+- `pr_number` が指定された場合: `gh pr diff {pr_number} -R bitkey-service/gateaccess-android` で差分を取得します。巨大な差分はコンテキストを圧迫するため、まずファイル一覧（`--name-only` を付与）を取得し、テストコードに絞り込んでから本文を読んでください。
 - `file_path` が指定された場合: そのファイルを直接読み込みます。
 
 #### 0-2. 対象外の除外
@@ -224,14 +232,15 @@ Gherkinの各シナリオ・📐観点を、基準書 `§3.3` の定義に従っ
 
 承認後にのみ実行します。
 
-- 投稿内容を一時ファイルに書き出し、`gh pr comment {pr_number} --body-file {一時ファイル}` で投稿してください（日本語・改行の欠落を防ぐため、`--body` での直接指定は避けます）。
+- 投稿内容を一時ファイルに書き出し、`gh pr comment {pr_number} -R bitkey-service/gateaccess-android --body-file {一時ファイル}` で投稿してください（日本語・改行の欠落を防ぐため、`--body` での直接指定は避けます）。
 - 一時ファイルはスクラッチパッドディレクトリに作成し、投稿後に削除してください。
 - 投稿後、コメントのURLを報告してください。
 - `file_path` 指定で実行された場合（PR番号が無い場合）は投稿を行わず、「投稿先のPRが指定されていないため、レポートの出力のみ行いました」と報告してください。
 
 ## Constraints (制約事項)
 - **進行制御**: ユーザーの明確な承認なしに、PRへコメントを投稿しないこと。Gherkinファイルも承認なしに更新しないこと。
-- **参照元の保護**: レビュー対象リポジトリ（`workhubRoomSupport-Android`）のファイルは読み取り専用。本スキルでは一切変更しないこと。
+- **参照元の保護**: レビュー対象リポジトリ（`gateaccess-android`）のファイルは読み取り専用。本スキルでは一切変更しないこと。
+- **リポジトリの明示**: `gh` コマンドには必ず `-R bitkey-service/gateaccess-android` を付与すること。カレントディレクトリはQAリポジトリのため、省略すると誤ったリポジトリを操作する。
 - **観点の固定**: 判定は基準書の観点ID（UT-0 〜 UT-6）に紐づけること。基準書に無い観点で指摘しないこと。
 - **B分類の保護**: UI描画・OS設定に依存する観点を「未実装」として指摘しないこと。
 - **コンテキスト保護**: 巨大なPR差分は全文を読み込まず、ファイル一覧で絞り込んでから必要な範囲のみ読むこと。

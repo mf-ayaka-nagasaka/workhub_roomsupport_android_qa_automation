@@ -21,6 +21,7 @@
 │   ├── review-unit-tests.md          # 🧫 単体テストレビュー
 │   ├── qase-annotation-writer.md     # 🏷️ @Qase アノテーション追記
 │   ├── qase-sync.md                  # 🔁 Qase同期
+│   ├── unit-test-review-workflow.md  # 🔬 単体テストレビューワークフロー
 │   ├── end.md                        # 📦 QA作業提出
 │   ├── start.md                      # 🔄 ブランチ同期
 │   ├── sync-qa-docs.md               # 📑 QAドキュメント同期
@@ -37,7 +38,8 @@
     ├── check-qa-prs.md                # PR抽出の学習ログ
     ├── review-unit-tests.md           # 単体テストレビューの学習ログ
     ├── qase-annotation-writer.md      # @Qase 追記の学習ログ
-    └── qase-sync.md                   # Qase同期の学習ログ
+    ├── qase-sync.md                   # Qase同期の学習ログ
+    └── unit-test-review-workflow.md   # 単体テストレビュー工程管理の学習ログ
 ```
 
 ## Skill一覧（概要）
@@ -56,6 +58,7 @@
 | 単体テストレビュー | `/review-unit-tests` | 単体テストコードのQA視点レビュー |
 | `@Qase` 追記 | `/qase-annotation-writer` | テストコードへのQaseケース紐づけ |
 | Qase同期 | `/qase-sync` | `@Qase` のQaseへの同期（結果送信はCIが自動実行） |
+| 単体テストレビューワークフロー | `/unit-test-review-workflow` | PR探索からQase同期までの工程を統合管理 |
 | QA作業提出 | `/end` | Git操作でQA作業成果を提出 |
 | ブランチ同期 | `/start` | 作業ブランチをmainと同期 |
 | QAドキュメント同期 | `/sync-qa-docs` | 外部ドキュメントとの同期 |

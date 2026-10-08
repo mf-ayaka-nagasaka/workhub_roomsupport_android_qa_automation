@@ -2,15 +2,17 @@
 QAがレビューすべき単体テスト関連のPRを探し出し、一覧として提示します。レビュー自体は行いません。
 
 ## Usage
-`/check-qa-prs [--all]`
+`/check-qa-prs [--all] [PR_URL|PR番号]`
 例: `/check-qa-prs`
 例: `/check-qa-prs --all` （レビュー済みのPRも含めて表示）
+例: `/check-qa-prs https://github.com/bitkey-service/gateaccess-android/pull/42`
 
 - 引数なし: 未レビューの対象PRのみ表示します
 - `--all`: レビュー済みの対象PRも含めて表示します
+- `PR_URL` / `PR番号`: 探索をスキップし、そのPRだけを判定します（レビュー依頼が未設定のPRを手動で指定する場合に使用）
 
 ## Context / Scope
-- **対象リポジトリ**: `bitkey-service/workhubRoomSupport-Android`
+- **対象リポジトリ**: `bitkey-service/gateaccess-android`
 - **Gherkin配置先（feature推定に使用）**: `src/test/resources/features/`
 - **レビュー実行スキル（本スキルからは自動実行しません）**: `/review-unit-tests`
 - **学習メモリー**: `.claude/memories/global.md` および `.claude/memories/check-qa-prs.md`
@@ -29,11 +31,20 @@ QAがレビューすべき単体テスト関連のPRを探し出し、一覧と�
 
 ### Step 1: 候補PRの取得
 
+#### 1-0. PR URL / PR番号が引数で指定されている場合
+引数にPRのURLまたは番号が含まれている場合、**1-1 / 1-2 の探索は行いません。**
+
+- URLから `{owner}/{repo}` とPR番号を抽出します。
+- 抽出したリポジトリが `bitkey-service/gateaccess-android` と異なる場合は、**処理を中断**し、対象外のリポジトリである旨を報告してください。
+- 指定されたPRのみを対象として Step 2 以降を実行します。
+- 判定経路は「**URL直接指定**」としてレポートに明記してください。
+- この経路では、対象外と判定された場合も**理由を明示して報告**してください（ユーザーが意図して指定したPRのため、黙って除外しない）。
+
 #### 1-1. 主判定（レビュー依頼ベース）
 次のコマンドで、自分にレビュー依頼が来ているオープンPRを取得します。
 
 ```
-gh pr list -R bitkey-service/workhubRoomSupport-Android \
+gh pr list -R bitkey-service/gateaccess-android \
   --search "review-requested:@me" --state open \
   --json number,title,author,headRefName,updatedAt,isDraft
 ```
@@ -42,7 +53,7 @@ gh pr list -R bitkey-service/workhubRoomSupport-Android \
 **1-1 の結果が0件だった場合のみ**、オープンPR全件を取得して次のStepで絞り込みます。
 
 ```
-gh pr list -R bitkey-service/workhubRoomSupport-Android \
+gh pr list -R bitkey-service/gateaccess-android \
   --state open --limit 30 \
   --json number,title,author,headRefName,updatedAt,isDraft
 ```
@@ -59,7 +70,7 @@ gh pr list -R bitkey-service/workhubRoomSupport-Android \
 各PRについて、変更ファイルの一覧を取得します。
 
 ```
-gh pr view {number} -R bitkey-service/workhubRoomSupport-Android --json files -q '.files[].path'
+gh pr view {number} -R bitkey-service/gateaccess-android --json files -q '.files[].path'
 ```
 
 | 条件 | 判定 |
@@ -79,7 +90,7 @@ gh pr view {number} -R bitkey-service/workhubRoomSupport-Android --json files -q
 対象PRについて、自分が既にレビューコメントを投稿済みかを確認します。
 
 ```
-gh pr view {number} -R bitkey-service/workhubRoomSupport-Android \
+gh pr view {number} -R bitkey-service/gateaccess-android \
   --json comments,reviews -q '[.comments[].author.login, .reviews[].author.login] | unique'
 ```
 
@@ -135,7 +146,24 @@ gh pr view {number} -R bitkey-service/workhubRoomSupport-Android \
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-対象PRが0件だった場合は、除外内訳とあわせて「**現在レビュー対象のPRはありません**」と報告してください。
+#### 対象PRが0件だった場合
+
+除外内訳とあわせて、以下の形式で報告して停止してください。
+
+```
+⚠️ 現在レビュー対象のPRはありません。
+
+■ 除外したPR
+（除外内訳の表）
+
+■ 次のアクション
+
+レビュー依頼が未設定のPRを手動で確認する場合は、PRのURLを指定して再実行してください。
+
+    /check-qa-prs https://github.com/bitkey-service/gateaccess-android/pull/42
+```
+
+**本スキル内でURLの入力を待つ対話ループは持ちません。** 案内の提示までで停止します。
 
 ## Constraints (制約事項)
 - **読み取り専用**: PRへのコメント、レビュー登録、ラベル付与、ファイル変更を一切行わないこと。
@@ -144,7 +172,8 @@ gh pr view {number} -R bitkey-service/workhubRoomSupport-Android \
 - **推定の抑制**: featureが特定できない場合は `要確認` とし、断定しないこと。
 - **notifications APIの不使用**: `gh api notifications` は判定に使わないこと。
 - **コンテキスト保護**: `--json` で必要なフィールドのみ取得すること。PR差分の本文（`gh pr diff`）は本スキルでは読まないこと。
-- **判定経路の明示**: 主判定とフォールバックのどちらで取得したかを必ずレポートに明記すること。
+- **判定経路の明示**: 主判定・フォールバック・URL直接指定のどの経路で取得したかを必ずレポートに明記すること。
+- **URL指定時の透明性**: URL直接指定の経路では、対象外と判定した場合も理由を明示して報告すること（件数のみの報告にしない）。
 
 ---
 

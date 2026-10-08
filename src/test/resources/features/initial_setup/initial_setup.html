@@ -259,9 +259,8 @@ td.msg { font-weight: 500; }
       <rect class="screen" x="1200" y="56" width="200" height="64" rx="10"/>
       <rect class="screen-bar" x="1285" y="62" width="30" height="3" rx="1.5"/>
       <text class="t-screen" x="1300" y="86" text-anchor="middle">仕上げてホームへ</text>
-      <text class="t-sub" x="1300" y="106" text-anchor="middle">名前を付けて残す？ → 完了</text>
-      <text class="t-sub" x="1300" y="138" text-anchor="middle">残すと、ほかの端末のコピー元に出る</text>
-      <text class="err" x="1200" y="158">✕ 名前が空だと残せない</text>
+      <text class="t-sub" x="1300" y="106" text-anchor="middle">保存できたら完了</text>
+      <text class="t-sub" x="1300" y="138" text-anchor="middle">残す設定がONなら、ほかの端末のコピー元に出る</text>
     </g>
 
     <!-- lane B: steps -->
@@ -307,7 +306,6 @@ td.msg { font-weight: 500; }
       <rect class="save-box" x="1230" y="512" width="180" height="40" rx="8"/>
       <text class="t-save" x="1320" y="536" text-anchor="middle">残る：仕上がった設定</text>
       <text class="t-save-note" x="1320" y="572" text-anchor="middle">再起動 → この画面は出ずホームへ</text>
-      <text class="t-sub" x="1320" y="588" text-anchor="middle">名前か空間が空なら入力画面へ</text>
     </g>
   </svg>
   </div>
@@ -421,6 +419,7 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="set,3"><div class="ttl"><i class="dot ng"></i>合いことばと確認用が違う → 保存できない</div><div class="chips"></div></div>
       <div class="card" data-keys="set,3"><div class="ttl"><i class="dot ng"></i>足りない項目が複数 → まとめて知らせる</div><div class="chips"></div></div>
       <div class="card" data-keys="set,3"><div class="ttl"><i class="dot ng"></i>足りない項目が3つ以上 → 2つ出して残りは「他◯件」</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,3"><div class="ttl"><i class="dot ng"></i>コピーを残す設定がONで名前が空 → 保存できない</div><div class="chips"></div></div>
       <div class="card" data-keys="set,3,4"><div class="ttl"><i class="dot ok"></i>直してもう一度保存 → 保存できる</div><div class="chips"></div></div>
     </div>
   </div>
@@ -433,7 +432,7 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="set,3"><div class="ttl"><i class="dot ng"></i>決まった範囲から外れた値 → 保存できない</div><div class="chips"></div></div>
       <div class="card" data-keys="set,3,4"><div class="ttl"><i class="dot ok"></i>文字数が上限以内 → 保存できる</div><div class="chips"></div></div>
       <div class="card" data-keys="set,3"><div class="ttl"><i class="dot ng"></i>文字数が上限を超える → 保存できない</div><div class="chips"></div></div>
-      <div class="card" data-keys="set,3,4"><div class="ttl"><i class="dot ok"></i>隠した項目は見られず、もとの値で残る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,3,4"><div class="ttl"><i class="dot ok"></i>隠した項目のうち、おかしな値は既定の値に戻して保存される</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -443,18 +442,21 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="set,2"><div class="ttl"><i class="dot ok"></i>始め方ごとに最初から入っている値が違う</div><div class="chips"></div></div>
       <div class="card" data-keys="set,2"><div class="ttl"><i class="dot ok"></i>コピーしても名前と説明は引き継がない</div><div class="chips"></div></div>
       <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>親をONにすると、ぶら下がる項目が出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>親をOFFにすると隠れて、値がもとに戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>親をOFFにすると隠れるが、入れた値は残る</div><div class="chips"></div></div>
       <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>カギを開けない → 機器の選択が隠れる</div><div class="chips"></div></div>
-      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>ゆるめの判定 → 切り替えの設定が隠れる</div><div class="chips"></div></div>
       <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>使い方のタイプで2台目の機器が出る／出ない</div><div class="chips"></div></div>
       <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>顔が使えない組織 → 顔のまとまりが出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>つなぐ機器が登録されていない組織 → その機器の選択が出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>使い方のタイプで2段階の確認に使う機器が出る／出ない</div><div class="chips"></div></div>
       <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>単独の切り替えを変えると選択が変わる</div><div class="chips"></div></div>
       <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>タブレットでできることを1つずつ切り替える</div><div class="chips"></div></div>
       <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>すぐ入室をONにすると開けるタイミングが出る</div><div class="chips"></div></div>
       <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>顔が必要な操作を1つずつ切り替える</div><div class="chips"></div></div>
       <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>一覧から機器や音を選ぶと反映される</div><div class="chips"></div></div>
       <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>つなぎっぱなしの機器は複数選べる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>つなぎっぱなしの機器を選ばない → すべての機器が対象</div><div class="chips"></div></div>
       <div class="card" data-keys="set,B"><div class="ttl"><i class="dot ng"></i>入れかけで止める → 入れた内容は残らない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>初めての設定中は、やめる操作が出ない</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -463,18 +465,18 @@ td.msg { font-weight: 500; }
     <div class="cards">
       <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>保存中は画面を操作できない</div><div class="chips"></div></div>
       <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>続けて押しても保存は1回だけ</div><div class="chips"></div></div>
-      <div class="card" data-keys="set,4,done"><div class="ttl"><i class="dot ok"></i>保存が終わると次の確認へ進む</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,4,done"><div class="ttl"><i class="dot ok"></i>保存が終わると完了の知らせが出る</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
     <h3>ルール⑬ 仕上げてホームへ</h3>
     <div class="cards">
-      <div class="card" data-keys="done"><div class="ttl"><i class="dot ok"></i>名前を付けて残す → ほかの端末から使える</div><div class="chips"></div></div>
-      <div class="card" data-keys="done"><div class="ttl"><i class="dot ok"></i>残さないを選ぶ → そのまま完了へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="done"><div class="ttl"><i class="dot ng"></i>名前が空 → 残す操作ができない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,4,done"><div class="ttl"><i class="dot ok"></i>コピーを残す設定をON → 保存と同時に残る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,4,done"><div class="ttl"><i class="dot ok"></i>コピーを残す設定をOFF → 残らない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,4,done"><div class="ttl"><i class="dot ok"></i>ONのまま保存し直す → 前の控えが上書きされる</div><div class="chips"></div></div>
+      <div class="card" data-keys="done,copy"><div class="ttl"><i class="dot ok"></i>残した設定は、次にコピー元を選ぶときの候補に出る</div><div class="chips"></div></div>
       <div class="card" data-keys="done,C"><div class="ttl"><i class="dot ok"></i>完了から進む → ホーム画面に着く</div><div class="chips"></div></div>
-      <div class="card" data-keys="done,C"><div class="ttl"><i class="dot ng"></i>確認中に止める → 最初からやり直しにはならない</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -483,7 +485,6 @@ td.msg { font-weight: 500; }
     <div class="cards">
       <div class="card" data-keys="C,done"><div class="ttl"><i class="dot ok"></i>終わった端末を起動 → この画面は出ない</div><div class="chips"></div></div>
       <div class="card" data-keys="A,B,auth"><div class="ttl"><i class="dot ok"></i>終わっていない端末を起動 → 続きから</div><div class="chips"></div></div>
-      <div class="card" data-keys="C,set"><div class="ttl"><i class="dot ng"></i>名前か空間が空 → ホームではなく入力画面</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -492,7 +493,7 @@ td.msg { font-weight: 500; }
     <div class="cards">
       <div class="card" data-keys="auth,how,type,2,set,3,4,done,C"><div class="ttl"><i class="dot ok"></i>タイプを選んで最後まで → ホームに着く</div><div class="chips"></div></div>
       <div class="card" data-keys="auth,how,copy,2,set,3,4,done,C"><div class="ttl"><i class="dot ok"></i>コピーで最後まで → ホームに着く</div><div class="chips"></div></div>
-      <div class="card" data-keys="auth,how,type,set,3,4,done,C"><div class="ttl"><i class="dot ok"></i>カスタムで最後まで → 名前を付けて残す</div><div class="chips"></div></div>
+      <div class="card" data-keys="auth,how,type,set,3,4,done,C"><div class="ttl"><i class="dot ok"></i>カスタムで最後まで → コピーを残す設定もONで保存</div><div class="chips"></div></div>
       <div class="card" data-keys="C,done"><div class="ttl"><i class="dot ok"></i>終わったあとに再起動 → ホームに着く</div><div class="chips"></div></div>
     </div>
   </div>
