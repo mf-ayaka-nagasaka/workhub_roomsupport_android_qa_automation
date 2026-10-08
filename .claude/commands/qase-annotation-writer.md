@@ -2,15 +2,17 @@
 レビュー済みの単体テストコードに、Qaseのテストケースと紐づける `@Qase` アノテーションを追記します。
 
 ## Usage
-`/qase-annotation-writer [pr_number|file_path] [feature_name]`
-例: `/qase-annotation-writer 185 login`
-例: `/qase-annotation-writer core/data/src/test/kotlin/.../AuthServiceImplTest.kt login`
+`/qase-annotation-writer [pr_number|file_path] [feature_name] [scenario]`
+例: `/qase-annotation-writer 185 login RSA-3`
+例: `/qase-annotation-writer 185 login "単数組織に所属するアカウントでログインが完了する"`
+例: `/qase-annotation-writer core/data/src/test/kotlin/.../AuthServiceImplTest.kt login RSA-3`
 
 - `pr_number`: 対象PRの番号（`gh pr diff` で対象テストを特定）
 - `file_path`: ファイルパスを直接指定することも可能
 - `feature_name`: 対象機能のディレクトリ名
+- `scenario`: **対象シナリオ**。QaseケースID（`RSA-3` 等）またはシナリオ名で指定します。**レビューはシナリオ単位で行われるため、本スキルの対象もシナリオ単位です。** 省略時は Step 1-2 でユーザーに確認します（feature全体に広げません）
 
-**前提**: `/review-unit-tests` でのレビューが完了していること。レビュー前のテストに追記しないでください。
+**前提**: `/review-unit-tests` で**対象シナリオの**レビューが完了していること。レビュー前のテストに追記しないでください。
 
 ## Context / Scope
 - **Gherkinシナリオ（記載内容の唯一の正本）**: `src/test/resources/features/{feature_name}/scenarios_with_viewpoints.md`
@@ -87,15 +89,52 @@ gh pr checkout {pr_number} -R bitkey-service/gateaccess-android
 
 見つかった場合は、**完全修飾名（パッケージ）を記録**してください。import文の生成に使用します。
 
-#### 1-2. 対象テストの特定
+#### 1-2. 対象シナリオとテストの特定
+
+**1. 対象シナリオの確定**
+
+- `scenario` が指定されている場合、`scenarios_with_viewpoints.md` 内で特定します
+  - QaseケースID形式（`RSA-3` 等）なら当該IDを含むシナリオ行を検索します
+  - シナリオ名なら完全一致または部分一致で検索します
+  - **1件に特定できない場合（0件 / 複数件）は候補を提示してユーザーに確認してください。勝手に決めてはいけません**
+
+- **`scenario` が省略された場合は、以下を提示して停止してください。**
+
+  > ⚠️ 対象シナリオが指定されていません。
+  >
+  > 本スキルは**テストコードを書き換えてPRへpushする**ため、対象を feature 全体には広げません。
+  > `{feature_name}` のシナリオ一覧から、対象を指定してください。
+  >
+  > | # | ケースID | シナリオ名 |
+  > |---|---|---|
+  > | 1 | {RSA-n} | {シナリオ名} |
+  >
+  > 複数シナリオが対象の場合は、番号をカンマ区切りで指定してください。
+
+- **確定するまで Step 2 へ進んではいけません。**
+
+**2. 対象テストの絞り込み**
+
 - `pr_number` 指定時: `gh pr diff {pr_number} -R bitkey-service/gateaccess-android --name-only` でテストファイルを絞り込みます
 - `file_path` 指定時: そのファイルを読み込みます
 - `src/androidTest/` 配下、`ExampleUnitTest.kt` は対象外です
+- **さらに、対象シナリオに対応するテストのみに絞り込みます。** 対応関係は `/review-unit-tests` と同じく、シナリオ本体（`前提`/`もし`/`ならば`）と📐観点ブロックを基準に判定します
+
+**3. 対象外テストの報告**
+
+変更されたテストのうち、対象シナリオに対応しないものを一覧で報告してください。
+
+| テスト | 判定 |
+|---|---|
+| {Class}#{method} | 対象シナリオ（{シナリオ名}）に対応 → **追記対象** |
+| {Class}#{method} | 別シナリオに対応 → **対象外**（レビュー未実施のため追記しません） |
+
+- **対象テストが0件の場合は中断**し、対象PRとシナリオの組み合わせを確認してください。
 
 #### 1-3. レビュー完了の確認
 ユーザーに確認してください。
 
-> 対象のテストは `/review-unit-tests` でのレビューが完了していますか？
+> 対象シナリオ「{シナリオ名}」のテストは `/review-unit-tests` でのレビューが完了していますか？
 > 未レビューの場合は、先にレビューを実施することを推奨します。
 
 ---
@@ -108,7 +147,7 @@ Gherkinと対象テストを突き合わせ、テストごとに `@Qase` の中�
 
 | フィールド | 生成元 | ルール |
 |---|---|---|
-| `title` | Gherkinの**シナリオ名** | そのまま転記します。要約・言い換えをしないでください |
+| `title` | Gherkinの**シナリオ名**（Step 1-2 で確定したもの） | そのまま転記します。要約・言い換えをしないでください |
 | `level` | Gherkinの `# @TestLevel:` | 下表に従って変換します |
 | `description` | Gherkinの**ルール名・観点名** | `feature: {feature_name} / {ルール名} / 観点: {観点名}` の形式 |
 | `steps` | Gherkinの Given/When/Then | `前提` + `もし` → `action`、`ならば` → `expected` |
@@ -227,8 +266,10 @@ Gherkinと対象テストを突き合わせ、テストごとに `@Qase` の中�
 
 | 項目 | 内容 |
 |---|---|
+| 対象シナリオ | {シナリオ名}（{ケースID}） |
 | 追記したテスト | {n}件 |
-| 見送ったテスト | {n}件（理由: ID未採番 / 対象外 など） |
+| 見送ったテスト | {n}件（理由: ID未採番 など） |
+| 対象外として除外したテスト | {n}件（対象シナリオに対応しないため） |
 | コンパイル確認 | 成功 / 失敗 |
 
 #### 7-2. コミット
@@ -307,6 +348,8 @@ Step 1-0 で記録した元のブランチ（通常 `develop`）へ戻すか、�
 - **steps の省略**: 内容が読み取れない場合は `steps` を省略すること。空配列で上書きしないこと。
 - **定義未配置時の中断**: `Qase.kt` が見つからない場合は、ファイルを作らず中断すること。
 - **Qaseへの送信禁止**: 本スキルはコードへの追記までを行います。Qaseへの同期は別スキルの責務です。
+- **対象範囲の限定**: 追記対象は、確定した対象シナリオに対応するテストのみとすること。同じPRに含まれる別シナリオのテストへ追記しないこと（レビュー未実施のため）。
+- **シナリオ未指定時の中断**: `scenario` が省略された場合、feature全体を対象とせず、ユーザーに確認して確定するまで Step 2 へ進まないこと。
 - **リポジトリの明示**: `gh` コマンドには必ず `-R bitkey-service/gateaccess-android` を付与すること。
 
 ---
