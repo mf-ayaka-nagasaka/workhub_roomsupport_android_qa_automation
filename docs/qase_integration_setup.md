@@ -53,7 +53,7 @@
 | テストフレームワーク | **JUnit 4**（`kotlin.test` 経由。JUnit 5 は未導入） |
 | モジュール構成 | マルチモジュール。単体テストを持つモジュールは **9つ** |
 | テスト実行タスク | `./gradlew testDevelopDebugUnitTest` |
-| カバレッジ | JaCoCo。規約プラグイン（`gateconnector.library.jacoco` 等）で設定済み |
+| カバレッジ | JaCoCo。規約プラグイン（`gateaccess.library.jacoco` 等）で設定済み |
 | カバレッジタスク | `createDevelopDebugCombinedCoverageReport`（モジュール単位） |
 
 ### 2.2 検証環境の手順をそのまま使えない理由
@@ -86,12 +86,14 @@ JUnit XML（TEST-*.xml）   →  class#method → 実行結果（passed / failed
 
 ### 3.1 `Qase.kt` の配置
 
-次のファイルを新規追加します。
+> ✅ **配置済み（2026-10-08 確認）。** 以下は実際の配置内容です。新規作業は不要です。
 
-**配置先**: `core/testing/src/main/kotlin/jp/bitkey/app/gateconnector/core/testing/qase/Qase.kt`
+次のファイルが追加されています。
+
+**配置先**: `shared/testing/src/main/java/jp/bitkey/app/gateaccess/shared/testing/qase/Qase.kt`
 
 ```kotlin
-package jp.bitkey.app.gateconnector.core.testing.qase
+package jp.bitkey.app.gateaccess.shared.testing.qase
 
 /**
  * Qase のテストケースと自動テストを紐づけるアノテーション。
@@ -131,7 +133,7 @@ enum class TestLevel(val optionId: Int) {
 }
 ```
 
-> **配置先の相談**: `core/testing` は compose / hilt に依存しているため、各モジュールへの依存追加が重い場合は、`core/qase-annotations` のような軽量モジュール（`java-library`）を新設する形でも構いません。その場合は上記のパッケージ宣言を配置先に合わせてください。
+> **配置先について**: 当初は `core/testing` への配置を提案していましたが、開発チームの判断で **`shared/testing`** へ配置されました。本書の記載は実際の配置に合わせています。
 
 ### 3.2 各モジュールへの依存追加
 
@@ -139,7 +141,7 @@ enum class TestLevel(val optionId: Int) {
 
 ```kotlin
 dependencies {
-    testImplementation(projects.core.testing)
+    testImplementation(projects.shared.testing)
 }
 ```
 
@@ -330,7 +332,7 @@ curl -H "Token: $QASE_API_TOKEN" "https://api.qase.io/v1/run/<CODE>/<RUN_ID>"
 
 | 症状 | 原因 |
 |---|---|
-| `Unresolved reference: Qase` | import文の誤り、または対象モジュールに `testImplementation(projects.core.testing)` が未追加 |
+| `Unresolved reference: Qase` | import文の誤り、または対象モジュールに `testImplementation(projects.shared.testing)` が未追加 |
 | 型の不一致（`id`） | `id` は `Long`。整数リテラルで記述する |
 | カバレッジXMLが生成されない | `createDevelopDebugCombinedCoverageReport` が実行されていない |
 | テスト失敗時に artifact が無い | `if: always()` が付いていない |

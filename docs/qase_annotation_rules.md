@@ -6,7 +6,7 @@
 | **対象者** | QA担当（テストコードへの `@Qase` 追記者） |
 | **ゴール** | Gherkinシナリオから `@Qase` の各フィールドを一意に導出でき、Qaseへ同期しても意図どおりの内容になる書き方が分かるようになります |
 
-本書は、単体テストコードに付与する `@Qase` アノテーションの**書き方の取り決め**です。アノテーションの型定義そのものは対象リポジトリ側（`core/testing`）にあり、本書はその**中身の書式**を定めます。
+本書は、単体テストコードに付与する `@Qase` アノテーションの**書き方の取り決め**です。アノテーションの型定義そのものは対象リポジトリ側（`shared/testing`）にあり、本書はその**中身の書式**を定めます。
 
 ---
 
@@ -125,9 +125,9 @@ steps = [
 ## 3. 記述例
 
 ```kotlin
-import jp.bitkey.app.gateconnector.core.testing.qase.Qase
-import jp.bitkey.app.gateconnector.core.testing.qase.QaseStep
-import jp.bitkey.app.gateconnector.core.testing.qase.TestLevel
+import jp.bitkey.app.gateaccess.shared.testing.qase.Qase
+import jp.bitkey.app.gateaccess.shared.testing.qase.QaseStep
+import jp.bitkey.app.gateaccess.shared.testing.qase.TestLevel
 
 class LoginViewModelTest {
 
@@ -180,6 +180,6 @@ class LoginViewModelTest {
 
 | 症状 | 原因 |
 |---|---|
-| `Unresolved reference: Qase` | import文の誤り、または対象モジュールに `testImplementation(projects.core.testing)` が未追加 |
+| `Unresolved reference: Qase` | import文の誤り、または対象モジュールに `testImplementation(projects.shared.testing)` が未追加 |
 | `Unresolved reference: TestLevel` | 同上 |
 | 型の不一致 | `id` は `Long` です。`id = 101` のように整数リテラルで記述します |
