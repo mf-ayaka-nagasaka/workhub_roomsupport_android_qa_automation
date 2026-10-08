@@ -2,12 +2,14 @@
 開発チームの単体テストPRを探すところから、レビュー・`@Qase` 追記・Qase同期までの一連の工程を、対話的に進行管理するオーケストレーターSkillです。各工程の実処理は個別Skillに委譲します。
 
 ## Usage
-`/unit-test-review-workflow [PR_URL|PR番号]`
+`/unit-test-review-workflow [PR_URL|PR番号] [feature_name] [scenario]`
 例: `/unit-test-review-workflow`
 例: `/unit-test-review-workflow https://github.com/bitkey-service/gateaccess-android/pull/42`
+例: `/unit-test-review-workflow 83 login RSA-3`
 
 - 引数なし: Step 1 でレビュー対象PRを探索します
 - `PR_URL` / `PR番号`: 探索をスキップし、そのPRから開始します
+- `feature_name` / `scenario`: 対象が分かっている場合に指定します。Step 1 の推定を省略できます
 
 ## Context / Scope
 - **作業リポジトリ（ブランチ操作の対象）**: 本リポジトリ（QAリポジトリ）
@@ -50,11 +52,33 @@ git branch --list unit-test/qa-review
 
 | 結果 | 操作 |
 |---|---|
-| 存在する | `git switch unit-test/qa-review` |
-| 存在しない | `git fetch origin` の後、`git switch -c unit-test/qa-review main` |
+| 存在する | `git switch unit-test/qa-review` の後、0-3 へ |
+| 存在しない | `git fetch origin` の後、`git switch -c unit-test/qa-review origin/main` |
+
+> ⚠️ **基点は `main` ではなく `origin/main` です。** `git fetch` はリモート追跡ブランチを更新するだけで、ローカル `main` は更新しません。ローカル `main` が遅れていると、必要なスキル・ドキュメントが存在しないブランチができます。
 
 - 既に `unit-test/qa-review` にいる場合は、何もせず「切り替え済み」と報告します。
 - 実行結果（作成したのか切り替えたのか、現在のブランチ名）を必ず報告してください。
+
+#### 0-3. 基点の健全性チェック
+
+既存ブランチに切り替えた場合、または作成後に、基点が最新かを確認します。
+
+```
+git fetch origin
+git log --oneline unit-test/qa-review..origin/main
+```
+
+- **出力がある場合**（作業ブランチが `origin/main` より遅れている）、以下を提示して**ユーザーに確認**してください。
+
+  > ⚠️ 作業ブランチが `origin/main` より {n} コミット遅れています。
+  > 必要なスキル・ドキュメントが揃っていない可能性があります。
+  >
+  > - **「更新」**: `git merge --ff-only origin/main` で最新化します
+  > - **「このまま」**: 現状のまま続行します
+
+- 未マージの作業ブランチに本フローの前提となる変更が残っている場合も、**処理を中断**し、先にマージするようユーザーに確認してください。
+- `--ff-only` が失敗した場合（作業ブランチに独自コミットがある）は、**自動でマージせず**、状況を報告して判断を仰いでください。
 
 ---
 
@@ -87,15 +111,19 @@ git branch --list unit-test/qa-review
 
 #### 1-4. 対象PRの確定
 複数のPRが提示された場合、**どのPRから着手するかをユーザーに選択させてください。**
-feature推定が `要確認` のPRは、feature名もあわせて確認してください。
+feature推定・シナリオ推定が `要確認` のPRは、feature名とシナリオもあわせて確認してください。
+
+**レビュー単位はシナリオです。** `/check-qa-prs` がケースID（`RSA-3` 等）を拾えている場合はそれを使用し、`要確認` の場合はユーザーに指定してもらってください。**勝手に推測してはいけません。**
 
 ---
 
 ### Step 2: レビューの実行
 
 ```
-/review-unit-tests {PR番号} {feature名}
+/review-unit-tests {PR番号} {feature名} {シナリオ}
 ```
+
+> シナリオが特定できていない場合は省略できますが、その場合は feature 全体が突合対象になります。
 
 委譲先SkillがPRコメントの投稿承認を求めます。**その承認を本スキルが代行してはいけません。**
 
@@ -187,6 +215,8 @@ git status --porcelain
 - **工程スキップの禁止**: ユーザーの明示的な指示なく工程を飛ばさないこと。飛ばした場合は完了レポートに明記すること。
 - **ID の厳格性**: QaseのケースIDを推測・仮置きしないこと。
 - **中断時の状態保持**: 途中で終了する場合も、作業ブランチはそのまま残すこと（自動でmainへ戻さない）。
+- **ブランチ基点の厳格性**: 新規作成時の基点は `origin/main` とすること。`git fetch` 後もローカル `main` は更新されないため、`main` を基点にしないこと。
+- **レビュー単位の明示**: 委譲時はシナリオを渡すこと。特定できない場合はユーザーに確認し、推測で補完しないこと。
 
 ---
 
