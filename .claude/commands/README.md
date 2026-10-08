@@ -60,6 +60,11 @@ ISO 25010品質モデルやOWASP Mobile Top 10などの標準モデルを参照�
 実行結果とカバレッジの送信は本体リポジトリのCIが自動で行うため、`results` モードは再送・リカバリ用の暫定手段です。  
 運用手順: `docs/qase_sync_operation.md`
 
+### 🔬 `/unit-test-review-workflow` - 単体テストレビューワークフロー
+単体テストPRの探索からレビュー・`@Qase` 追記・Qase同期までを統合管理するオーケストレーターSkill。
+作業ブランチ `unit-test/qa-review` の準備から始まり、各工程で承認を挟みながら個別Skillへ委譲します。
+PRが見つからない場合は、PRのURLを直接指定して進めることもできます。
+
 ### 📦 `/end` - QA作業提出
 Git操作（ブランチ作成、コミット、プッシュ、PR作成）を対話的にガイドし、QA作業の成果物を提出します。
 
@@ -137,7 +142,7 @@ Skill自体の改善を提案・実行するメタスキル。
 [開発がテストコード変更PRを作成]
     ↓
 /check-qa-prs            → レビュー対象PRの抽出
-    ↓
+    ↓                       （0件ならPRのURLを直接指定）
 /review-unit-tests       → Gherkin突合＋品質レビュー → PRコメント（要承認）
     ↓
 [Qase UIでケースを作成しID採番]
@@ -147,7 +152,11 @@ Skill自体の改善を提案・実行するメタスキル。
 /qase-sync               → Qaseへ同期（要承認）
 ```
 
+上記の一連の流れは `/unit-test-review-workflow` で統合的に管理できます。
+作業ブランチ `unit-test/qa-review` の準備も同Skillが行います。
+
 判定基準は `docs/unit_test_review_criteria.md` に集約しています。
+レビュー対象リポジトリは `bitkey-service/gateaccess-android` です。
 
 ## 補助Skill
 
