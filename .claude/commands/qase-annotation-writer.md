@@ -17,6 +17,7 @@
 - **レビュー基準書（UT-6 の判定基準）**: `docs/unit_test_review_criteria.md`
 - **記述ルール**: `docs/qase_annotation_rules.md`
 - **対象リポジトリ**: `C:\Users\mforce0087\gateaccess-android`（GitHub: `bitkey-service/gateaccess-android`）
+- **コミット先**: 対象PRの head ブランチ。**カレントディレクトリはQAリポジトリのため、git 操作には必ず `-C C:/Users/mforce0087/gateaccess-android` を付与します**
 - **学習メモリー**: `.claude/memories/global.md` および `.claude/memories/qase-annotation-writer.md`
 
 ## Instructions
@@ -33,6 +34,47 @@
 ---
 
 ### Step 1: 前提の確認
+
+#### 1-0. 対象PRと作業ブランチの確認
+
+**この確認を飛ばして Step 5 の編集へ進んではいけません。** `gateaccess-android` のカレントブランチは通常 `develop` です。確認しないまま進めると、**共有ブランチへ直接コミットする事故**になります。
+
+**1. PRの状態を取得する**
+
+```
+gh pr view {pr_number} -R bitkey-service/gateaccess-android --json state,headRefName,isCrossRepository
+```
+
+- `state` が `MERGED` / `CLOSED` の場合は **処理を中断** し、push先が無いことを報告してユーザーに確認してください
+- `isCrossRepository` が `true`（フォークからのPR）の場合も **処理を中断** してください。push 権限が無い可能性が高いため、対応方針をユーザーに確認します
+
+**2. 作業ツリーの確認**
+
+```
+git -C C:/Users/mforce0087/gateaccess-android status --porcelain
+```
+
+- 出力がある場合は **処理を中断** し、内容を提示してユーザーの指示を仰いでください
+- **`git stash` / `git checkout --` 等の破壊的操作を無断で実行してはいけません。** 開発チームの作業中の変更である可能性があります
+
+**3. 現在のブランチを記録する**（Step 7-4 の復帰用）
+
+```
+git -C C:/Users/mforce0087/gateaccess-android branch --show-current
+```
+
+**4. PRブランチへの切り替え（承認必須）**
+
+切り替え先（`headRefName`）を提示し、承認を得てから実行してください。
+
+```
+gh pr checkout {pr_number} -R bitkey-service/gateaccess-android
+```
+
+- 実行は `gateaccess-android` ディレクトリをカレントとして行います
+- 切り替え後、`branch --show-current` が `headRefName` と一致することを確認し、報告してください
+
+> `file_path` 指定（PR番号なし）で実行された場合、本手順はスキップします。その場合は **Step 7 のコミット・push も行いません**（対象ブランチを特定できないため）。
 
 #### 1-1. アノテーション定義の存在確認
 対象リポジトリに `Qase.kt`（`annotation class Qase`）が配置されているかを検索してください。
@@ -142,9 +184,9 @@ Gherkinと対象テストを突き合わせ、テストごとに `@Qase` の中�
 追加するimport文もあわせて提示してください。
 
 ```kotlin
-+ import jp.bitkey.app.gateconnector.core.testing.qase.Qase
-+ import jp.bitkey.app.gateconnector.core.testing.qase.QaseStep
-+ import jp.bitkey.app.gateconnector.core.testing.qase.TestLevel
++ import jp.bitkey.app.gateaccess.shared.testing.qase.Qase
++ import jp.bitkey.app.gateaccess.shared.testing.qase.QaseStep
++ import jp.bitkey.app.gateaccess.shared.testing.qase.TestLevel
 ```
 
 提示後、以下を出力して**停止**してください。
@@ -175,7 +217,7 @@ Gherkinと対象テストを突き合わせ、テストごとに `@Qase` の中�
 ```
 
 - 失敗した場合は、エラー内容を報告し、原因（import誤り・パッケージ不一致・依存未追加など）を切り分けてください。
-- **`testImplementation(projects.core.testing)` が未追加のモジュール**ではコンパイルが通りません。その場合は「開発チームへの依存追加依頼が必要」と報告し、**自分でビルド設定を変更しないでください。**
+- **`testImplementation(projects.shared.testing)` が未追加のモジュール**ではコンパイルが通りません。その場合は「開発チームへの依存追加依頼が必要」と報告し、**自分でビルド設定を変更しないでください。**
 
 ---
 
@@ -189,20 +231,78 @@ Gherkinと対象テストを突き合わせ、テストごとに `@Qase` の中�
 | 見送ったテスト | {n}件（理由: ID未採番 / 対象外 など） |
 | コンパイル確認 | 成功 / 失敗 |
 
-#### 7-2. コミットの案内
-**コミット・pushは自動実行しません。** 以下を案内して終了してください。
+#### 7-2. コミット
 
-> 追記が完了しました。対象PRのブランチへコミットする場合は、承認のうえ実行します。
-> 実行してよろしいですか？（コミットメッセージ: `test: add @Qase annotations for {feature_name}`）
+**コミット・pushは自動実行しません。各段階で承認を得てください。**
 
-承認された場合のみ、対象ファイルを `git add` → `git commit` します。**push は別途、明示的な承認を得てから実行してください。**
+**1. ブランチの再確認**
+
+```
+git -C C:/Users/mforce0087/gateaccess-android branch --show-current
+```
+
+Step 1-0 で切り替えた `headRefName` と一致することを確認します。**一致しない場合は中断してください。**
+
+**2. 変更内容の提示**
+
+```
+git -C C:/Users/mforce0087/gateaccess-android diff --stat
+```
+
+変更ファイルと行数を提示し、承認を求めます。
+
+> 上記を `{headRefName}` へコミットしてよろしいですか？
+> コミットメッセージ: `test: add @Qase annotations for {feature_name}`
+
+**3. 実行**
+
+承認後にのみ実行します。**`git add` には追記したテストファイルのみを明示的に指定してください。`git add -A` / `git add .` を使ってはいけません**（開発チームの無関係な変更を巻き込みます）。
+
+#### 7-3. push
+
+**1. リモートの取り込み**
+
+```
+git -C C:/Users/mforce0087/gateaccess-android pull --ff-only
+```
+
+- 失敗した場合（開発チームが後からコミットしている等）は **処理を中断** し、状況を報告してください
+- **`--rebase` / `--force` / `push -f` を無断で実行してはいけません**
+
+**2. 承認を求める**
+
+> `{headRefName}` を origin へ push します。実行してよろしいですか？
+
+**3. 実行と報告**
+
+```
+git -C C:/Users/mforce0087/gateaccess-android push origin HEAD
+```
+
+push後、対象PRのURLを報告してください。
+
+#### 7-4. ブランチの復帰
+
+Step 1-0 で記録した元のブランチ（通常 `develop`）へ戻すか、ユーザーに確認してください。**無断で切り替えないでください。**
+
+#### 7-5. 残作業の案内
+
+以下を必ず案内して終了してください。
+
+> ⚠️ **Qaseへのケース同期はまだ完了していません。**
+> developマージ後にCI（`qase_report_develop.yml`）が送るのは **実行結果とカバレッジのみ** です。
+> ケース本体（title / description / Test Level / steps）の同期には `/qase-sync cases` の実行が必要です。
 
 ## Constraints (制約事項)
 - **ID の厳格性**: ケースIDを推測・仮置き・連番生成しないこと。採番済みのIDのみ使用すること。
 - **テストロジックの不変更**: 追加してよいのは `@Qase` アノテーションと必要なimport文のみ。アサーション・セットアップ・テスト名を変更しないこと。
 - **プロダクトコードの保護**: `src/main/` 配下を変更しないこと。
 - **ビルド設定の保護**: `build.gradle.kts` を変更しないこと（依存追加は開発チームの責務）。
-- **進行制御**: 承認なしにファイル編集・コミット・pushを行わないこと。
+- **進行制御**: 承認なしにファイル編集・ブランチ切り替え・コミット・pushを行わないこと。
+- **ブランチの厳格性**: 編集前に必ず対象PRの head ブランチへ切り替えること。`develop` 等の共有ブランチへ直接コミットしないこと。マージ済みPR・フォークからのPRでは中断すること。
+- **作業ツリーの保護**: `gateaccess-android` に未コミットの変更がある場合は中断すること。`git stash` / `git checkout --` 等を無断で実行しないこと。
+- **ステージングの限定**: `git add` には追記したファイルのみを明示すること。`git add -A` / `git add .` を使わないこと。
+- **履歴の保護**: `git pull --ff-only` が失敗した場合は中断すること。rebase・force push を行わないこと。
 - **Gherkin準拠**: 記載内容はGherkinからの転記のみ。創作・要約・英訳をしないこと。
 - **steps の省略**: 内容が読み取れない場合は `steps` を省略すること。空配列で上書きしないこと。
 - **定義未配置時の中断**: `Qase.kt` が見つからない場合は、ファイルを作らず中断すること。

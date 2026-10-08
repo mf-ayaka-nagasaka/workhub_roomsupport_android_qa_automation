@@ -12,9 +12,19 @@
 - `feature_name` / `scenario`: 対象が分かっている場合に指定します。Step 1 の推定を省略できます
 
 ## Context / Scope
-- **作業リポジトリ（ブランチ操作の対象）**: 本リポジトリ（QAリポジトリ）
-- **レビュー対象リポジトリ（読み取り専用）**: `C:\Users\mforce0087\gateaccess-android`（GitHub: `bitkey-service/gateaccess-android`）
-- **作業ブランチ**: `unit-test/qa-review`
+- **QAリポジトリ（本リポジトリ）**: Gherkin等のQA成果物を管理。作業ブランチ `unit-test/qa-review` を作成・切り替えます
+- **レビュー対象リポジトリ**: `C:\Users\mforce0087\gateaccess-android`（GitHub: `bitkey-service/gateaccess-android`）
+
+> **gateaccess-android への操作は工程ごとに異なります。**
+>
+> | 工程 | 操作範囲 |
+> |---|---|
+> | Step 1 `/check-qa-prs` | 読み取りのみ |
+> | Step 2 `/review-unit-tests` | **読み取りのみ**（レビューでコードを変更しません） |
+> | Step 4 `/qase-annotation-writer` | **対象PRのheadブランチへ checkout・`@Qase` 追記・commit・push** |
+> | Step 5 `/qase-sync` | 読み取りのみ |
+>
+> Step 4 以外でコードを変更してはいけません。Step 4 でも `develop` 等の共有ブランチへ直接コミットしてはいけません。
 - **委譲先Skill**: `/check-qa-prs` → `/review-unit-tests` → `/qase-annotation-writer` → `/qase-sync`
 - **判定基準書**: `docs/unit_test_review_criteria.md`
 - **学習メモリー**: `.claude/memories/global.md` および `.claude/memories/unit-test-review-workflow.md`
@@ -33,7 +43,7 @@
 
 ### Step 0: 作業ブランチの準備
 
-**対象はQAリポジトリ（カレントディレクトリ）です。** gateaccess-android 側では一切ブランチ操作を行いません。
+**本Stepの対象はQAリポジトリ（カレントディレクトリ）のみです。** gateaccess-android 側のブランチ操作は Step 4 で委譲先Skillが行います。本Stepでは触れません。
 
 #### 0-1. 作業ツリーの確認
 
@@ -159,20 +169,39 @@ feature推定・シナリオ推定が `要確認` のPRは、feature名とシナ
 /qase-annotation-writer {PR番号} {feature名}
 ```
 
-委譲先Skillが gateaccess-android のテストコードを編集します。
-**編集・コミット・pushの承認は、すべて委譲先Skillのプロセスに従ってください。**
+委譲先Skillが、以下を順に行います。**各操作の承認は、すべて委譲先Skillのプロセスに従ってください。本スキルが代行してはいけません。**
+
+1. 対象PRの head ブランチへ切り替え（`gh pr checkout`）
+2. `@Qase` アノテーションの追記
+3. コンパイル確認
+4. 対象PRブランチへの commit & push
+
+> 📌 **これは開発チームからのレビュー依頼（「アノテーションを付与して commit & push」）に直接対応する工程です。** push まで完了して初めて依頼が満たされます。
+
+> ⚠️ 委譲先Skillは、**対象PRがマージ済み・クローズ済み、またはフォークからのPR**の場合に中断します。push先が無い、または権限が無いためです。中断した場合は**本スキルで自動対応せず**、対応方針（別PRを立てる等）をユーザーに確認してください。
+
+> ⚠️ gateaccess-android に未コミットの変更がある場合も委譲先Skillが中断します。開発チームの作業中の変更である可能性があるため、**退避を勝手に実行してはいけません。**
 
 ---
 
 ### Step 5: Qaseへの同期
 
 ```
-/qase-sync
+/qase-sync cases
 ```
 
 dry-run の提示 → 承認 → 実行、という委譲先Skillの手順に従います。
 
-> ℹ️ 実行結果とカバレッジの送信は gateaccess-android 側のCIが自動で行います。`results` モードは再送・リカバリ時のみ使用してください。
+> ⚠️ **この工程は省略できません。** 役割分担は以下のとおりです。
+>
+> | 同期対象 | 担当 | タイミング |
+> |---|---|---|
+> | **ケース本体**（title / description / Test Level / steps） | **QA（本Step）** | マージ前 |
+> | 実行結果・カバレッジ | gateaccess-android のCI（`qase_report_develop.yml`） | developマージ後に自動 |
+>
+> CIが送るのは**結果とカバレッジのみ**です。本Stepを飛ばすと、**Qase上のケースが中身の無いまま結果だけ記録される**状態になります。
+>
+> ℹ️ `results` モードはCIの送信が失敗したときの再送・リカバリ用です。通常は使用しません。
 
 ---
 
@@ -201,7 +230,8 @@ git status --porcelain
 | レビューコメント | {投稿済み（URL） / 未投稿} |
 | Qaseケース採番 | {ID一覧 / 未実施} |
 | @Qase 追記 | {完了 / 未実施} |
-| Qase同期 | {完了 / 未実施} |
+| @Qase のcommit & push | {完了（ブランチ: {headRefName} / PR: {URL}） / 未実施} |
+| Qase同期（ケース本体） | {完了 / 未実施} |
 | QA成果物の提出 | {完了 / 対象なし} |
 ```
 
@@ -210,7 +240,10 @@ git status --porcelain
 ## Constraints (制約事項)
 - **進行管理への限定**: 判定・レビュー・追記のロジックを本スキル内に実装しないこと。必ず委譲先Skillを呼び出すこと。
 - **承認の非代行**: 委譲先Skillが求める承認を、本スキルが自動で「はい」と応答しないこと。
-- **ブランチ操作の限定**: ブランチ操作はQAリポジトリのみ。gateaccess-android 側でブランチを作成・切り替えしないこと。
+- **ブランチ操作の限定**: QAリポジトリのブランチ操作は本スキルが行う。gateaccess-android 側のブランチ切り替えは **Step 4 の委譲先Skillのみ**が行い、本スキルが直接実行しないこと。
+- **共有ブランチの保護**: gateaccess-android の `develop` 等へ直接コミット・pushしないこと。コミット先は対象PRの head ブランチに限ること。
+- **読み取り専用工程の維持**: Step 1・Step 2・Step 5 で gateaccess-android のファイルを変更しないこと。
+- **Qase同期の必須化**: Step 5 を「CIがやるので不要」として飛ばさないこと。CIが送るのは結果とカバレッジのみであり、ケース本体の同期はQAの責務であること。
 - **作業ツリーの保護**: 未コミットの変更がある状態で、`git stash` / `git checkout --` 等の破壊的操作を無断で実行しないこと。
 - **工程スキップの禁止**: ユーザーの明示的な指示なく工程を飛ばさないこと。飛ばした場合は完了レポートに明記すること。
 - **ID の厳格性**: QaseのケースIDを推測・仮置きしないこと。
