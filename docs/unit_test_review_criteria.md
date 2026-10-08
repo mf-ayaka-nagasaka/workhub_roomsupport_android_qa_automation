@@ -16,7 +16,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 対象リポジトリ | workhubRoomSupport-Android |
+| 対象リポジトリ | gateaccess-android |
 | 対象ソース | 各モジュールの `src/test/`（JVM単体テスト） |
 | 対象テストレベル | Gherkin中の `# @TestLevel:` が `ApplicationUnit (JVM)` または `PresentationUnit (JVM / Turbine)` のもの |
 | 前提スタック | JUnit4 + `kotlin.test` / MockK / kotest matchers / `kotlinx-coroutines-test` / MockWebServer |

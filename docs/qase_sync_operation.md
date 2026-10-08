@@ -6,7 +6,7 @@
 | **対象者** | QA担当（Qase同期の実行者） |
 | **ゴール** | テストコードの `@Qase` をQaseへ同期し、実行結果とカバレッジを記録できるようになります |
 
-本書は、QA側で実行するQase同期スクリプトの操作手順です。スクリプトは `scripts/` 配下にあり、対象リポジトリ（workhubRoomSupport-Android）のテストソースを**読み取るだけ**で、変更は行いません。
+本書は、QA側で実行するQase同期スクリプトの操作手順です。スクリプトは `scripts/` 配下にあり、対象リポジトリ（gateaccess-android）のテストソースを**読み取るだけ**で、変更は行いません。
 
 ---
 
@@ -82,7 +82,7 @@ setx QASE_API_TOKEN "<your token>"
 
 ```bash
 python scripts/extract_qase_annotations.py \
-  --source-root "C:/Users/<user>/workhubRoomSupport-Android" \
+  --source-root "C:/Users/<user>/gateaccess-android" \
   --out build/qase/qase-cases.json
 ```
 
