@@ -257,7 +257,6 @@ td.msg { font-weight: 500; }
       <rect class="screen-bar" x="1080" y="58" width="30" height="3" rx="1.5"/>
       <text class="t-screen" x="1095" y="82" text-anchor="middle">設置方法の選択</text>
       <text class="t-sub" x="1095" y="102" text-anchor="middle">再設置／新規設置</text>
-      <text class="err" x="1010" y="136">✕ 識別情報が読めないと、ここに出る</text>
     </g>
     <g class="hit" data-key="REINS" tabindex="0" role="button" aria-label="再設置へ">
       <rect class="screen" x="1220" y="52" width="110" height="64" rx="10"/>
@@ -438,9 +437,7 @@ td.msg { font-weight: 500; }
     <div class="cards">
       <div class="card" data-keys="5,DLG"><div class="ttl"><i class="dot ok"></i>設定が無い → 設置方法の選択が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="DLG,REINS,6,INIT"><div class="ttl"><i class="dot ok"></i>再設置 → 再設置へ／新規設置 → 設定を作って初期設定へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="6,LOGIN"><div class="ttl"><i class="dot ng"></i>新しい設定を作れない → ログイン画面へ戻る</div><div class="chips"></div></div>
-      <div class="card" data-keys="DLG,5,LD"><div class="ttl"><i class="dot ng"></i>識別情報が読めない → 代わりの情報で探すため選択が出る／読めたら読み込みをやり直す</div><div class="chips"></div></div>
-      <div class="card" data-keys="DLG,REINS,6"><div class="ttl"><i class="dot ng"></i>読めないまま選ぶと、代わりの情報がこの端末の識別情報として確定する</div><div class="chips"></div></div>
+      <div class="card" data-keys="6,LOGIN"><div class="ttl"><i class="dot ng"></i>新しい設定を作れない → ログイン画面へ戻る（失敗の種類が何であっても同じ）</div><div class="chips"></div></div>
       <div class="card" data-keys="REINS,DLG"><div class="ttl"><i class="dot ok"></i>再設置から戻る → 設置方法の選択に戻る</div><div class="chips"></div></div>
     </div>
   </div>
@@ -481,7 +478,7 @@ td.msg { font-weight: 500; }
     <tr><td class="msg">組織情報の取得に失敗しました(1)</td><td>④ 組織の情報を取る（取り直しなし・すぐログイン画面へ）</td></tr>
     <tr><td class="msg">端末情報の取得に失敗しました(1)</td><td>⑤ 設定が取れない・中身がおかしいとき ／ ⑧ 端末の情報が整わないとき（いずれも3回取り直した後）</td></tr>
     <tr><td class="msg">端末情報の取得に失敗しました(2)</td><td>⑧ そのほかの失敗（3回取り直した後）</td></tr>
-    <tr><td class="msg">初期設定に失敗しました</td><td>⑥ 新しい設定を作れないとき</td></tr>
+    <tr><td class="msg">初期設定に失敗しました</td><td>⑥ 新しい設定を作れないとき（組織の情報が取れない／通信・サーバー・権限・リクエストの失敗のいずれも同じ）</td></tr>
   </table>
   </div>
   </div>
