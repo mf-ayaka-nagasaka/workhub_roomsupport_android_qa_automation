@@ -4,7 +4,7 @@
 ## Usage
 `/bdd-workflow-manager [対象機能名]`
 
-例: `/bdd-workflow-manager login`
+例: `/bdd-workflow-manager Login`
 例: `/bdd-workflow-manager reservation`
 
 ## Context / Scope

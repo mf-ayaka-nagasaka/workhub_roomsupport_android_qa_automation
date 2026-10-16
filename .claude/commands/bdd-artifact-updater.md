@@ -4,8 +4,8 @@
 ## Usage
 `/bdd-artifact-updater [対象機能名] [修正内容]`
 
-例: `/bdd-artifact-updater setting_loader 端末識別情報が取得できない場合はリトライせず即エラー画面に遷移する仕様に変わった`
-例: `/bdd-artifact-updater login 生体認証のロック解除にリトライ回数の上限（3回）が追加された`
+例: `/bdd-artifact-updater SettingLoader 端末識別情報が取得できない場合はリトライせず即エラー画面に遷移する仕様に変わった`
+例: `/bdd-artifact-updater Login 生体認証のロック解除にリトライ回数の上限（3回）が追加された`
 
 - `[修正内容]` は省略可能。省略された場合は、何をどう修正するのかをユーザーにヒアリングしてから Step 1 に進むこと。
 
