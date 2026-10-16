@@ -5,7 +5,7 @@
 `/unit-test-review-workflow [PR_URL|PR番号] [feature_name] [scenario]`
 例: `/unit-test-review-workflow`
 例: `/unit-test-review-workflow https://github.com/bitkey-service/gateaccess-android/pull/42`
-例: `/unit-test-review-workflow 83 login RSA-3`
+例: `/unit-test-review-workflow 83 Login RSA-3`
 
 - 引数なし: Step 1 でレビュー対象PRを探索します
 - `PR_URL` / `PR番号`: 探索をスキップし、そのPRから開始します

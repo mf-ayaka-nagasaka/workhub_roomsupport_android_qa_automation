@@ -4,8 +4,8 @@ PBI・ユーザーストーリー・ルール&実例・Gherkin シナリオが�
 ## Usage
 `/pbi-flow-map [対象機能名]`
 
-例: `/pbi-flow-map login`
-例: `/pbi-flow-map initial_setup`
+例: `/pbi-flow-map Login`
+例: `/pbi-flow-map InitialSetup`
 例: `/pbi-flow-map reservation`
 
 ## Context / Scope

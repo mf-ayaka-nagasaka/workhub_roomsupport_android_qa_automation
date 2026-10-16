@@ -4,8 +4,8 @@
 ## Usage
 `/gherkin-scenario-generator [対象機能フォルダ名]`
 
-例: `/gherkin-scenario-generator login`
-例: `/gherkin-scenario-generator initial_setup`
+例: `/gherkin-scenario-generator Login`
+例: `/gherkin-scenario-generator InitialSetup`
 
 ## Context / Scope
 - **入力（参照元）**: `src/test/resources/features/{機能名}/rules.md`（`/rule-example-extractor` の成果物）

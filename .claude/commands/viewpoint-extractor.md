@@ -4,8 +4,8 @@ Gherkinシナリオ（scenarios.md）を入力として、他機能にも展開�
 ## Usage
 `/viewpoint-extractor [対象機能フォルダ名]`
 
-例: `/viewpoint-extractor login`
-例: `/viewpoint-extractor initial_setup`
+例: `/viewpoint-extractor Login`
+例: `/viewpoint-extractor InitialSetup`
 
 ## Context / Scope
 - **入力（参照元）**: `src/test/resources/features/{機能名}/scenarios.md`（`/gherkin-scenario-generator` の成果物）
