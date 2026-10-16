@@ -191,11 +191,11 @@ td.msg { font-weight: 500; }
     <path class="flow" marker-end="url(#arw)" d="M330 190 V120"/>
     <text class="lbl" x="338" y="166">記録がない・判定できない</text>
     <path class="flow" marker-end="url(#arw)" d="M535 200 V120"/>
-    <text class="lbl" x="543" y="170">3回ダメ（つながらない）</text>
+    <text class="lbl" x="543" y="170">復旧を待つ失敗</text>
     <path class="flow" marker-end="url(#arw)" d="M450 84 H384"/>
-    <text class="lbl" x="417" y="74" text-anchor="middle">ログイン画面へ</text>
+    <text class="lbl" x="417" y="74" text-anchor="middle">10回超過でログアウト</text>
     <path class="flow" marker-end="url(#arw)" d="M600 116 V196"/>
-    <text class="lbl" x="608" y="160">つながったらやり直す</text>
+    <text class="lbl" x="608" y="160">復旧したらやり直す</text>
     <path class="flow" marker-end="url(#arw)" d="M615 232 H796"/>
     <text class="lbl" x="792" y="222" text-anchor="end">本人確認ができた</text>
     <path class="flow" marker-end="url(#arw)" d="M875 200 V120"/>
@@ -212,7 +212,7 @@ td.msg { font-weight: 500; }
     <path class="flow" marker-end="url(#arw)" d="M1125 116 V326"/>
     <text class="lbl" x="1133" y="306">新規設置を選ぶ</text>
     <path class="flow" marker-end="url(#arw)" d="M1225 358 H1390 V120"/>
-    <text class="lbl" x="1386" y="350" text-anchor="end">設定ができた</text>
+    <text class="lbl" x="1386" y="350" text-anchor="end">設定ができた → テンプレートの選択へ</text>
     <path class="flow" marker-end="url(#arw)" d="M1450 190 V120"/>
     <text class="lbl" x="1458" y="166">終わっていない</text>
     <path class="flow" marker-end="url(#arw)" d="M1535 232 H1696"/>
@@ -240,11 +240,11 @@ td.msg { font-weight: 500; }
       <text class="t-screen" x="310" y="82" text-anchor="middle">ログイン画面</text>
       <text class="t-sub" x="310" y="102" text-anchor="middle">失敗したらここへ戻る</text>
     </g>
-    <g class="hit" data-key="WAIT" tabindex="0" role="button" aria-label="接続を待っています">
+    <g class="hit" data-key="WAIT" tabindex="0" role="button" aria-label="復旧を待っています">
       <rect class="screen" x="450" y="52" width="180" height="64" rx="10"/>
       <rect class="screen-bar" x="525" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="540" y="82" text-anchor="middle">接続を待っています</text>
-      <text class="t-sub" x="540" y="102" text-anchor="middle">3秒ごとに試し直す</text>
+      <text class="t-screen" x="540" y="82" text-anchor="middle">復旧を待っています</text>
+      <text class="t-sub" x="540" y="102" text-anchor="middle">理由と秒数を出す／30秒ごと</text>
     </g>
     <g class="hit" data-key="LD" tabindex="0" role="button" aria-label="設定を読み込んでいます">
       <rect class="screen" x="760" y="52" width="180" height="64" rx="10"/>
@@ -256,8 +256,7 @@ td.msg { font-weight: 500; }
       <rect class="screen" x="1010" y="52" width="170" height="64" rx="10"/>
       <rect class="screen-bar" x="1080" y="58" width="30" height="3" rx="1.5"/>
       <text class="t-screen" x="1095" y="82" text-anchor="middle">設置方法の選択</text>
-      <text class="t-sub" x="1095" y="102" text-anchor="middle">再設置／新規設置</text>
-      <text class="err" x="1010" y="136">✕ 識別情報が読めないと、ここに出る</text>
+      <text class="t-sub" x="1095" y="102" text-anchor="middle">画面／再設置・新規設置・ログアウト</text>
     </g>
     <g class="hit" data-key="REINS" tabindex="0" role="button" aria-label="再設置へ">
       <rect class="screen" x="1220" y="52" width="110" height="64" rx="10"/>
@@ -295,8 +294,8 @@ td.msg { font-weight: 500; }
       <text class="t-name" x="535" y="224" text-anchor="middle">③ 本人確認をやり直す</text>
       <text class="t-sub" x="535" y="242" text-anchor="middle">30秒で終わらなければ失敗</text>
       <text class="err" x="440" y="292">✕ 本人確認ができない</text>
-      <text class="err" x="440" y="308">→ 5秒おきに3回まで</text>
-      <text class="err" x="440" y="324">→ ダメなら失敗の種類で分かれる</text>
+      <text class="err" x="440" y="308">→ 復旧不可（401・情報なし）だけログインへ</text>
+      <text class="err" x="440" y="324">→ ほかは30秒おきに復旧まで待つ</text>
     </g>
     <g class="hit" data-key="4" tabindex="0" role="button" aria-label="組織の情報を取る">
       <rect class="step" x="800" y="200" width="150" height="64" rx="8"/>
@@ -309,14 +308,14 @@ td.msg { font-weight: 500; }
       <polygon class="step-diamond" points="1100,190 1185,232 1100,274 1015,232"/>
       <text class="t-name" x="1100" y="229" text-anchor="middle">⑤ この端末の</text>
       <text class="t-name" x="1100" y="245" text-anchor="middle">設定はある？</text>
-      <text class="err" x="1000" y="292">✕ 取れない・中身がおかしい</text>
-      <text class="err" x="1000" y="308">→ 10秒おきに3回まで</text>
-      <text class="err" x="1000" y="324">　 取り直す</text>
+      <text class="err" x="1000" y="292">✕ 中身がおかしい(1)・権限がない(2)</text>
+      <text class="err" x="1000" y="308">→ 復旧不可だけログインへ</text>
+      <text class="err" x="1000" y="324">→ ほかは30秒おきに待つ</text>
     </g>
     <g class="hit" data-key="6" tabindex="0" role="button" aria-label="新しい設定を作る">
       <rect class="step" x="1065" y="330" width="160" height="56" rx="8"/>
       <text class="t-name" x="1145" y="352" text-anchor="middle">⑥ 新しい設定を作る</text>
-      <text class="t-sub" x="1145" y="370" text-anchor="middle">初期設定を行っています</text>
+      <text class="t-sub" x="1145" y="370" text-anchor="middle">押したらボタンを止めて案内を出す</text>
     </g>
     <g class="hit" data-key="7" tabindex="0" role="button" aria-label="初期設定は終わっているか">
       <polygon class="step-diamond" points="1450,190 1535,232 1450,274 1365,232"/>
@@ -327,9 +326,9 @@ td.msg { font-weight: 500; }
       <rect class="step" x="1700" y="200" width="150" height="64" rx="8"/>
       <text class="t-name" x="1775" y="224" text-anchor="middle">⑧ 起動の情報を整える</text>
       <text class="t-sub" x="1775" y="242" text-anchor="middle">起動の記録・つなぎ直し</text>
-      <text class="err" x="1620" y="292">✕ 端末の情報が整わない</text>
-      <text class="err" x="1620" y="308">✕ そのほかの失敗</text>
-      <text class="err" x="1620" y="324">→ 3回ダメならログインへ</text>
+      <text class="err" x="1620" y="292">✕ IDや鍵の保管庫が整わない(1)</text>
+      <text class="err" x="1620" y="308">✕ 権限がない(2) → ログインへ</text>
+      <text class="err" x="1620" y="324">→ そのほかは30秒おきに待つ</text>
     </g>
 
     <g class="hit" data-key="C" tabindex="0" role="button" aria-label="残る ログインの状態">
@@ -392,28 +391,29 @@ td.msg { font-weight: 500; }
   </div>
 
   <div class="group">
-    <h3>ルール③ 本人確認は3回までやり直す</h3>
+    <h3>ルール③ 本人確認は30秒おきにやり直す</h3>
     <div class="cards">
-      <div class="card" data-keys="3,LD,4"><div class="ttl"><i class="dot ok"></i>1回目・やり直しで成功 → 読み込みが始まる</div><div class="chips"></div></div>
+      <div class="card" data-keys="3,LD,4"><div class="ttl"><i class="dot ok"></i>1回目・30秒後のやり直しで成功 → 読み込みが始まる</div><div class="chips"></div></div>
       <div class="card" data-keys="3"><div class="ttl"><i class="dot ng"></i>30秒で終わらない → 失敗として扱われ、やり直しへ</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール④ 3回ダメだったときの行き先</h3>
+    <h3>ルール④ 失敗し続けたときの行き先（復旧不可か否かだけで決まる）</h3>
     <div class="cards">
-      <div class="card" data-keys="3,C,LOGIN"><div class="ttl"><i class="dot ng"></i>本人確認に必要な情報がない → 案内なしでログイン画面へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="3,C,LOGIN"><div class="ttl"><i class="dot ng"></i>本人確認を断られた → 言葉が出てからログイン画面へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="3,WAIT"><div class="ttl"><i class="dot ng"></i>つながらない → 接続待ちになる</div><div class="chips"></div></div>
+      <div class="card" data-keys="3,C,LOGIN"><div class="ttl"><i class="dot ng"></i>本人確認に必要な情報がない → 案内なしでログイン画面へ（復旧不可）</div><div class="chips"></div></div>
+      <div class="card" data-keys="3,C,LOGIN"><div class="ttl"><i class="dot ng"></i>本人確認を断られた(401) → 言葉が出てからログイン画面へ（復旧不可）</div><div class="chips"></div></div>
+      <div class="card" data-keys="3,WAIT"><div class="ttl"><i class="dot ng"></i>そのほかの失敗（500・503・つながらない・400・403・404 など）→ 何も出さずに復旧待ちへ</div><div class="chips"></div></div>
       <div class="card" data-keys="3,D,WAIT,LOGIN"><div class="ttl"><i class="dot ng"></i>控えが残っていても行き先は同じ（控えを使った起動はしない）</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール⑤ 接続待ちからの進み方</h3>
+    <h3>ルール⑤ 復旧待ちの見せ方と、10回を超えてから出る動線</h3>
     <div class="cards">
-      <div class="card" data-keys="WAIT,LOGIN"><div class="ttl"><i class="dot ok"></i>接続待ちの表示と、ログイン画面へ行く手段がある</div><div class="chips"></div></div>
-      <div class="card" data-keys="WAIT,3,LD,LOGIN"><div class="ttl"><i class="dot ok"></i>つながれば本人確認をやり直して読み込みへ／選べばログイン画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="WAIT"><div class="ttl"><i class="dot ok"></i>なぜ待っているかと、やり直しまでの秒数が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="WAIT,LOGIN"><div class="ttl"><i class="dot ok"></i>やり直しが10回までは動線なし／11回目から出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="WAIT,3,LD,LOGIN"><div class="ttl"><i class="dot ok"></i>復旧すれば本人確認をやり直して読み込みへ／選べばログイン画面へ</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -436,20 +436,21 @@ td.msg { font-weight: 500; }
   <div class="group">
     <h3>ルール⑧ 設定が無ければ設置方法を選ぶ</h3>
     <div class="cards">
-      <div class="card" data-keys="5,DLG"><div class="ttl"><i class="dot ok"></i>設定が無い → 設置方法の選択が出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="DLG,REINS,6,INIT"><div class="ttl"><i class="dot ok"></i>再設置 → 再設置へ／新規設置 → 設定を作って初期設定へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="6,LOGIN"><div class="ttl"><i class="dot ng"></i>新しい設定を作れない → ログイン画面へ戻る</div><div class="chips"></div></div>
-      <div class="card" data-keys="DLG,5,LD"><div class="ttl"><i class="dot ng"></i>識別情報が読めない → 代わりの情報で探すため選択が出る／読めたら読み込みをやり直す</div><div class="chips"></div></div>
-      <div class="card" data-keys="DLG,REINS,6"><div class="ttl"><i class="dot ng"></i>読めないまま選ぶと、代わりの情報がこの端末の識別情報として確定する</div><div class="chips"></div></div>
+      <div class="card" data-keys="5,DLG"><div class="ttl"><i class="dot ok"></i>設定が無い → 設置方法の選択が「画面」で出る（ログアウト動線つき）</div><div class="chips"></div></div>
+      <div class="card" data-keys="DLG,REINS,6,INIT"><div class="ttl"><i class="dot ok"></i>再設置 → 再設置へ／新規設置 → 設定を作ってテンプレートの選択へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="DLG,6"><div class="ttl"><i class="dot ok"></i>新規設置を押した直後 → ボタンが止まり、案内とインジケータが出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="6,DLG"><div class="ttl"><i class="dot ng"></i>新しい設定を作れない → 失敗の種類がわかる言葉が出て、設置方法の選択に留まる（ログインはやり直さない）</div><div class="chips"></div></div>
+      <div class="card" data-keys="6,DLG"><div class="ttl"><i class="dot ok"></i>失敗しても閉じればもう一度やり直せる</div><div class="chips"></div></div>
       <div class="card" data-keys="REINS,DLG"><div class="ttl"><i class="dot ok"></i>再設置から戻る → 設置方法の選択に戻る</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール⑨ 取れないときは取り直す</h3>
+    <h3>ルール⑨ 取れないときは、復旧不可でなければ待ち続ける</h3>
     <div class="cards">
       <div class="card" data-keys="5,LD,PREP"><div class="ttl"><i class="dot ng"></i>途中で取れるようになれば、そのまま使える状態へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="5,8,LOGIN,C"><div class="ttl"><i class="dot ng"></i>3回取り直してもダメ → ログイン画面へ戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="5,8,LOGIN,C"><div class="ttl"><i class="dot ng"></i>復旧不可（中身がおかしい・権限がない）→ 言葉が出てログイン画面へ戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="5,8,LD"><div class="ttl"><i class="dot ng"></i>そのほかの失敗 → 何も出さず、ログインも求めず30秒おきに待ち続ける</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -464,9 +465,8 @@ td.msg { font-weight: 500; }
   <div class="group">
     <h3>通し（実機で最後まで）</h3>
     <div class="cards">
-      <div class="card" data-keys="PERM,1,2,3,LD"><div class="ttl"><i class="dot ok"></i>権限が揃いログイン済み：起動するだけで読み込みまで</div><div class="chips"></div></div>
-      <div class="card" data-keys="LOGIN,LD,4,5,7,8,PREP"><div class="ttl"><i class="dot ok"></i>設置済みの端末：起動するだけで使える状態まで</div><div class="chips"></div></div>
-      <div class="card" data-keys="LD,5,DLG,6,INIT"><div class="ttl"><i class="dot ok"></i>未設置の端末：新規設置を選んで初期設定まで</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,2,3,LD,4,5,7,8,PREP"><div class="ttl"><i class="dot ok"></i>権限が揃いログイン済みの設置済み端末：起動するだけで使える状態まで</div><div class="chips"></div></div>
+      <div class="card" data-keys="LD,5,DLG,6,INIT"><div class="ttl"><i class="dot ok"></i>未設置の端末：新規設置を選んでテンプレートの選択まで</div><div class="chips"></div></div>
     </div>
   </div>
 </section>
@@ -477,11 +477,12 @@ td.msg { font-weight: 500; }
   <div class="tbl-wrap">
   <table>
     <tr><th>画面に出る言葉</th><th>止まった場所</th></tr>
-    <tr><td class="msg">token失効により自動ログインに失敗しました</td><td>③ 本人確認を3回やり直してもダメだったとき（断られた場合のみ）</td></tr>
+    <tr><td class="msg">token失効により自動ログインに失敗しました</td><td>③ 本人確認を断られたとき(401)。復旧不可なのでやり直さずログイン画面へ</td></tr>
     <tr><td class="msg">組織情報の取得に失敗しました(1)</td><td>④ 組織の情報を取る（取り直しなし・すぐログイン画面へ）</td></tr>
-    <tr><td class="msg">端末情報の取得に失敗しました(1)</td><td>⑤ 設定が取れない・中身がおかしいとき ／ ⑧ 端末の情報が整わないとき（いずれも3回取り直した後）</td></tr>
-    <tr><td class="msg">端末情報の取得に失敗しました(2)</td><td>⑧ そのほかの失敗（3回取り直した後）</td></tr>
-    <tr><td class="msg">初期設定に失敗しました</td><td>⑥ 新しい設定を作れないとき</td></tr>
+    <tr><td class="msg">端末情報の取得に失敗しました(1)</td><td>⑤ 取れた設定が中身を持たないとき ／ ⑧ 設定のIDや鍵の保管庫が整わないとき（いずれも復旧不可）</td></tr>
+    <tr><td class="msg">端末情報の取得に失敗しました(2)</td><td>⑤ 設定の取得が権限で拒まれたとき ／ ⑧ 権限がないとき(401・403)（いずれも復旧不可）</td></tr>
+    <tr><td class="msg">（失敗の種類がわかる言葉。文言は未確定）</td><td>⑥ 新しい設定を作れないとき。組織の情報が取れない／通信／サーバー／権限／リクエストの5種類で出し分ける。ログインはやり直さず設置方法の選択に留まる</td></tr>
+    <tr><td class="msg">（何も出さない）</td><td>③⑤⑧ 復旧不可でない失敗。言葉を出さず、ログインも求めず、30秒おきに復旧を待つ</td></tr>
   </table>
   </div>
   </div>
@@ -493,7 +494,7 @@ td.msg { font-weight: 500; }
 <script>
 (function () {
   var LABEL = {
-    PERM: "権限の案内", LOGIN: "ログイン画面", WAIT: "接続待ち", LD: "読み込み中", DLG: "設置方法の選択",
+    PERM: "権限の案内", LOGIN: "ログイン画面", WAIT: "復旧待ち", LD: "読み込み中", DLG: "設置方法の選択",
     REINS: "再設置へ", INIT: "初期設定画面", PREP: "使える状態",
     1: "① 権限を確かめる", 2: "② ログインの記録", 3: "③ 本人確認をやり直す", 4: "④ 組織の情報",
     5: "⑤ 端末の設定", 6: "⑥ 設定を作る", 7: "⑦ 初期設定済み？", 8: "⑧ 起動の情報",
