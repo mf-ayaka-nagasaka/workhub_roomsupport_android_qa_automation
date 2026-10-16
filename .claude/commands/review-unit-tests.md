@@ -3,10 +3,10 @@
 
 ## Usage
 `/review-unit-tests [pr_number|pr_url|file_path] [feature_name] [scenario]`
-例: `/review-unit-tests 183 login RSA-3`
-例: `/review-unit-tests 183 login "単数組織に所属するアカウントでログインが完了する"`
-例: `/review-unit-tests https://github.com/bitkey-service/gateaccess-android/pull/183 login RSA-3`
-例: `/review-unit-tests core/data/src/test/kotlin/.../AuthServiceImplTest.kt login`
+例: `/review-unit-tests 183 Login RSA-3`
+例: `/review-unit-tests 183 Login "単数組織に所属するアカウントでログインが完了する"`
+例: `/review-unit-tests https://github.com/bitkey-service/gateaccess-android/pull/183 Login RSA-3`
+例: `/review-unit-tests core/data/src/test/kotlin/.../AuthServiceImplTest.kt Login`
 
 - `pr_number`: レビュー対象のPR番号（`gh pr diff` で差分を取得）
 - `pr_url`: PRのURL。`{owner}/{repo}` とPR番号を抽出し、`pr_number` と同じ扱いにします
@@ -472,7 +472,7 @@ Gherkinの各シナリオ・📐観点を、基準書 `§3.3` の定義に従っ
 
      ### [YYYY-MM-DD] 指摘事項_{連番}
      - **対象タスク**: （例: Gherkin突合、観点の仕分け、ミクロ品質判定 など）
-     - **対象機能**: （例: login、initial_setup など）
+     - **対象機能**: （例: Login、InitialSetup など）
      - **指摘カテゴリ**: （例: A/B/C分類の誤り、観点の取りこぼし、指摘の重み付けの誤り、スコープ外の指摘 など）
      - **指摘された内容**:
      - **原因/理由**:

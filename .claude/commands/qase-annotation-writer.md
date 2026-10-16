@@ -3,9 +3,9 @@
 
 ## Usage
 `/qase-annotation-writer [pr_number|file_path] [feature_name] [scenario]`
-例: `/qase-annotation-writer 185 login RSA-3`
-例: `/qase-annotation-writer 185 login "単数組織に所属するアカウントでログインが完了する"`
-例: `/qase-annotation-writer core/data/src/test/kotlin/.../AuthServiceImplTest.kt login RSA-3`
+例: `/qase-annotation-writer 185 Login RSA-3`
+例: `/qase-annotation-writer 185 Login "単数組織に所属するアカウントでログインが完了する"`
+例: `/qase-annotation-writer core/data/src/test/kotlin/.../AuthServiceImplTest.kt Login RSA-3`
 
 - `pr_number`: 対象PRの番号（`gh pr diff` で対象テストを特定）
 - `file_path`: ファイルパスを直接指定することも可能
@@ -256,7 +256,7 @@ Gherkinのバリエーションには名前が無く（`前提` の文がある�
 +       id = 101,
 +       title = "単一組織のアカウントで正しい認証情報を入力するとログインが完了する",
 +       level = TestLevel.UNIT,
-+       description = "feature: login / ルール①: 有効な認証情報を持つユーザーはWorkhubにログインできる / 観点: 認証成功",
++       description = "feature: Login / ルール①: 有効な認証情報を持つユーザーはWorkhubにログインできる / 観点: 認証成功",
 +       steps = [
 +           QaseStep(
 +               action = "単一組織に所属するユーザーで、正しいメールアドレスとパスワードを指定してログインを実行する",
@@ -421,7 +421,7 @@ Step 1-0 で記録した元のブランチ（通常 `develop`）へ戻すか、�
 
      ### [YYYY-MM-DD] 指摘事項_{連番}
      - **対象タスク**: （例: title生成、description生成、steps生成、TestLevel変換 など）
-     - **対象機能**: （例: login、initial_setup など）
+     - **対象機能**: （例: Login、InitialSetup など）
      - **指摘カテゴリ**: （例: Gherkinからの転記誤り、stepsの粒度、創作の混入、import漏れ など）
      - **指摘された内容**:
      - **原因/理由**:
