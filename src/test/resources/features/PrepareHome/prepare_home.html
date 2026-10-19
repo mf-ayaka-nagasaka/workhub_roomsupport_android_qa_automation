@@ -153,7 +153,7 @@ td.msg { font-weight: 500; }
 <header>
   <p class="eyebrow">prepare_home ／ 全体マップ</p>
   <h1>起動時に予約データを準備してホームを表示できる</h1>
-  <p class="lead">ログイン・組織選択のあと、読み込み画面からホーム画面に着くまでに、裏で何が順番に確認されるかを1枚にしたもの。図の箱やテストケースをクリックすると、対応する場所が光ります。</p>
+  <p class="lead">設定の読み込みを終えて起動準備画面に着いたあと、ホーム画面が出るまでに裏で何が順番に起きるかを1枚にしたもの。端末の登録と初期設定の確認は、ひとつ前の設定読み込み画面の担当。利用時間外の表示・顔情報の同期・オフライン時の動きも、それぞれ別のチケットの担当なのでここには出てきません。図の箱やテストケースをクリックすると、対応する場所が光ります。</p>
   <div class="controls">
     <button class="link" id="clearBtn" type="button">選択を解除</button>
     <span id="status">箱をクリックすると、その場所に関係するテストだけが残ります</span>
@@ -163,7 +163,7 @@ td.msg { font-weight: 500; }
 <section>
 <figure>
   <div class="scroll">
-  <svg class="map" viewBox="0 0 1440 400" role="img" aria-label="起動準備の流れ。上段は管理者が見る画面、下段は裏側で起きる確認。端末が登録されているか、初期設定が終わっているか、タブレット名と設置場所が決まっているかを順番に確認し、すべて満たしていれば予約データの到着を最大10秒待ってからホーム画面を表示する。">
+  <svg class="map" viewBox="0 0 1440 400" role="img" aria-label="起動準備の流れ。上段は管理者が見る画面、下段は裏側で起きる確認。起動準備画面に着いたあと、タブレット名と設置場所が決まっているかを確認し、決まっていなければ設定画面へ戻す。決まっていれば予約データの到着を最大10秒待ってからホーム画面を表示する。">
     <defs>
       <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-flow"/></marker>
       <marker id="arwS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-save"/></marker>
@@ -177,79 +177,49 @@ td.msg { font-weight: 500; }
     <text class="lane-label" x="16" y="178">裏側で起きていること</text>
 
     <!-- flow arrows -->
-    <path class="flow" marker-end="url(#arw)" d="M90 116 V150 H175 V196"/>
-    <path class="flow" marker-end="url(#arw)" d="M240 232 H315"/>
-    <text class="lbl" x="277" y="224" text-anchor="middle">登録済み</text>
-    <path class="flow" marker-end="url(#arw)" d="M175 196 V84 H230 V108"/>
-    <text class="lbl" x="183" y="150">未登録</text>
-    <path class="flow" marker-end="url(#arw)" d="M230 116 V140 H465 V116"/>
-    <text class="lbl" x="238" y="132">「新規設置」を選ぶ</text>
-    <path class="flow" marker-end="url(#arw)" d="M445 232 H520"/>
-    <text class="lbl" x="482" y="224" text-anchor="middle">完了</text>
-    <path class="flow" marker-end="url(#arw)" d="M380 196 V84 H465 V108"/>
-    <text class="lbl" x="388" y="150">未完了</text>
-    <path class="flow" marker-end="url(#arw)" d="M650 232 H705"/>
-    <text class="lbl" x="677" y="224" text-anchor="middle">設定済み</text>
-    <path class="flow" marker-end="url(#arw)" d="M585 196 V84 H675 V108"/>
-    <text class="lbl" x="593" y="150">未設定</text>
-    <path class="flow" marker-end="url(#arw)" d="M875 236 H930 V84 H1000 V116"/>
-    <text class="lbl" x="920" y="76" text-anchor="middle">予約データが届く（または10秒でタイムアウト）→ホームへ</text>
+    <path class="flow" marker-end="url(#arw)" d="M115 116 V232 H251"/>
+    <path class="flow" marker-end="url(#arw)" d="M405 232 H696"/>
+    <text class="lbl" x="550" y="224" text-anchor="middle">どちらも設定済み</text>
+    <path class="flow" marker-end="url(#arw)" d="M330 196 V140 H525 V120"/>
+    <text class="lbl" x="338" y="152">どちらかが未設定</text>
+    <path class="flow" marker-end="url(#arw)" d="M890 236 H940 V84 H996"/>
+    <text class="lbl" x="810" y="76" text-anchor="middle">予約データが届く（または10秒でタイムアウト）→ホーム画面へ</text>
 
     <!-- error exits -->
-    <text class="err" x="20" y="136">✕ オフライン→読み込み画面のまま進まない</text>
-    <text class="err" x="705" y="288">✕ 10秒待っても届かない→そのままホームへ進み、届き次第自動で反映</text>
+    <text class="err" x="700" y="296">✕ 10秒待っても届かない→そのままホーム画面へ進み、届き次第自動で反映</text>
+    <text class="err" x="700" y="318">✕ 準備全体が60秒を超えた→それでも止まらず、そのままホーム画面へ進む</text>
 
     <!-- lane A: screens -->
-    <g class="hit" data-key="L" tabindex="0" role="button" aria-label="読み込み画面">
-      <rect class="screen" x="20" y="52" width="140" height="64" rx="10"/>
-      <rect class="screen-bar" x="65" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="90" y="88" text-anchor="middle">読み込み画面</text>
-    </g>
-    <g class="hit" data-key="I" tabindex="0" role="button" aria-label="インストール確認ダイアログ">
-      <rect class="screen" x="140" y="52" width="180" height="64" rx="10"/>
-      <rect class="screen-bar" x="215" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="230" y="82" text-anchor="middle">インストール確認</text>
-      <text class="t-sub" x="230" y="102" text-anchor="middle">新規設置／再設置を選べる</text>
-    </g>
-    <g class="hit" data-key="W" tabindex="0" role="button" aria-label="初期設定ウィザード">
-      <rect class="screen" x="380" y="52" width="170" height="64" rx="10"/>
-      <rect class="screen-bar" x="450" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="465" y="82" text-anchor="middle">初期設定ウィザード</text>
-      <text class="t-sub" x="465" y="102" text-anchor="middle">認証方式・テンプレ選び</text>
+    <g class="hit" data-key="P" tabindex="0" role="button" aria-label="起動準備画面">
+      <rect class="screen" x="20" y="52" width="190" height="64" rx="10"/>
+      <rect class="screen-bar" x="100" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="115" y="82" text-anchor="middle">起動準備画面</text>
+      <text class="t-sub" x="115" y="102" text-anchor="middle">「設定を反映しています」</text>
     </g>
     <g class="hit" data-key="S" tabindex="0" role="button" aria-label="設定画面">
-      <rect class="screen" x="600" y="52" width="150" height="64" rx="10"/>
-      <rect class="screen-bar" x="660" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="675" y="82" text-anchor="middle">設定画面</text>
-      <text class="t-sub" x="675" y="102" text-anchor="middle">名前・設置場所を入れる</text>
+      <rect class="screen" x="430" y="52" width="190" height="64" rx="10"/>
+      <rect class="screen-bar" x="510" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="525" y="82" text-anchor="middle">設定画面</text>
+      <text class="t-sub" x="525" y="102" text-anchor="middle">名前・設置場所を入れる</text>
     </g>
     <g class="hit" data-key="M" tabindex="0" role="button" aria-label="ホーム画面">
-      <rect class="screen" x="1000" y="52" width="170" height="64" rx="10"/>
-      <rect class="screen-bar" x="1070" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="1085" y="82" text-anchor="middle">ホーム画面</text>
-      <text class="t-sub" x="1085" y="102" text-anchor="middle">空室／待機中／使用中で表示が変わる</text>
+      <rect class="screen" x="1000" y="52" width="190" height="64" rx="10"/>
+      <rect class="screen-bar" x="1080" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="1095" y="82" text-anchor="middle">ホーム画面</text>
+      <text class="t-sub" x="1095" y="102" text-anchor="middle">空室／待機中／使用中で表示が変わる</text>
     </g>
 
     <!-- lane B: steps -->
-    <g class="hit" data-key="1" tabindex="0" role="button" aria-label="登録されている？">
-      <polygon class="step-diamond" points="175,196 240,232 175,268 110,232"/>
-      <text class="t-name" x="175" y="229" text-anchor="middle">①登録</text>
-      <text class="t-name" x="175" y="245" text-anchor="middle">されている？</text>
+    <g class="hit" data-key="1" tabindex="0" role="button" aria-label="名前と場所は決まっている？">
+      <polygon class="step-diamond" points="330,196 405,232 330,268 255,232"/>
+      <text class="t-name" x="330" y="229" text-anchor="middle">①名前・場所</text>
+      <text class="t-name" x="330" y="245" text-anchor="middle">は決まってる？</text>
     </g>
-    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="初期設定は終わっている？">
-      <polygon class="step-diamond" points="380,196 445,232 380,268 315,232"/>
-      <text class="t-name" x="380" y="229" text-anchor="middle">②初期設定</text>
-      <text class="t-name" x="380" y="245" text-anchor="middle">は終わってる？</text>
-    </g>
-    <g class="hit" data-key="3" tabindex="0" role="button" aria-label="名前と場所は決まっている？">
-      <polygon class="step-diamond" points="585,196 650,232 585,268 520,232"/>
-      <text class="t-name" x="585" y="229" text-anchor="middle">③名前・場所</text>
-      <text class="t-name" x="585" y="245" text-anchor="middle">は決まってる？</text>
-    </g>
-    <g class="hit" data-key="4" tabindex="0" role="button" aria-label="予約データの到着を待つ">
-      <rect class="step" x="705" y="204" width="170" height="64" rx="8"/>
-      <text class="t-name" x="790" y="228" text-anchor="middle">④予約データの</text>
-      <text class="t-name" x="790" y="246" text-anchor="middle">到着を待つ（最大10秒）</text>
+    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="予約データの到着を待つ">
+      <rect class="step" x="700" y="204" width="190" height="64" rx="8"/>
+      <text class="t-name" x="795" y="228" text-anchor="middle">②予約データの</text>
+      <text class="t-name" x="795" y="246" text-anchor="middle">到着を待つ（最大10秒）</text>
+      <text class="t-sub" x="795" y="262" text-anchor="middle">準備全体の上限は60秒</text>
     </g>
   </svg>
   </div>
@@ -267,41 +237,70 @@ td.msg { font-weight: 500; }
   <p class="hint">カードをクリックすると図の該当箇所が光ります。図の箱をクリックすると、その箱に関係するカードだけが残ります。● 緑＝うまくいく確認、● 赤＝進めない・止まる確認。</p>
 
   <div class="group">
-    <h3>ルール① 端末の登録・設定状態で行き先が決まる</h3>
+    <h3>ルール① 準備中は「やっています」と示し、操作させない</h3>
     <div class="cards">
-      <div class="card" data-keys="L,1,2,3,4,M"><div class="ttl"><i class="dot ok"></i>登録・初期設定・名前/場所設定が全部済み → ホームへ</div><div class="chips"></div></div>
-      <div class="card" data-keys="L,1,I"><div class="ttl"><i class="dot ng"></i>端末が未登録 → インストール確認が出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="L,1,2,W"><div class="ttl"><i class="dot ng"></i>初期設定ウィザードが未完了 → ウィザードへ</div><div class="chips"></div></div>
-      <div class="card" data-keys="L,1,2,3,S"><div class="ttl"><i class="dot ng"></i>名前または設置場所が未設定 → 設定画面へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="L"><div class="ttl"><i class="dot ng"></i>オフラインで起動 → 読み込み画面のまま進めない（WiFiオフ／機内モード／SIM無効／不安定な回線／DNS失敗のいずれでも同じ）</div><div class="chips"></div></div>
+      <div class="card" data-keys="P"><div class="ttl"><i class="dot ok"></i>起動準備画面に着くと「設定を反映しています」が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="P"><div class="ttl"><i class="dot ok"></i>準備中は表示が続き、押せるものは出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,M"><div class="ttl"><i class="dot ok"></i>準備が終わると表示が消える</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール② 予約データの到着を待ってからホームへ進む</h3>
+    <h3>ルール② 名前・設置場所に不備があると設定画面へ戻される</h3>
     <div class="cards">
-      <div class="card" data-keys="L,1,2,3,4,M"><div class="ttl"><i class="dot ok"></i>予約データが10秒以内に届く → 反映された状態でホームへ</div><div class="chips"></div></div>
-      <div class="card" data-keys="L,1,2,3,4,M"><div class="ttl"><i class="dot ok"></i>予約データが10秒待っても届かない → そのままホームへ進み、届き次第自動で反映</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,1,2,M"><div class="ttl"><i class="dot ok"></i>名前と設置場所がどちらも設定済み → 準備が続く</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,1,S"><div class="ttl"><i class="dot ng"></i>タブレット名が未設定 → 設定画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,1,S"><div class="ttl"><i class="dot ng"></i>設置場所が未設定 → 設定画面へ</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール③ 予約データの状態でホームの見た目が決まる</h3>
+    <h3>ルール③ 準備全体が60秒を超えても止まらない</h3>
+    <div class="cards">
+      <div class="card" data-keys="P,1,2,M"><div class="ttl"><i class="dot ng"></i>準備が60秒を超えた → それでも中断せずホーム画面へ</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール④ 予約データの到着を待ってからホーム画面へ進む</h3>
+    <div class="cards">
+      <div class="card" data-keys="P,1,2,M"><div class="ttl"><i class="dot ok"></i>予約データが10秒以内に届く → 反映された状態でホーム画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,1,2,M"><div class="ttl"><i class="dot ok"></i>予約データが10秒待っても届かない → そのままホーム画面へ進み、届き次第自動で反映</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑤ 予約データの状態でホーム画面の見た目が決まる</h3>
     <div class="cards">
       <div class="card" data-keys="M"><div class="ttl"><i class="dot ok"></i>予約がない → 空室状態で表示</div><div class="chips"></div></div>
       <div class="card" data-keys="M"><div class="ttl"><i class="dot ok"></i>予約はあるがまだ入室していない → 待機中状態で表示</div><div class="chips"></div></div>
       <div class="card" data-keys="M"><div class="ttl"><i class="dot ok"></i>入室済みの予約がある → 使用中状態で表示</div><div class="chips"></div></div>
       <div class="card" data-keys="M"><div class="ttl"><i class="dot ok"></i>予約はあるが入室可能時間の閾値に未到達 → 空室状態で表示</div><div class="chips"></div></div>
       <div class="card" data-keys="M"><div class="ttl"><i class="dot ok"></i>入室可能時間の閾値に到達した直後（境界値） → 待機中状態で表示</div><div class="chips"></div></div>
-      <div class="card" data-keys="M"><div class="ttl"><i class="dot ok"></i>対象スペースが利用不可時間中 → 「利用時間外」状態で表示</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
     <h3>通し（実機で最後まで）</h3>
     <div class="cards">
-      <div class="card" data-keys="L,1,2,3,4,M"><div class="ttl"><i class="dot ok"></i>起動準備から予約データを反映したホーム表示までが正常に完了する</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,1,2,M"><div class="ttl"><i class="dot ok"></i>起動準備から予約データを反映したホーム画面表示までが正常に完了する</div><div class="chips"></div></div>
     </div>
+  </div>
+</section>
+
+<section>
+  <div style="display:grid;gap:10px">
+  <h2>このチケットでは見ないこと</h2>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>見ないこと</th><th>どのチケットで見るか</th></tr>
+    <tr><td>端末が登録されているか／初期設定が終わっているか／組織・端末設定の解決</td><td>設定値の読み込みが行える</td></tr>
+    <tr><td>利用不可・利用時間外の表示</td><td>利用不可・利用時間外を表示できる</td></tr>
+    <tr><td>起動準備中に走る顔情報の修復</td><td>顔の特徴量を同期できる</td></tr>
+    <tr><td>オフラインで起動したときの動き</td><td>オフライン時のフォールバックを設計・検討できる</td></tr>
+    <tr><td>解錠デバイスの接続確認待ち</td><td>未定（開発チームに確認中）</td></tr>
+  </table>
+  </div>
   </div>
 </section>
 
@@ -311,7 +310,7 @@ td.msg { font-weight: 500; }
   <div class="tbl-wrap">
   <table>
     <tr><th>画面に出る言葉</th><th>止まった場所</th></tr>
-    <tr><td class="msg">（この機能にはエラーメッセージの表示はない）</td><td>オフライン時は読み込み画面のまま、無言で進まない</td></tr>
+    <tr><td class="msg">（この機能にはエラーメッセージの表示はない）</td><td>予約データが10秒で揃わなくても、準備全体が60秒を超えても、無言のままホーム画面へ進む</td></tr>
   </table>
   </div>
   </div>
@@ -323,8 +322,8 @@ td.msg { font-weight: 500; }
 <script>
 (function () {
   var LABEL = {
-    L: "読み込み画面", I: "インストール確認", W: "初期設定ウィザード", S: "設定画面", M: "ホーム画面",
-    1: "①登録されている？", 2: "②初期設定は終わってる？", 3: "③名前・場所は決まってる？", 4: "④予約データを待つ"
+    P: "起動準備画面", S: "設定画面", M: "ホーム画面",
+    1: "①名前・場所は決まってる？", 2: "②予約データを待つ"
   };
   var root = document.documentElement;
   var hits = Array.prototype.slice.call(document.querySelectorAll(".hit"));

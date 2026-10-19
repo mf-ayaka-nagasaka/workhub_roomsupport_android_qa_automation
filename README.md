@@ -11,3 +11,4 @@
 | [Qase連携セットアップ手順](docs/qase_integration_setup.md) | 本番リポジトリへのQase連携基盤の導入手順（開発チーム向け依頼内容を含む） |
 | [Qase同期の運用手順](docs/qase_sync_operation.md) | `@Qase` の抽出・ケース同期の操作手順（結果送信はCIが自動実行） |
 | [Claude Code Skill一覧](.claude/commands/README.md) | QAワークフロー支援Skill |
+| [BDDテスト設計の全体マップ](src/test/resources/features/_master/feature-map.html) | 全チケットと画面・内部処理の対応、責務の決定台帳、カバレッジ |

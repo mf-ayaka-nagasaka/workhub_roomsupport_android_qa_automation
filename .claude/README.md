@@ -22,6 +22,13 @@
 │   ├── qase-annotation-writer.md     # 🏷️ @Qase アノテーション追記
 │   ├── qase-sync.md                  # 🔁 Qase同期
 │   ├── unit-test-review-workflow.md  # 🔬 単体テストレビューワークフロー
+│   ├── feature-map.md                # 🗺️ 全体マップ・責務の確定
+│   ├── bdd-workflow-manager.md       # 🔗 BDDテスト設計ワークフロー (オーケストレーター)
+│   ├── bdd-artifact-updater.md       # ♻️ BDD成果物の修正反映
+│   ├── rule-example-extractor.md     # 📐 ルール・実例抽出
+│   ├── gherkin-scenario-generator.md # 🧪 Gherkinシナリオ生成
+│   ├── viewpoint-extractor.md        # 🔭 テスト観点抽出・観点分岐Gherkin生成
+│   ├── pbi-flow-map.md               # 🗺️ 処理の全体図（HTML）生成
 │   ├── end.md                        # 📦 QA作業提出
 │   ├── start.md                      # 🔄 ブランチ同期
 │   ├── sync-qa-docs.md               # 📑 QAドキュメント同期
@@ -39,7 +46,14 @@
     ├── review-unit-tests.md           # 単体テストレビューの学習ログ
     ├── qase-annotation-writer.md      # @Qase 追記の学習ログ
     ├── qase-sync.md                   # Qase同期の学習ログ
-    └── unit-test-review-workflow.md   # 単体テストレビュー工程管理の学習ログ
+    ├── unit-test-review-workflow.md   # 単体テストレビュー工程管理の学習ログ
+    ├── feature-map.md                 # 全体マップ・責務確定の学習ログ
+    ├── bdd-workflow-manager.md        # BDDテスト設計ワークフローの学習ログ
+    ├── bdd-artifact-updater.md        # BDD成果物の修正反映の学習ログ
+    ├── rule-example-extractor.md      # ルール・実例抽出の学習ログ
+    ├── gherkin-scenario-generator.md  # Gherkinシナリオ生成の学習ログ
+    ├── viewpoint-extractor.md         # テスト観点抽出の学習ログ
+    └── start.md                       # ブランチ同期の学習ログ
 ```
 
 ## Skill一覧（概要）
@@ -63,6 +77,13 @@
 | ブランチ同期 | `/start` | 作業ブランチをmainと同期 |
 | QAドキュメント同期 | `/sync-qa-docs` | 外部ドキュメントとの同期 |
 | 品質判定基準生成 | `/quality-criteria-generator` | 利用文脈から品質判定基準ドラフトを生成 |
+| 全体マップ・責務の確定 | `/feature-map` | チケットの責務を確定し決定台帳へ記録 |
+| BDDテスト設計ワークフロー | `/bdd-workflow-manager` | 責務の確定から全体図生成までを統合管理 |
+| BDD成果物の修正反映 | `/bdd-artifact-updater` | 作成済みBDD成果物の部分更新 |
+| ルール・実例抽出 | `/rule-example-extractor` | 仕様書からビジネスルールと実例を抽出 |
+| Gherkinシナリオ生成 | `/gherkin-scenario-generator` | ルール・実例からGherkinシナリオを生成 |
+| テスト観点抽出 | `/viewpoint-extractor` | 観点マスターと観点分岐Gherkinを生成 |
+| 処理の全体図生成 | `/pbi-flow-map` | テスト仕様から機能単位の全体図HTMLを生成 |
 | Skill改善 | `/skill-improver` | Skill自体の改善提案・実行 |
 
 ## 自己学習メモリーシステム

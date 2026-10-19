@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>workhub Room Support 全体マップ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #F4F6F9;
+  --lane: #EAEEF3;
+  --surface: #FFFFFF;
+  --ink: #1B2430;
+  --muted: #5E6B7A;
+  --line: #D3DAE3;
+  --flow: #0F7C7B;
+  --flow-soft: #DCF0EE;
+  --save: #3B57C4;
+  --save-soft: #E4E9FA;
+  --err: #C43C3C;
+  --err-soft: #FBE5E5;
+  --hot: #D98E04;
+  --hot-ink: #7E5300;
+  --hot-soft: #FCEFD3;
+  --ok: #2E8B57;
+  --font-display: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-body: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #11161D; --lane: #181F28; --surface: #1F2732; --ink: #E7ECF2; --muted: #9DA9B7; --line: #2E3843;
+    --flow: #4FC3C0; --flow-soft: #163A39; --save: #93A6F5; --save-soft: #232D52;
+    --err: #F08080; --err-soft: #4A2424; --hot: #F2B441; --hot-ink: #F2B441; --hot-soft: #4A3A14; --ok: #6CCB8C;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #11161D; --lane: #181F28; --surface: #1F2732; --ink: #E7ECF2; --muted: #9DA9B7; --line: #2E3843;
+  --flow: #4FC3C0; --flow-soft: #163A39; --save: #93A6F5; --save-soft: #232D52;
+  --err: #F08080; --err-soft: #4A2424; --hot: #F2B441; --hot-ink: #F2B441; --hot-soft: #4A3A14; --ok: #6CCB8C;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  padding-inline: 16px;
+  padding-block: 24px 48px;
+}
+.wrap { max-width: 1400px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.3; }
+h1 { font-size: 26px; font-weight: 700; }
+h2 { font-size: 19px; font-weight: 700; }
+h3 { font-size: 15px; font-weight: 700; }
+p { margin: 0; }
+.eyebrow { font-size: 12px; letter-spacing: .08em; color: var(--muted); font-weight: 700; }
+.lead { color: var(--muted); max-width: 90ch; }
+header { display: grid; gap: 8px; }
+section { display: grid; gap: 12px; }
+figure { margin: 0; display: grid; gap: 10px; }
+.scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 8px; }
+svg.map { display: block; min-width: 1200px; width: 100%; height: auto; }
+figcaption { font-size: 12px; color: var(--muted); }
+.controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.link { background: none; border: 1px solid var(--line); border-radius: 999px; padding: 4px 14px; color: var(--ink); font: inherit; font-size: 12px; cursor: pointer; }
+.link:hover { background: var(--lane); }
+#status { font-size: 12px; color: var(--muted); }
+
+.lane { fill: var(--lane); }
+.lane-label { fill: var(--muted); font-size: 12px; font-weight: 700; font-family: var(--font-body); }
+.screen { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+.screen-bar { fill: var(--line); }
+.step { fill: var(--flow-soft); stroke: var(--flow); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.t-name { fill: var(--ink); font-size: 11.5px; font-weight: 500; font-family: var(--font-body); }
+.hit.on .step, .hit:hover .step { stroke-width: 2.5; stroke-dasharray: none; }
+.t-screen { fill: var(--ink); font-size: 13px; font-weight: 700; font-family: var(--font-display); }
+.t-sub { fill: var(--muted); font-size: 10.5px; font-family: var(--font-body); }
+.flow { fill: none; stroke: var(--flow); stroke-width: 2; }
+.bus { fill: none; stroke: var(--flow); stroke-width: 2; stroke-dasharray: 5 4; opacity: .7; }
+.arw-flow { fill: var(--flow); }
+.lbl { fill: var(--muted); font-size: 10.5px; font-family: var(--font-body); }
+.hit { cursor: pointer; }
+.hit:focus { outline: none; }
+.hit.on .screen, .hit:hover .screen { stroke: var(--flow); stroke-width: 2.5; fill: var(--flow-soft); }
+.hit.dim { opacity: .3; }
+
+table { border-collapse: collapse; width: 100%; font-size: 13px; background: var(--surface); }
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { background: var(--lane); font-weight: 700; font-size: 12px; white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+tr.dim { opacity: .28; }
+td.no { white-space: nowrap; color: var(--muted); font-variant-numeric: tabular-nums; }
+td.nm { font-weight: 500; min-width: 22ch; }
+
+.pill { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 9px; border-radius: 999px; white-space: nowrap; }
+.p-done { background: var(--flow-soft); color: var(--flow); }
+.p-wip  { background: var(--hot-soft); color: var(--hot-ink); }
+.p-todo { background: var(--lane); color: var(--muted); }
+.p-open { background: var(--err-soft); color: var(--err); }
+.scr { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 6px; background: var(--lane); color: var(--muted); margin-right: 4px; white-space: nowrap; }
+
+.grp { font-family: var(--font-display); font-weight: 700; background: var(--lane); }
+.hint { font-size: 12px; color: var(--muted); }
+.note { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--hot); border-radius: 10px; padding: 12px 16px; display: grid; gap: 6px; }
+.note h3 { font-size: 14px; }
+ol, ul { margin: 0; padding-left: 1.3em; }
+li { margin: 2px 0; }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.sw { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+.sw.flow { background: var(--flow); }
+.sw.bus { background: var(--flow); opacity: .5; }
+.cov { display: flex; gap: 10px; align-items: baseline; }
+.cov b { font-size: 30px; font-family: var(--font-display); }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; background: var(--lane); padding: 1px 5px; border-radius: 4px; white-space: nowrap; }
+td.path code { background: none; padding: 0; font-size: 11.5px; white-space: normal; word-break: break-all; }
+.unk { color: var(--muted); font-style: italic; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">workhub Room Support ／ Android QA 全体マップ</p>
+  <h1>どのチケットが、どの画面の、どこまでを見るのか</h1>
+  <p class="lead">Androidの全チケット31件と、「どの画面で何の処理が走り、どこへ進むか」を1枚にしたもの。破線の箱が内部処理です。Gherkinシナリオを作り始める前にこのマップで責務の範囲を決め、決めた内容をここへ書き戻していきます。図の画面をクリックすると、その画面に関わるチケットだけが残ります。</p>
+  <div class="controls">
+    <button class="link" id="clearBtn" type="button">選択を解除</button>
+    <span id="status">画面をクリックすると、その画面に関係するチケットだけが残ります</span>
+  </div>
+</header>
+
+<section>
+  <h2>このマップの使い方</h2>
+  <div class="note">
+    <h3>Gherkinシナリオを作り始める前に、責務を決める</h3>
+    <ol>
+      <li><strong>決定台帳を読む</strong> … 着手するチケットが、すでに決まっている境界に触れていないか確認する。</li>
+      <li><strong>受け入れ条件を分解する</strong> … 1項目ずつに切り分ける。1項目に複数の分岐が入っていることが多い。</li>
+      <li><strong>各項目の担当を判定する</strong> … 仕様書とソースで「その処理がどの画面にあるか」を確かめ、対象／対象外／要判断に仕分ける。</li>
+      <li><strong>重なる項目を論点として提示し、合意する</strong> … 既存チケットと重なるものは必ず確認を取る。</li>
+      <li><strong>決定台帳に追記する</strong> … 決まった内容と根拠をこのマップへ書き戻す。</li>
+    </ol>
+    <p class="hint"><strong>常時認証モードに関する画面・処理は、このマップの対象外です。</strong>本プロダクトは予約認証モードのみを対象とするため、常時認証画面（<code>AlwaysCameraAuthenticationView</code>）とアイドル画面（<code>IdlingRoute</code>・常時認証画面からのみ遷移）は載せていません。</p>
+    <p class="hint">ここまで終えてから、ルールの洗い出し → Gherkin作成 → 観点抽出 へ進みます。チケット完了時には、一覧の状態と成果物の欄も更新します。決めきれなかった論点は「赤カード」として台帳に残し、開発チームとの確認に持ち込みます。</p>
+  </div>
+</section>
+
+<section>
+<figure>
+  <div class="scroll">
+  <svg class="map" viewBox="0 0 1440 1060" role="img" aria-label="画面と、その画面で走る内部処理と、遷移先の流れ。実線の箱が画面、破線の箱が内部処理で、どちらにも担当チケットを記載している。ブート画面からログイン画面、組織選択画面を経て設定読み込み画面へ進む。設定読み込み画面で端末設定を取得し、未登録なら再インストール画面、初期設定が未完了なら初期設定画面、解決済みなら起動準備画面へ進む。起動準備画面で名前と空間を確認し、不備があれば設定画面、なければホーム画面へ進む。ホーム画面では利用時間外を判定して画面内の表示を切り替える。ホーム画面から認証が必要な操作でカメラ認証画面へ進み、その再判定で利用時間外画面へ進む。ホーム画面に着いたあとは7つの処理が裏側で動き続ける。常時認証モード専用の画面は対象外のため含まない。">
+    <defs>
+      <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-flow"/></marker>
+    </defs>
+    <rect class="lane" x="0" y="16" width="1440" height="180" rx="12"/>
+    <text class="lane-label" x="16" y="38">起動してログインする</text>
+    <rect class="lane" x="0" y="208" width="1440" height="248" rx="12"/>
+    <text class="lane-label" x="16" y="230">端末の設定を解決する</text>
+    <rect class="lane" x="0" y="468" width="1440" height="220" rx="12"/>
+    <text class="lane-label" x="16" y="490">起動準備してホーム画面へ</text>
+    <rect class="lane" x="0" y="700" width="1440" height="184" rx="12"/>
+    <text class="lane-label" x="16" y="722">ホーム画面から先</text>
+    <rect class="lane" x="0" y="896" width="1440" height="158" rx="12"/>
+    <text class="lane-label" x="16" y="918">裏側で動き続ける処理</text>
+    <path class="bus" d="M705 654 V756"/>
+    <path class="bus" d="M264 756 H842"/>
+    <path class="bus" d="M745 654 V716 H1093 V928"/>
+    <path class="bus" d="M258 928 H1248"/>
+    <path class="flow" marker-end="url(#arw)" d="M310 94 H334"/>
+    <path class="flow" marker-end="url(#arw)" d="M544 94 H568"/>
+    <path class="flow" marker-end="url(#arw)" d="M721 94 H745"/>
+    <path class="flow" marker-end="url(#arw)" d="M869 94 H893"/>
+    <path class="flow" marker-end="url(#arw)" d="M1055 94 H1079"/>
+    <path class="flow" marker-end="url(#arw)" d="M1203 94 H1227"/>
+    <path class="flow" marker-end="url(#arw)" d="M316 338 H340"/>
+    <path class="flow" marker-end="url(#arw)" d="M564 338 H656"/>
+    <path class="flow" marker-end="url(#arw)" d="M310 622 H334"/>
+    <path class="flow" marker-end="url(#arw)" d="M765 622 H789"/>
+    <path class="flow" marker-end="url(#arw)" d="M339 828 H363"/>
+    <path class="flow" marker-end="url(#arw)" d="M494 828 H518"/>
+    <path class="flow" marker-end="url(#arw)" d="M905 828 H929"/>
+    <path class="flow" marker-end="url(#arw)" d="M1291 126 V160 H253 V302"/>
+    <text class="lbl" x="1271" y="154" text-anchor="end">設定の読み込みへ</text>
+    <path class="flow" marker-end="url(#arw)" d="M564 338 H608 V254 H656"/>
+    <text class="lbl" x="602" y="244" text-anchor="end">端末が未登録</text>
+    <path class="flow" marker-end="url(#arw)" d="M564 338 H656"/>
+    <text class="lbl" x="652" y="296" text-anchor="end">初期設定が未完了</text>
+    <path class="flow" marker-end="url(#arw)" d="M564 338 H608 V414 H250 V586"/>
+    <text class="lbl" x="616" y="408" text-anchor="start">解決済み</text>
+    <path class="flow" marker-end="url(#arw)" d="M549 622 H641"/>
+    <text class="lbl" x="597" y="578" text-anchor="middle">不備なし</text>
+    <path class="flow" marker-end="url(#arw)" d="M549 622 H593 V514 H641"/>
+    <text class="lbl" x="587" y="504" text-anchor="end">名前・空間に不備</text>
+    <path class="flow" marker-end="url(#arw)" d="M705 546 V586"/>
+    <text class="lbl" x="773" y="572" text-anchor="start">保存するとホームへ</text>
+    <path class="flow" marker-end="url(#arw)" d="M956 622 H1000 V514 H1048"/>
+    <path class="flow" marker-end="url(#arw)" d="M956 622 H1048"/>
+    <path class="flow" marker-end="url(#arw)" d="M264 756 V792"/>
+    <path class="flow" marker-end="url(#arw)" d="M842 756 V792"/>
+    <path class="flow" marker-end="url(#arw)" d="M258 928 V952"/>
+    <path class="flow" marker-end="url(#arw)" d="M423 928 V952"/>
+    <path class="flow" marker-end="url(#arw)" d="M588 928 V952"/>
+    <path class="flow" marker-end="url(#arw)" d="M753 928 V952"/>
+    <path class="flow" marker-end="url(#arw)" d="M918 928 V952"/>
+    <path class="flow" marker-end="url(#arw)" d="M1083 928 V952"/>
+    <path class="flow" marker-end="url(#arw)" d="M1248 928 V952"/>
+    <g class="hit" data-key="BOOT" tabindex="0" role="button" aria-label="ブート画面（担当 ⑥ ⑱）">
+      <rect class="screen" x="190" y="62" width="120" height="64" rx="10"/>
+      <rect class="screen-bar" x="235" y="70" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="250" y="96" text-anchor="middle">ブート画面</text>
+      <text class="t-sub" x="250" y="115" text-anchor="middle">⑥ ⑱</text>
+    </g>
+    <g class="hit" data-key="BOOT" tabindex="0" role="button" aria-label="保存済みログイン状態の確認認証情報の更新と遷移先の振り分け（担当 ⑥）">
+      <rect class="step" x="338" y="62" width="206" height="64" rx="8"/>
+      <text class="t-name" x="441" y="84" text-anchor="middle">保存済みログイン状態の確認</text>
+      <text class="t-name" x="441" y="100" text-anchor="middle">認証情報の更新と遷移先の振り分け</text>
+      <text class="t-sub" x="441" y="117" text-anchor="middle">⑥</text>
+    </g>
+    <g class="hit" data-key="BOOT" tabindex="0" role="button" aria-label="ネットワーク接続の確認オフライン起動の判定（担当 ⑥）">
+      <rect class="step" x="572" y="62" width="149" height="64" rx="8"/>
+      <text class="t-name" x="646" y="84" text-anchor="middle">ネットワーク接続の確認</text>
+      <text class="t-name" x="646" y="100" text-anchor="middle">オフライン起動の判定</text>
+      <text class="t-sub" x="646" y="117" text-anchor="middle">⑥</text>
+    </g>
+    <g class="hit" data-key="LOGIN" tabindex="0" role="button" aria-label="ログイン画面（担当 ①）">
+      <rect class="screen" x="749" y="62" width="120" height="64" rx="10"/>
+      <rect class="screen-bar" x="794" y="70" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="809" y="96" text-anchor="middle">ログイン画面</text>
+      <text class="t-sub" x="809" y="115" text-anchor="middle">①</text>
+    </g>
+    <g class="hit" data-key="LOGIN" tabindex="0" role="button" aria-label="Firebase認証とログイン所属組織数の判定（担当 ①）">
+      <rect class="step" x="897" y="62" width="158" height="64" rx="8"/>
+      <text class="t-name" x="976" y="84" text-anchor="middle">Firebase認証とログイン</text>
+      <text class="t-name" x="976" y="100" text-anchor="middle">所属組織数の判定</text>
+      <text class="t-sub" x="976" y="117" text-anchor="middle">①</text>
+    </g>
+    <g class="hit" data-key="ORG" tabindex="0" role="button" aria-label="組織選択画面（担当 ①）">
+      <rect class="screen" x="1083" y="62" width="120" height="64" rx="10"/>
+      <rect class="screen-bar" x="1128" y="70" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="1143" y="96" text-anchor="middle">組織選択画面</text>
+      <text class="t-sub" x="1143" y="115" text-anchor="middle">①</text>
+    </g>
+    <g class="hit" data-key="ORG" tabindex="0" role="button" aria-label="組織の切り替え再ログイン（担当 ①）">
+      <rect class="step" x="1231" y="62" width="120" height="64" rx="8"/>
+      <text class="t-name" x="1291" y="84" text-anchor="middle">組織の切り替え</text>
+      <text class="t-name" x="1291" y="100" text-anchor="middle">再ログイン</text>
+      <text class="t-sub" x="1291" y="117" text-anchor="middle">①</text>
+    </g>
+    <g class="hit" data-key="SL" tabindex="0" role="button" aria-label="設定読み込み画面（担当 ⑥）">
+      <rect class="screen" x="190" y="306" width="126" height="64" rx="10"/>
+      <rect class="screen-bar" x="238" y="314" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="253" y="340" text-anchor="middle">設定読み込み画面</text>
+      <text class="t-sub" x="253" y="359" text-anchor="middle">⑥</text>
+    </g>
+    <g class="hit" data-key="SL" tabindex="0" role="button" aria-label="組織→タブレットID→端末設定の取得初期設定の完了判定（担当 ⑥）">
+      <rect class="step" x="344" y="306" width="220" height="64" rx="8"/>
+      <text class="t-name" x="454" y="328" text-anchor="middle">組織→タブレットID→端末設定の取得</text>
+      <text class="t-name" x="454" y="344" text-anchor="middle">初期設定の完了判定</text>
+      <text class="t-sub" x="454" y="361" text-anchor="middle">⑥</text>
+    </g>
+    <g class="hit" data-key="IS" tabindex="0" role="button" aria-label="初期設定画面（担当 ②）">
+      <rect class="screen" x="660" y="306" width="120" height="64" rx="10"/>
+      <rect class="screen-bar" x="705" y="314" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="720" y="340" text-anchor="middle">初期設定画面</text>
+      <text class="t-sub" x="720" y="359" text-anchor="middle">②</text>
+    </g>
+    <g class="hit" data-key="RI" tabindex="0" role="button" aria-label="再インストール画面（担当 担当チケットなし）">
+      <rect class="screen" x="660" y="222" width="139" height="64" rx="10"/>
+      <rect class="screen-bar" x="714" y="230" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="729" y="256" text-anchor="middle">再インストール画面</text>
+      <text class="t-sub" x="729" y="275" text-anchor="middle">担当チケットなし</text>
+    </g>
+    <g class="hit" data-key="PREP" tabindex="0" role="button" aria-label="起動準備画面（担当 ③）">
+      <rect class="screen" x="190" y="590" width="120" height="64" rx="10"/>
+      <rect class="screen-bar" x="235" y="598" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="250" y="624" text-anchor="middle">起動準備画面</text>
+      <text class="t-sub" x="250" y="643" text-anchor="middle">③</text>
+    </g>
+    <g class="hit" data-key="PREP" tabindex="0" role="button" aria-label="リスナー配線→名前・空間の確認→並列取得（予約10秒／全体60秒）（担当 ③）">
+      <rect class="step" x="338" y="590" width="211" height="64" rx="8"/>
+      <text class="t-name" x="443" y="612" text-anchor="middle">リスナー配線→名前・空間の確認</text>
+      <text class="t-name" x="443" y="628" text-anchor="middle">→並列取得（予約10秒／全体60秒）</text>
+      <text class="t-sub" x="443" y="645" text-anchor="middle">③</text>
+    </g>
+    <g class="hit" data-key="HOME" tabindex="0" role="button" aria-label="ホーム画面（担当 ⑦ ⑧ ⑨ ⑩）">
+      <rect class="screen" x="645" y="590" width="120" height="64" rx="10"/>
+      <rect class="screen-bar" x="690" y="598" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="705" y="624" text-anchor="middle">ホーム画面</text>
+      <text class="t-sub" x="705" y="643" text-anchor="middle">⑦ ⑧ ⑨ ⑩</text>
+    </g>
+    <g class="hit" data-key="HOME" tabindex="0" role="button" aria-label="利用時間外の判定（isUnavailableTime）（担当 ⑩）">
+      <rect class="step" x="793" y="590" width="163" height="64" rx="8"/>
+      <text class="t-name" x="874" y="612" text-anchor="middle">利用時間外の判定</text>
+      <text class="t-name" x="874" y="628" text-anchor="middle">（isUnavailableTime）</text>
+      <text class="t-sub" x="874" y="645" text-anchor="middle">⑩</text>
+    </g>
+    <g class="hit" data-key="HOME" tabindex="0" role="button" aria-label="ホーム画面内で表示切替操作ボタンを出さない（担当 ⑩）">
+      <rect class="step" x="1052" y="590" width="149" height="64" rx="8"/>
+      <text class="t-name" x="1126" y="612" text-anchor="middle">ホーム画面内で表示切替</text>
+      <text class="t-name" x="1126" y="628" text-anchor="middle">操作ボタンを出さない</text>
+      <text class="t-sub" x="1126" y="645" text-anchor="middle">⑩</text>
+    </g>
+    <g class="hit" data-key="SET" tabindex="0" role="button" aria-label="設定画面（担当 ② ④ ㉚）">
+      <rect class="screen" x="645" y="482" width="120" height="64" rx="10"/>
+      <rect class="screen-bar" x="690" y="490" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="705" y="516" text-anchor="middle">設定画面</text>
+      <text class="t-sub" x="705" y="535" text-anchor="middle">② ④ ㉚</text>
+    </g>
+    <g class="hit" data-key="OUT" tabindex="0" role="button" aria-label="利用時間外画面（担当 ⑩）">
+      <rect class="screen" x="1052" y="482" width="120" height="64" rx="10"/>
+      <rect class="screen-bar" x="1097" y="490" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="1112" y="516" text-anchor="middle">利用時間外画面</text>
+      <text class="t-sub" x="1112" y="535" text-anchor="middle">⑩</text>
+    </g>
+    <g class="hit" data-key="HOME" tabindex="0" role="button" aria-label="認証が必要な操作入室・退室・延長・予約（担当 ⑳ ㉑ ㉓ ㉔）">
+      <rect class="step" x="190" y="796" width="149" height="64" rx="8"/>
+      <text class="t-name" x="264" y="818" text-anchor="middle">認証が必要な操作</text>
+      <text class="t-name" x="264" y="834" text-anchor="middle">入室・退室・延長・予約</text>
+      <text class="t-sub" x="264" y="851" text-anchor="middle">⑳ ㉑ ㉓ ㉔</text>
+    </g>
+    <g class="hit" data-key="CAM" tabindex="0" role="button" aria-label="カメラ認証画面（担当 予約認証用／⑪⑫⑬⑲）">
+      <rect class="screen" x="367" y="796" width="127" height="64" rx="10"/>
+      <rect class="screen-bar" x="415" y="804" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="430" y="830" text-anchor="middle">カメラ認証画面</text>
+      <text class="t-sub" x="430" y="849" text-anchor="middle">予約認証用／⑪⑫⑬⑲</text>
+    </g>
+    <g class="hit" data-key="CAM" tabindex="0" role="button" aria-label="無操作を検知するとホーム画面へ戻る（利用時間外の再判定は二重のガード）（担当 ⑮）">
+      <rect class="step" x="522" y="796" width="229" height="64" rx="8"/>
+      <text class="t-name" x="636" y="818" text-anchor="middle">無操作を検知するとホーム画面へ戻る</text>
+      <text class="t-name" x="636" y="834" text-anchor="middle">（利用時間外の再判定は二重のガード）</text>
+      <text class="t-sub" x="636" y="851" text-anchor="middle">⑮</text>
+    </g>
+    <g class="hit" data-key="ADMIN" tabindex="0" role="button" aria-label="管理パスワード／顔認証による確認（担当 ⑤）">
+      <rect class="step" x="779" y="796" width="126" height="64" rx="8"/>
+      <text class="t-name" x="842" y="818" text-anchor="middle">管理パスワード</text>
+      <text class="t-name" x="842" y="834" text-anchor="middle">／顔認証による確認</text>
+      <text class="t-sub" x="842" y="851" text-anchor="middle">⑤</text>
+    </g>
+    <g class="hit" data-key="ADMIN" tabindex="0" role="button" aria-label="管理者メニュー（担当 ⑤）">
+      <rect class="screen" x="933" y="796" width="120" height="64" rx="10"/>
+      <rect class="screen-bar" x="978" y="804" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="993" y="830" text-anchor="middle">管理者メニュー</text>
+      <text class="t-sub" x="993" y="849" text-anchor="middle">⑤</text>
+    </g>
+    <g class="hit" data-key="BG1" tabindex="0" role="button" aria-label="予約データのリアルタイム反映（担当 ⑦）">
+      <rect class="step" x="190" y="956" width="137" height="64" rx="8"/>
+      <text class="t-name" x="258" y="978" text-anchor="middle">予約データの</text>
+      <text class="t-name" x="258" y="994" text-anchor="middle">リアルタイム反映</text>
+      <text class="t-sub" x="258" y="1011" text-anchor="middle">⑦</text>
+    </g>
+    <g class="hit" data-key="BG2" tabindex="0" role="button" aria-label="チェックインの無い予約の自動キャンセル（担当 ㉖）">
+      <rect class="step" x="355" y="956" width="137" height="64" rx="8"/>
+      <text class="t-name" x="423" y="978" text-anchor="middle">チェックインの無い</text>
+      <text class="t-name" x="423" y="994" text-anchor="middle">予約の自動キャンセル</text>
+      <text class="t-sub" x="423" y="1011" text-anchor="middle">㉖</text>
+    </g>
+    <g class="hit" data-key="BG3" tabindex="0" role="button" aria-label="入室中の予約の自動延長（担当 ㉗）">
+      <rect class="step" x="520" y="956" width="137" height="64" rx="8"/>
+      <text class="t-name" x="588" y="978" text-anchor="middle">入室中の予約の</text>
+      <text class="t-name" x="588" y="994" text-anchor="middle">自動延長</text>
+      <text class="t-sub" x="588" y="1011" text-anchor="middle">㉗</text>
+    </g>
+    <g class="hit" data-key="BG4" tabindex="0" role="button" aria-label="予約終了リマインドの通知（担当 ㉘）">
+      <rect class="step" x="685" y="956" width="137" height="64" rx="8"/>
+      <text class="t-name" x="753" y="978" text-anchor="middle">予約終了リマインドの</text>
+      <text class="t-name" x="753" y="994" text-anchor="middle">通知</text>
+      <text class="t-sub" x="753" y="1011" text-anchor="middle">㉘</text>
+    </g>
+    <g class="hit" data-key="BG5" tabindex="0" role="button" aria-label="解錠デバイスのBLE接続維持（担当 ⑳ ㉕）">
+      <rect class="step" x="850" y="956" width="137" height="64" rx="8"/>
+      <text class="t-name" x="918" y="978" text-anchor="middle">解錠デバイスの</text>
+      <text class="t-name" x="918" y="994" text-anchor="middle">BLE接続維持</text>
+      <text class="t-sub" x="918" y="1011" text-anchor="middle">⑳ ㉕</text>
+    </g>
+    <g class="hit" data-key="BG6" tabindex="0" role="button" aria-label="低電力モードの制御（担当 ㉚）">
+      <rect class="step" x="1015" y="956" width="137" height="64" rx="8"/>
+      <text class="t-name" x="1083" y="978" text-anchor="middle">低電力モードの</text>
+      <text class="t-name" x="1083" y="994" text-anchor="middle">制御</text>
+      <text class="t-sub" x="1083" y="1011" text-anchor="middle">㉚</text>
+    </g>
+    <g class="hit" data-key="BG7" tabindex="0" role="button" aria-label="ネットワークモードの切替（担当 ㉛）">
+      <rect class="step" x="1180" y="956" width="137" height="64" rx="8"/>
+      <text class="t-name" x="1248" y="978" text-anchor="middle">ネットワークモードの</text>
+      <text class="t-name" x="1248" y="994" text-anchor="middle">切替</text>
+      <text class="t-sub" x="1248" y="1011" text-anchor="middle">㉛</text>
+    </g>
+  </svg>
+  </div>
+  <figcaption>実線の箱が画面、破線の箱がその画面で走る内部処理。箱の下の丸数字が担当チケットです。</figcaption>
+  <div class="legend">
+    <span><i class="sw flow"></i>画面の遷移</span>
+    <span><i class="sw bus"></i>ホーム画面を起点に動く</span>
+  </div>
+</figure>
+</section>
+
+<section>
+  <h2>チケット一覧と、関わる画面</h2>
+  <p class="hint">全31件。図の画面をクリックすると、その画面に関わるチケットだけが残ります。<span class="pill p-done">成果物あり</span> <span class="pill p-wip">作成中</span> <span class="pill p-todo">未着手</span></p>
+  <div class="tbl-wrap">
+  <table id="tickets">
+    <tr><th>No</th><th>チケット名</th><th>関わる画面</th><th>状態</th><th>成果物</th></tr>
+
+    <tr class="grp"><td colspan="5">A. 起動・セットアップ</td></tr>
+    <tr data-keys="LOGIN,ORG"><td class="no">①</td><td class="nm">タブレットにログインして組織を選択できる</td><td><span class="scr">ログイン</span><span class="scr">組織選択</span></td><td><span class="pill p-done">成果物あり</span></td><td>Login</td></tr>
+    <tr data-keys="SL,BOOT"><td class="no">⑥</td><td class="nm">設定値の読み込みが行える</td><td><span class="scr">設定読み込み</span><span class="scr">ブート</span></td><td><span class="pill p-done">成果物あり</span></td><td>SettingLoader</td></tr>
+    <tr data-keys="IS,SET"><td class="no">②</td><td class="nm">予約認証モードで初期設定できる</td><td><span class="scr">初期設定</span><span class="scr">設定</span></td><td><span class="pill p-done">成果物あり</span></td><td>InitialSetup</td></tr>
+    <tr data-keys="PREP,SET,HOME"><td class="no">③</td><td class="nm">起動時に予約データを準備してホームを表示できる</td><td><span class="scr">起動準備</span><span class="scr">設定</span><span class="scr">ホーム</span></td><td><span class="pill p-done">成果物あり</span></td><td>PrepareHome</td></tr>
+
+    <tr class="grp"><td colspan="5">B. ホーム画面の表示</td></tr>
+    <tr data-keys="HOME,BG1"><td class="no">⑦</td><td class="nm">部屋の予約状況をホーム画面に表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="HOME"><td class="no">⑧</td><td class="nm">当日の予約タイムラインを表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="HOME"><td class="no">⑨</td><td class="nm">予約の参加者情報を表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="HOME,OUT"><td class="no">⑩</td><td class="nm">利用不可・利用時間外を表示できる</td><td><span class="scr">ホーム</span><span class="scr">利用時間外</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+
+    <tr class="grp"><td colspan="5">C. 本人の特定（認証）</td></tr>
+    <tr data-keys="CAM"><td class="no">⑪</td><td class="nm">顔認証で利用者を特定できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="CAM"><td class="no">⑫</td><td class="nm">QR コードで利用者を特定できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="CAM"><td class="no">⑬</td><td class="nm">個人コードで本人確認できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="CAM"><td class="no">⑲</td><td class="nm">カード認証で利用者を特定できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="CAM"><td class="no">⑭</td><td class="nm">認証失敗・顔未登録をハンドリングできる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="CAM"><td class="no">⑰</td><td class="nm">なりすまし防止を行える</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="CAM"><td class="no">⑯</td><td class="nm">オペレーターを呼び出せる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="CAM"><td class="no">⑮</td><td class="nm">無操作でカメラ画面から自動復帰できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="PREP,CAM"><td class="no">⑱</td><td class="nm">顔の特徴量を同期できる</td><td><span class="scr">起動準備</span><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+
+    <tr class="grp"><td colspan="5">D. 予約の操作</td></tr>
+    <tr data-keys="HOME,CAM,BG5"><td class="no">⑳</td><td class="nm">作成済みの予約に入室(チェックイン)して解錠できる</td><td><span class="scr">ホーム</span><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="HOME,CAM"><td class="no">㉑</td><td class="nm">入室中の予約から退室(チェックアウト)できる</td><td><span class="scr">ホーム</span><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="HOME,CAM"><td class="no">㉒</td><td class="nm">今すぐ予約して入室できる</td><td><span class="scr">ホーム</span><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="HOME,CAM"><td class="no">㉓</td><td class="nm">入室中の予約を延長できる</td><td><span class="scr">ホーム</span><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="HOME,CAM"><td class="no">㉔</td><td class="nm">予約をキャンセル・削除できる</td><td><span class="scr">ホーム</span><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="HOME,CAM,BG5"><td class="no">㉕</td><td class="nm">入室中の部屋を再解錠できる</td><td><span class="scr">ホーム</span><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="HOME,CAM"><td class="no">㉙</td><td class="nm">サードプレイス(有料)予約を作成できる</td><td><span class="scr">ホーム</span><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="HOME,BG2"><td class="no">㉖</td><td class="nm">チェックインの無い予約を自動キャンセルできる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="HOME,BG3"><td class="no">㉗</td><td class="nm">入室中の予約を自動延長できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="HOME,BG4"><td class="no">㉘</td><td class="nm">予約終了リマインドを通知できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+
+    <tr class="grp"><td colspan="5">E. 端末の管理・横断</td></tr>
+    <tr data-keys="ADMIN,HOME"><td class="no">⑤</td><td class="nm">管理メニューを開いて端末を管理できる</td><td><span class="scr">管理者メニュー</span><span class="scr">ホーム</span></td><td><span class="pill p-done">成果物あり</span></td><td>AdminMenu</td></tr>
+    <tr data-keys="SET,ADMIN"><td class="no">④</td><td class="nm">管理者が予約認証の設定を変更できる</td><td><span class="scr">設定</span><span class="scr">管理者メニュー</span></td><td><span class="pill p-done">成果物あり</span></td><td>ReservationAuthSettings</td></tr>
+    <tr data-keys="HOME,SET,BG6"><td class="no">㉚</td><td class="nm">低電力モードで動作できる</td><td><span class="scr">ホーム</span><span class="scr">設定</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="PREP,HOME,BG7"><td class="no">㉛</td><td class="nm">オフライン時のフォールバックを設計・検討できる</td><td><span class="scr">起動準備</span><span class="scr">ホーム</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>画面と実装の対応</h2>
+  <p class="hint">開発チームと responsibilities を突き合わせるための対応表です。<strong>出所は iOS 版（<code>workhubRoomSupport</code> リポジトリ）</strong>で、本リポジトリのBDD成果物はすべてこの実装と仕様書から起こしています。仕様書は <code>documents/RoomSupport/legacy/</code> 配下です。図の画面をクリックすると該当行だけが残ります。</p>
+  <div class="note">
+    <h3>Android 実装の欄が「要確認」になっている理由</h3>
+    <p>Android 版 Room Support の実装リポジトリを特定できませんでした。手元の <code>workhubRoomSupport-Android</code> は <code>applicationId = jp.bitkey.app.gateconnector</code> の別アプリで、起動準備・設定読み込み・ホーム画面に相当する画面を持っていません（<code>feature/</code> 配下は admin / camera / login / setting の4モジュールのみ）。<strong>正しいリポジトリを教えていただければ、この欄を埋めます。</strong></p>
+  </div>
+  <div class="tbl-wrap">
+  <table id="impl">
+    <tr><th>画面（QA呼称）</th><th>図のキー</th><th>Route</th><th>View（iOS）</th><th>ViewModel（iOS）</th><th>仕様書</th><th>Android 実装</th></tr>
+    <tr data-keys="BOOT"><td class="nm">ブート画面</td><td><span class="scr">BOOT</span></td><td><code>BootRoute</code></td><td class="path"><code>SharedLocalPackages/Sources/SharedFeature/Feature/Boot/BootView.swift</code></td><td class="path"><code>SharedLocalPackages/Sources/SharedFeature/Feature/Boot/BootViewModel.swift</code></td><td class="path"><code>legacy_boot.md</code></td><td><span class="unk">要確認</span></td></tr>
+    <tr data-keys="LOGIN"><td class="nm">ログイン画面</td><td><span class="scr">LOGIN</span></td><td><code>LoginRoute</code></td><td class="path"><code>SharedLocalPackages/Sources/SharedFeature/Feature/Login/LoginView.swift</code></td><td class="path"><code>SharedLocalPackages/Sources/SharedFeature/Feature/Login/LoginViewModel.swift</code></td><td class="path"><code>legacy_login.md</code></td><td><span class="unk">要確認</span></td></tr>
+    <tr data-keys="ORG"><td class="nm">組織選択画面</td><td><span class="scr">ORG</span></td><td><code>OrganizationSelectRoute</code></td><td class="path"><code>SharedLocalPackages/Sources/SharedFeature/Feature/OrganizationSelect/OrganizationSelectView.swift</code></td><td class="path"><span class="unk">（未検出）</span></td><td class="path"><code>legacy_organization-select.md</code></td><td><span class="unk">要確認</span></td></tr>
+    <tr data-keys="SL"><td class="nm">設定読み込み画面</td><td><span class="scr">SL</span></td><td><code>SettingLoaderRoute</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/View/SettingLoader/SettingLoaderView.swift</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/ViewModel/SettingLoaderViewModel.swift</code></td><td class="path"><code>legacy_setting-loader.md</code></td><td><span class="unk">要確認</span></td></tr>
+    <tr data-keys="PREP"><td class="nm">起動準備画面</td><td><span class="scr">PREP</span></td><td><code>PrepareRoute</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/View/Prepare/PrepareView.swift</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/ViewModel/PrepareViewModel.swift</code></td><td class="path"><code>legacy_prepare.md</code></td><td><span class="unk">要確認</span></td></tr>
+    <tr data-keys="HOME"><td class="nm">ホーム画面（予約ステータス）</td><td><span class="scr">HOME</span></td><td><code>MainMenuRoute</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/View/MainMenus/MainMenuView.swift</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/ViewModel/MainMenu/MainMenuViewModel.swift</code></td><td class="path"><code>legacy_main-menu.md</code></td><td><span class="unk">要確認</span></td></tr>
+    <tr data-keys="IS"><td class="nm">初期設定画面</td><td><span class="scr">IS</span></td><td><code>InitialSettingRoute</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/View/InitialSetting/InitialSettingView.swift</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/ViewModel/InitialSettingViewModel.swift</code></td><td class="path"><code>legacy_initial-setting.md</code></td><td><span class="unk">要確認</span></td></tr>
+    <tr data-keys="RI"><td class="nm">再インストール画面</td><td><span class="scr">RI</span></td><td><code>ReInstallRoute</code></td><td class="path"><code>SharedLocalPackages/Sources/SharedFeature/Feature/Reinstall/ReInstallView.swift</code></td><td class="path"><span class="unk">（未検出）</span></td><td class="path"><span class="unk">—</span></td><td><span class="unk">要確認</span></td></tr>
+    <tr data-keys="SET"><td class="nm">設定画面</td><td><span class="scr">SET</span></td><td><code>SettingRoute</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/View/Setting/SettingView.swift</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/ViewModel/Setting/SettingViewModel.swift</code></td><td class="path"><span class="unk">—</span></td><td><span class="unk">要確認</span></td></tr>
+    <tr data-keys="CAM"><td class="nm">カメラ認証画面<br><span class="hint">※予約認証モード用</span></td><td><span class="scr">CAM</span></td><td><code>ReservationCameraAuthenticationRoute</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/View/CameraAuthenticationView/ReservationCameraAuthenticationView.swift</code></td><td class="path"><span class="unk">（未検出）</span></td><td class="path"><code>legacy_camera-auth.md</code></td><td><span class="unk">要確認</span></td></tr>
+    <tr data-keys="ADMIN"><td class="nm">管理者メニュー</td><td><span class="scr">ADMIN</span></td><td><code>AdminMenuRoute</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/View/AdminMenu/AdminMenuView.swift</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/ViewModel/AdminMenuViewModel.swift</code></td><td class="path"><code>legacy_admin-menu.md</code></td><td><span class="unk">要確認</span></td></tr>
+    <tr data-keys="OUT"><td class="nm">利用時間外画面</td><td><span class="scr">OUT</span></td><td><code>OutOfUsableTimeRoute</code></td><td class="path"><code>SharedLocalPackages/Sources/SharedFeature/Feature/OutOfUsableTime/OutOfUsableTimeView.swift</code></td><td class="path"><span class="unk">（未検出）</span></td><td class="path"><code>legacy_out-of-usable-time.md</code></td><td><span class="unk">要確認</span></td></tr>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>画面ごとに動いている処理と、コードの対応</h2>
+  <p class="hint">それぞれの画面で何が走っているかを、実装の名前つきで並べたものです。<strong>「どの処理をどのチケットで見るか」を決めるのがこの表の役目</strong>で、担当が決まっていないものには要確認を付けています。出所は iOS 版の仕様書（<code>documents/RoomSupport/legacy/</code>）とソースです。図の画面をクリックすると、その画面の処理だけが残ります。</p>
+  <div class="tbl-wrap">
+  <table id="procs">
+    <tr><th>処理</th><th>いつ動くか</th><th>実装（iOS）</th><th>担当チケット</th></tr>
+    <tr class="grp"><td colspan="4">ブート画面</td></tr>
+    <tr data-keys="BOOT"><td class="nm">アプリ固有情報の初期化</td><td>画面表示時</td><td class="path"><code>setUnchangeApplicationUniqueValueOnBootUseCase.execute()</code></td><td>要確認 <span class="pill p-open">要確認</span></td></tr>
+    <tr data-keys="BOOT"><td class="nm">端末内の顔情報の有無の確認</td><td>画面表示時</td><td class="path"><code>checkLocalFaceExistsUseCase.execute()</code></td><td>⑱（要確認） <span class="pill p-open">要確認</span></td></tr>
+    <tr data-keys="BOOT"><td class="nm">保存済みログイン状態の確認</td><td>画面表示時</td><td class="path"><code>loginUtil.isLoggingIn()</code></td><td>⑥</td></tr>
+    <tr data-keys="BOOT"><td class="nm">認証情報の更新</td><td>画面表示時</td><td class="path"><code>refreshAuthUseCase.execute()</code></td><td>⑥（要確認） <span class="pill p-open">要確認</span></td></tr>
+    <tr data-keys="BOOT"><td class="nm">ネットワーク接続の確認</td><td>画面表示時</td><td class="path"><code>NetworkReachabilityService.shared.isNetworkConnected</code></td><td>⑥</td></tr>
+    <tr data-keys="BOOT"><td class="nm">オフライン起動の判定</td><td>画面表示時</td><td class="path"><code>handleCameraAuthenticationOfflineBootUseCase.execute()</code></td><td>⑥</td></tr>
+    <tr data-keys="BOOT"><td class="nm">遷移先の振り分け</td><td>判定後</td><td class="path"><code>LoginRoute / SettingLoaderRoute / PrepareRoute</code></td><td>⑥</td></tr>
+    <tr class="grp"><td colspan="4">ログイン画面</td></tr>
+    <tr data-keys="LOGIN"><td class="nm">入力値のバリデーション</td><td>入力時</td><td class="path"><code>validationText</code></td><td>①</td></tr>
+    <tr data-keys="LOGIN"><td class="nm">Firebase認証</td><td>ログイン操作時</td><td class="path"><code>firebaseAuthRepository.login</code></td><td>①</td></tr>
+    <tr data-keys="LOGIN"><td class="nm">workhub／BKPへのログイン</td><td>ログイン操作時</td><td class="path"><code>AuthUserRepository.loginToWorkHub / loginToBkp</code></td><td>①</td></tr>
+    <tr data-keys="LOGIN"><td class="nm">認証情報の保存</td><td>ログイン成功時</td><td class="path"><code>LoginUtilImpl.saveAuthUser / saveEmailAndPassword</code></td><td>①</td></tr>
+    <tr data-keys="LOGIN"><td class="nm">ログイン完了の監視と再試行</td><td>ログイン操作後</td><td class="path"><code>checkLoggingInLoopTask / shouldRetryCheckLoggingIn</code></td><td>①</td></tr>
+    <tr class="grp"><td colspan="4">組織選択画面</td></tr>
+    <tr data-keys="ORG"><td class="nm">所属組織の一覧提示</td><td>画面表示時</td><td class="path"><code>LoginOrganizationChoices</code></td><td>①</td></tr>
+    <tr data-keys="ORG"><td class="nm">組織の切り替え</td><td>組織選択時</td><td class="path"><code>SwitchOrganizationUseCase.execute</code></td><td>①</td></tr>
+    <tr data-keys="ORG"><td class="nm">選択後の再ログイン</td><td>組織選択時</td><td class="path"><code>LoginUtilImpl.getEmailAndPassword → AuthUserRepository.loginToWorkHub</code></td><td>①</td></tr>
+    <tr class="grp"><td colspan="4">設定読み込み画面</td></tr>
+    <tr data-keys="SL"><td class="nm">組織情報の取得</td><td>画面表示時（1）</td><td class="path"><code>GetOrganizationUseCase.execute()</code></td><td>⑥</td></tr>
+    <tr data-keys="SL"><td class="nm">タブレットIDの取得（KeyChain→IDFV、取得不可なら5秒間隔で再試行）</td><td>画面表示時（2）</td><td class="path"><code>retryGetTabletIdWithLoop</code></td><td>⑥</td></tr>
+    <tr data-keys="SL"><td class="nm">タブレット設定（Thing）の取得</td><td>画面表示時（3）</td><td class="path"><code>TabletSettingsUseCase.getTabletSettings(thingId:)</code></td><td>⑥</td></tr>
+    <tr data-keys="SL"><td class="nm">起動時の設定更新</td><td>取得成功時</td><td class="path"><code>UpdateTabletSettingOnBootUseCase.execute()</code></td><td>⑥</td></tr>
+    <tr data-keys="SL"><td class="nm">設置手続き（端末設定の新規作成）</td><td>「新規設置」選択時</td><td class="path"><code>TabletSettingsUseCase.createTabletSettings()</code></td><td>⑥</td></tr>
+    <tr data-keys="SL"><td class="nm">強制ログアウト</td><td>復旧不可の失敗時</td><td class="path"><code>LoginUtilImpl.forceLogoutWithShowDialog</code></td><td>⑥</td></tr>
+    <tr class="grp"><td colspan="4">初期設定画面</td></tr>
+    <tr data-keys="IS"><td class="nm">ステップの状態管理と遷移</td><td>各ステップ操作時</td><td class="path"><code>InitialSettingViewModel</code></td><td>②</td></tr>
+    <tr data-keys="IS"><td class="nm">設定タイプ選択時の進行状態の保存</td><td>設定タイプ選択時</td><td class="path"><code>settingState = completed</code></td><td>②</td></tr>
+    <tr class="grp"><td colspan="4">起動準備画面</td></tr>
+    <tr data-keys="PREP"><td class="nm">進行表示の開始（「設定を反映しています」）</td><td>画面表示時</td><td class="path"><code>CommonSpinnerService.showSpinner()</code></td><td>③</td></tr>
+    <tr data-keys="PREP"><td class="nm">Firestoreリスナーの配線（7種）</td><td>画面表示時</td><td class="path"><code>FirestoreListenerService.setHandler()</code></td><td>③</td></tr>
+    <tr data-keys="PREP"><td class="nm">オンラインモードの設定</td><td>画面表示時（オフライン起動時はスキップ）</td><td class="path"><code>SetupOnlineModeService.startFirestoreCommonListener()</code></td><td>㉛</td></tr>
+    <tr data-keys="PREP"><td class="nm">タブレット名・設置空間の不備確認</td><td>共通セットアップ後</td><td class="path"><code>validateTabletSetting()</code></td><td>③</td></tr>
+    <tr data-keys="PREP"><td class="nm">スペースデータのローカル展開</td><td>並列データ取得</td><td class="path"><code>StartSpaceStoreServiceUseCase / SpaceStoreService</code></td><td>③（観測できないためルール化しない）</td></tr>
+    <tr data-keys="PREP"><td class="nm">解錠デバイスの取得と接続確認待ち</td><td>並列データ取得</td><td class="path"><code>StartLockDeviceStoreServiceUseCase → UpdateStoreLockDeviceUseCase → CheckLockDeviceConnectionUseCase</code></td><td>未定（台帳 #8） <span class="pill p-open">要確認</span></td></tr>
+    <tr data-keys="PREP"><td class="nm">顔情報の修復</td><td>並列データ取得（顔認証有効かつオンライン時）</td><td class="path"><code>FaceRecognitionServiceImpl.repairJobIfInvalidCondition()</code></td><td>⑱</td></tr>
+    <tr data-keys="PREP"><td class="nm">予約データの初回取得と到着待ち（最大10秒）</td><td>並列データ取得（予約認証モードのみ）</td><td class="path"><code>MainMenuStoreService.startJob() / ReceptionKeyDataListenerService.startJob()</code></td><td>③</td></tr>
+    <tr data-keys="PREP"><td class="nm">全体60秒の制限時間と、超過してもホーム画面へ進む処理</td><td>並列データ取得</td><td class="path"><code>withTimeout(Minute(1)) → router.moveToTop()</code></td><td>③</td></tr>
+    <tr class="grp"><td colspan="4">ホーム画面</td></tr>
+    <tr data-keys="HOME"><td class="nm">予約と予約状態の更新</td><td>常駐（リスナー通知のつど）</td><td class="path"><code>updateReservationAndStatus()</code></td><td>⑦</td></tr>
+    <tr data-keys="HOME"><td class="nm">利用時間外の判定と表示切替（画面遷移ではない）</td><td>常駐</td><td class="path"><code>checkUnavailableTime() / isOutOfUsableTime()</code></td><td>⑩</td></tr>
+    <tr data-keys="HOME"><td class="nm">入室可能時間の判定</td><td>常駐</td><td class="path"><code>makeReservationAvailableTimerHelper().isRoomAvailableForMembers() / isRoomAvailableForCustomer()</code></td><td>⑦</td></tr>
+    <tr data-keys="HOME"><td class="nm">入室（チェックイン）</td><td>ボタン操作時</td><td class="path"><code>enterReservationUseCase.execute() / enterRoom()</code></td><td>⑳</td></tr>
+    <tr data-keys="HOME"><td class="nm">退室（チェックアウト）</td><td>ボタン操作時</td><td class="path"><code>leaveReservationUseCase.execute() / leaveRoom()</code></td><td>㉑</td></tr>
+    <tr data-keys="HOME"><td class="nm">予約の延長</td><td>ボタン操作時</td><td class="path"><code>extendReservationUseCase.execute()</code></td><td>㉓</td></tr>
+    <tr data-keys="HOME"><td class="nm">解錠の実行とログ送信</td><td>入室・再解錠時</td><td class="path"><code>executeUnlockIfNeeded() / postUnlockLogsUseCase</code></td><td>⑳ ㉕</td></tr>
+    <tr data-keys="HOME"><td class="nm">チェックインの無い予約の自動キャンセル</td><td>常駐</td><td class="path"><code>useAutoCancel / timeSecondsAutoCancel</code></td><td>㉖</td></tr>
+    <tr data-keys="HOME"><td class="nm">入室中の予約の自動延長</td><td>常駐</td><td class="path"><code>useAutoExtension / timeMinutesAutoExtensionExecute</code></td><td>㉗</td></tr>
+    <tr data-keys="HOME"><td class="nm">予約終了リマインドの通知</td><td>常駐</td><td class="path"><code>reminderSettings.enable / notificationTimeSeconds / EndReminderAlertComponent</code></td><td>㉘</td></tr>
+    <tr data-keys="HOME"><td class="nm">サードプレイスの契約・決済の確認</td><td>予約作成時</td><td class="path"><code>thirdPlaceUseCase.getContractAndPayment() / supportPaymentMethodType</code></td><td>㉙</td></tr>
+    <tr data-keys="HOME"><td class="nm">ネットワーク状態の表示</td><td>常駐</td><td class="path"><code>setDisconnectedNetworkState() / addOperationError()</code></td><td>㉛</td></tr>
+    <tr data-keys="HOME"><td class="nm">認証画面への遷移</td><td>ボタン操作時</td><td class="path"><code>ReservationCameraAuthenticationRoute</code></td><td>⑪ ⑫ ⑬ ⑲</td></tr>
+    <tr class="grp"><td colspan="4">設定画面</td></tr>
+    <tr data-keys="SET"><td class="nm">設定値の保存</td><td>保存操作時</td><td class="path"><code>SettingViewModel</code></td><td>④</td></tr>
+    <tr data-keys="SET"><td class="nm">保存後のトップ遷移先の再設定</td><td>保存成功時</td><td class="path"><code>setTopRouteIfNeeded() / router.setTopRoute(isAlwaysAuthMode:)</code></td><td>④</td></tr>
+    <tr data-keys="SET"><td class="nm">低電力モードの設定</td><td>設定操作時</td><td class="path"><code>LowPowerModeSettingItem / LowPowerModeService</code></td><td>㉚</td></tr>
+    <tr class="grp"><td colspan="4">カメラ認証画面</td></tr>
+    <tr data-keys="CAM"><td class="nm">利用時間外の判定と利用時間外画面への遷移</td><td>画面表示時</td><td class="path"><code>checkOutOfUsableTime() → OutOfUsableTimeRoute</code></td><td>⑩</td></tr>
+    <tr data-keys="CAM"><td class="nm">無操作時のホーム画面への復帰</td><td>タイムアウト時</td><td class="path"><code>router.moveToTop()</code></td><td>⑮</td></tr>
+    <tr data-keys="CAM"><td class="nm">認証処理（顔／QR／個人コード／カード）</td><td>認証時</td><td class="path"><code>未調査</code></td><td>⑪ ⑫ ⑬ ⑲</td></tr>
+    <tr class="grp"><td colspan="4">管理者メニュー</td></tr>
+    <tr data-keys="ADMIN"><td class="nm">管理パスワードの照合</td><td>パスワード入力時</td><td class="path"><code>DebugService.shared.verifyPassword() / adminPassword</code></td><td>⑤</td></tr>
+    <tr data-keys="ADMIN"><td class="nm">顔認証による管理者確認</td><td>画面表示時（顔認証有効時）</td><td class="path"><code>FaceRecognitionDialogState.show() / FaceRecognitionServiceImpl.shared</code></td><td>⑤</td></tr>
+    <tr data-keys="ADMIN"><td class="nm">管理メニュー滞在中フラグの管理</td><td>開閉時</td><td class="path"><code>adminMenuStoreService.isInAdminMenu</code></td><td>⑤</td></tr>
+    <tr data-keys="ADMIN"><td class="nm">アクセスコントロールの確認</td><td>ボタン操作時</td><td class="path"><code>AccessControlService.shared</code></td><td>要確認 <span class="pill p-open">要確認</span></td></tr>
+    <tr data-keys="ADMIN"><td class="nm">ログアウト</td><td>ボタン操作時</td><td class="path"><code>LoginUtilImpl.forceLogout()</code></td><td>⑤</td></tr>
+    <tr class="grp"><td colspan="4">利用時間外画面</td></tr>
+    <tr data-keys="OUT"><td class="nm">利用可能時間の監視</td><td>常駐</td><td class="path"><code>observeUsableTimeTimer / appStateDelegate.addUpdateHandler</code></td><td>⑩</td></tr>
+    <tr data-keys="OUT"><td class="nm">時間内に戻るとトップへ復帰</td><td>監視で検知時</td><td class="path"><code>router.moveToTop()</code></td><td>⑩</td></tr>
+    <tr data-keys="OUT"><td class="nm">メッセージの日英出し分け</td><td>画面表示時</td><td class="path"><code>getOutOfUsableTimeMessage() / outOfTimesMessageJp / outOfTimesMessageEn</code></td><td>⑩</td></tr>
+    <tr data-keys="OUT"><td class="nm">管理者メニューの起動</td><td>長押し操作時</td><td class="path"><code>AdminMenuTriggerModifier</code></td><td>⑤</td></tr>
+    <tr class="grp"><td colspan="4">再インストール画面</td></tr>
+    <tr data-keys="RI"><td class="nm">（未調査）</td><td>—</td><td class="path"><code>未調査</code></td><td>担当チケットなし <span class="pill p-open">要確認</span></td></tr>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>責務の境界線（決定台帳）</h2>
+  <p class="hint">「どちらのチケットで見るのか」で迷った論点と、その決定・根拠を残す場所です。<strong>新しいチケットに着手するときは、まずここを読んでください。</strong></p>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>#</th><th>論点</th><th>関係チケット</th><th>決定</th><th>根拠</th><th>決定日</th></tr>
+    <tr>
+      <td class="no">1</td>
+      <td class="nm">端末が未登録のときのインストール確認（新規設置／再設置）はどこで見るか</td>
+      <td>⑥ ③</td>
+      <td><span class="pill p-done">⑥ 設定値の読み込み</span></td>
+      <td><code>SettingLoaderViewModel.loadSetting()</code>／仕様書 3-1(4-a)・3-2</td>
+      <td class="no">2026-10-19</td>
+    </tr>
+    <tr>
+      <td class="no">2</td>
+      <td class="nm">初期設定が完了しているかの判定はどこで見るか</td>
+      <td>⑥ ② ③</td>
+      <td><span class="pill p-done">判定＝⑥ ／ 中身＝②</span></td>
+      <td>仕様書 3-1(4-c) <code>settingState != .completed</code> で初期設定画面へ</td>
+      <td class="no">2026-10-19</td>
+    </tr>
+    <tr>
+      <td class="no">3</td>
+      <td class="nm">組織 → タブレットID → 端末設定(Thing) の解決はどこで見るか</td>
+      <td>⑥ ③</td>
+      <td><span class="pill p-done">⑥ 設定値の読み込み</span></td>
+      <td><code>SettingLoaderViewModel.swift:95</code> で解決済みの設定を起動準備へ引数で渡す</td>
+      <td class="no">2026-10-19</td>
+    </tr>
+    <tr>
+      <td class="no">4</td>
+      <td class="nm">タブレット名・設置空間はどこで見るか</td>
+      <td>② ③ ④</td>
+      <td><span class="pill p-done">入力＝②④ ／ 不備の検出と設定画面への誘導＝③ ／ 誘導された後＝④</span></td>
+      <td><code>legacy_prepare.md</code> 5.バリデーション／<code>validateTabletSetting()</code>／④ルール③に受け側のみ存在</td>
+      <td class="no">2026-10-19</td>
+    </tr>
+    <tr>
+      <td class="no">5</td>
+      <td class="nm">ホーム画面の表示状態（空室／待機中／使用中／利用時間外）はどこで見るか</td>
+      <td>③ ⑦ ⑩</td>
+      <td><span class="pill p-done">利用不可・利用時間外＝⑩（③では見ない）</span></td>
+      <td>リファインメントでの決定。③は起動準備の完了までを対象とし、利用不可・利用時間外の表示までは踏み込まない</td>
+      <td class="no">2026-10-19</td>
+    </tr>
+    <tr>
+      <td class="no">6</td>
+      <td class="nm">起動準備中に走る「顔情報の修復」はどこで見るか</td>
+      <td>③ ⑱</td>
+      <td><span class="pill p-done">⑱ 顔の特徴量を同期できる に包含</span></td>
+      <td>リファインメントでの決定。<code>prepareFacePropertyIfNeeded()</code> は起動準備で実行されるが、検証は⑱で行う</td>
+      <td class="no">2026-10-19</td>
+    </tr>
+    <tr>
+      <td class="no">7</td>
+      <td class="nm">オフライン起動時の振る舞いはどこで見るか</td>
+      <td>③ ㉛ ⑥</td>
+      <td><span class="pill p-done">③では対象外（㉛で扱う）</span></td>
+      <td>リファインメントでの決定。㉛「オフライン時のフォールバックを設計・検討できる」が専用チケットとして存在する</td>
+      <td class="no">2026-10-19</td>
+    </tr>
+    <tr>
+      <td class="no">8</td>
+      <td class="nm">起動準備中の「解錠デバイスの接続確認待ち」はどこで見るか</td>
+      <td>③ ⑳ ㉕</td>
+      <td><span class="pill p-open">赤カード（開発チームへ持ち込み）</span></td>
+      <td>起動準備の所要時間を実質決めている処理（ソースのコメントに「接続確認で10秒以上かかる」と明記）だが、解錠そのものは⑳㉕の領域。QA側では決めきれないため開発チームに確認する</td>
+      <td class="no">—</td>
+    </tr>
+    <tr>
+      <td class="no">9</td>
+      <td class="nm">ホーム画面の「空室／待機中／使用中」の表示はどこで見るか</td>
+      <td>③ ⑦</td>
+      <td><span class="pill p-done">③ 起動時に予約データを準備してホームを表示できる に含める</span></td>
+      <td>リファインメントでの決定。起動準備で取得した予約データがホーム画面に反映されているかまでを③で見る（利用不可・利用時間外は #5 のとおり⑩）</td>
+      <td class="no">2026-10-19</td>
+    </tr>
+    <tr>
+      <td class="no">10</td>
+      <td class="nm">利用時間外画面には、予約認証モードでどの経路から到達するのか</td>
+      <td>⑩ ③ ⑮</td>
+      <td><span class="pill p-open">赤カード（開発チームへ）</span></td>
+      <td>ソース上、予約認証モードで <code>OutOfUsableTimeRoute</code> へ遷移するのはカメラ認証画面の <code>initialize()</code> 内の再判定のみ。ホーム画面は <code>isUnavailableTime</code> で画面内の表示を切り替えるだけで遷移しない。図ではホーム画面側の判定から派生させているが、実際に別画面へ遷移する経路があるかを確認する</td>
+      <td class="no">—</td>
+    </tr>
+    <tr>
+      <td class="no">11</td>
+      <td class="nm">ブート画面〜設定読み込みの通信・オフライン系は⑥と㉛のどちらで見るか</td>
+      <td>⑥ ㉛</td>
+      <td><span class="pill p-done">⑥ 設定値の読み込みが行える に包含</span></td>
+      <td>リファインメントでの決定。⑥の既存成果物が既にカバーしているため包含する（SettingLoader ルール④：通信エラーで失敗し続けてもエラーを出さず復旧を待ち30秒間隔で再試行／ルール⑨：起動時更新の通信エラーも同様）。㉛は起動準備以降のオフライン挙動に絞る</td>
+      <td class="no">2026-10-19</td>
+    </tr>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>カバレッジ</h2>
+  <div class="cov"><b>6 / 31</b><span class="hint">チケット（19%）に成果物あり。</span></div>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>チケット</th><th>成果物</th><th>ルール</th><th>シナリオ</th><th>状態</th></tr>
+    <tr><td class="nm">② 予約認証モードで初期設定できる</td><td>InitialSetup</td><td>14本</td><td>85件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">④ 管理者が予約認証の設定を変更できる</td><td>ReservationAuthSettings</td><td>15本</td><td>73件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">⑥ 設定値の読み込みが行える</td><td>SettingLoader</td><td>10本</td><td>33件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">⑤ 管理メニューを開いて端末を管理できる</td><td>AdminMenu</td><td>8本</td><td>32件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">① タブレットにログインして組織を選択できる</td><td>Login</td><td>2本</td><td>23件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">③ 起動時に予約データを準備してホームを表示できる</td><td>PrepareHome</td><td>5本</td><td>15件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">残り25チケット</td><td>—</td><td>—</td><td>—</td><td><span class="pill p-todo">未着手</span></td></tr>
+  </table>
+  </div>
+</section>
+
+</div>
+
+<script>
+(function () {
+  var LABEL = {
+    BOOT: "ブート画面", LOGIN: "ログイン画面", ORG: "組織選択画面", SL: "設定読み込み画面",
+    PREP: "起動準備画面", HOME: "ホーム画面", RI: "再インストール画面", IS: "初期設定画面",
+    SET: "設定画面", CAM: "カメラ認証画面", ADMIN: "管理者メニュー", OUT: "利用時間外画面",
+    BG1: "予約データのリアルタイム反映", BG2: "予約の自動キャンセル", BG3: "予約の自動延長",
+    BG4: "予約終了リマインドの通知", BG5: "解錠デバイスのBLE接続維持", BG6: "低電力モードの制御", BG7: "ネットワークモードの切替"
+  };
+  var hits = Array.prototype.slice.call(document.querySelectorAll(".hit"));
+  var rows = Array.prototype.slice.call(document.querySelectorAll("#tickets tr[data-keys]"));
+  var implRows = Array.prototype.slice.call(document.querySelectorAll("#impl tr[data-keys], #procs tr[data-keys]"));
+  var procGroups = Array.prototype.slice.call(document.querySelectorAll("#procs tr.grp"));
+  var groups = Array.prototype.slice.call(document.querySelectorAll("#tickets tr.grp"));
+  var statusEl = document.getElementById("status");
+  var active = null;
+
+  function apply() {
+    hits.forEach(function (h) {
+      var k = h.getAttribute("data-key");
+      h.classList.toggle("on", active === k);
+      h.classList.toggle("dim", !!active && active !== k);
+    });
+    var shown = 0;
+    rows.forEach(function (r) {
+      var keys = r.getAttribute("data-keys").split(",");
+      var hit = !active || keys.indexOf(active) !== -1;
+      r.classList.toggle("dim", !hit);
+      if (hit) { shown++; }
+    });
+    groups.forEach(function (g) { g.classList.toggle("dim", !!active); });
+    implRows.forEach(function (r) {
+      var ks = r.getAttribute("data-keys").split(",");
+      r.classList.toggle("dim", !!active && ks.indexOf(active) === -1);
+    });
+    procGroups.forEach(function (g) { g.classList.toggle("dim", !!active); });
+    statusEl.textContent = active
+      ? LABEL[active] + " に関わるチケット " + shown + " 件を表示中（選択を解除すると全31件に戻ります）"
+      : "画面をクリックすると、その画面に関係するチケットだけが残ります";
+  }
+
+  hits.forEach(function (h) {
+    function toggle() { active = (active === h.getAttribute("data-key")) ? null : h.getAttribute("data-key"); apply(); }
+    h.addEventListener("click", toggle);
+    h.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+    });
+  });
+  document.getElementById("clearBtn").addEventListener("click", function () { active = null; apply(); });
+  apply();
+})();
+</script>
+</body>
+</html>
