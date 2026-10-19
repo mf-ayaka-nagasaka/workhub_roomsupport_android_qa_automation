@@ -78,13 +78,20 @@ Git操作（ブランチ作成、コミット、プッシュ、PR作成）を対
 外部リポジトリ（ソースコード、ドキュメント）から最新の仕様情報を同期します。
 
 ### 🔗 `/bdd-workflow-manager` - BDDテスト設計ワークフロー
-仕様書を起点に、ルール・実例抽出 → Gherkinシナリオ生成 → テスト観点抽出・観点分岐Gherkin生成までの一連のBDDテスト設計プロセスを統合的に実行します。  
-各工程で人間のレビューを挟みながらステップバイステップで進行し、最終的に全成果物をコミットします。
+責務の確定を起点に、ルール・実例抽出 → Gherkinシナリオ生成 → テスト観点抽出・観点分岐Gherkin生成までの一連のBDDテスト設計プロセスを統合的に実行します。  
+各工程で人間のレビューを挟みながらステップバイステップで進行し、最終的に全成果物をコミットします。  
+着手前に `/feature-map scope` で責務を確定する **Step 0** を含みます。
 
 ### ♻️ `/bdd-artifact-updater` - BDD成果物の修正反映
 `/bdd-workflow-manager` で作成済みのBDD成果物に対し、リファインメント後に発生した修正・追加を反映します。  
 修正要求を構造化 → 影響分析 → 影響のある成果物だけを部分更新、という流れで進行し、修正点以外の既存記述（文言・並び順・採番）は一切変更しません。  
 各Stepの保存後に `git diff` で計画外の差分がないことを自己検証します。成果物が未作成の機能には使わず、`/bdd-workflow-manager` を使用します。
+
+### 🗺️ `/feature-map` - 全体マップ・責務の確定
+Androidの全チケットと、アプリの画面・内部処理の対応を1枚にまとめた「全体マップ」を参照・更新します。  
+Gherkinシナリオを作り始める前に、そのチケットでどこまでを見るのか（責務）を確定し、決定内容を台帳へ書き戻します。  
+受け入れ条件を1項目1分岐まで分解して仕分け、実装との差分を洗い出し、境界の論点を合意してから記録します。決めきれない論点は赤カードとして開発チームへの確認事項に残します。  
+全体マップ: `src/test/resources/features/_master/feature-map.html`
 
 ### 📐 `/rule-example-extractor` - ルール・実例抽出
 仕様書（Markdown）からビジネスルール・実例（正常系・異常系・例外系）を抽出・整理し、テスト設計の基盤となるルール・実例ドキュメント（rules.md）を生成します。  
@@ -161,6 +168,30 @@ Skill自体の改善を提案・実行するメタスキル。
 判定基準は `docs/unit_test_review_criteria.md` に集約しています。
 レビュー対象リポジトリは `bitkey-service/gateaccess-android` です。
 
+## ワークフロー概要（BDDテスト設計）
+
+仕様書と受け入れ条件からGherkinシナリオ・テスト観点・全体図を作るまでの流れです。
+
+```
+[チケット受領（受け入れ条件）]
+    ↓
+/feature-map scope          → 責務の確定（決定台帳へ記録）
+    ↓
+/rule-example-extractor     → ルール・実例の抽出
+    ↓
+/gherkin-scenario-generator → Gherkinシナリオの生成
+    ↓
+/viewpoint-extractor        → テスト観点・観点分岐Gherkinの生成
+    ↓
+/pbi-flow-map               → 処理の全体図（HTML）の生成
+    ↓
+/feature-map update         → カバレッジ・状態の更新
+```
+
+上記の一連の流れは `/bdd-workflow-manager` で統合的に管理できます。  
+作成済みの成果物の修正は `/bdd-artifact-updater` を使用します。  
+責務の決定台帳は `src/test/resources/features/_master/feature-map.html` に集約しています。
+
 ## 補助Skill
 
 | Skill | 用途 |
@@ -172,3 +203,4 @@ Skill自体の改善を提案・実行するメタスキル。
 | `/skill-improver` | Skill自体の改善 |
 | `/quality-criteria-generator` | 品質判定基準ドラフトの生成 |
 | `/bdd-artifact-updater` | BDD成果物の修正反映（リファインメント後） |
+| `/feature-map` | 全体マップの参照・責務の確定・決定台帳の保守 |
