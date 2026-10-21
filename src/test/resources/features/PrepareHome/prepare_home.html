@@ -153,7 +153,7 @@ td.msg { font-weight: 500; }
 <header>
   <p class="eyebrow">prepare_home ／ 全体マップ</p>
   <h1>起動時に予約データを準備してホームを表示できる</h1>
-  <p class="lead">設定の読み込みを終えて起動準備画面に着いたあと、ホーム画面が出るまでに裏で何が順番に起きるかを1枚にしたもの。端末の登録と初期設定の確認は、ひとつ前の設定読み込み画面の担当。利用時間外の表示・顔情報の同期・オフライン時の動きも、それぞれ別のチケットの担当なのでここには出てきません。図の箱やテストケースをクリックすると、対応する場所が光ります。</p>
+  <p class="lead">設定の読み込みを終えて起動準備画面に着いたあと、ホーム画面が出るまでに裏で何が順番に起きるかを1枚にしたもの。端末の登録と初期設定の確認は、ひとつ前の設定読み込み画面の担当。利用時間外の表示・ホーム画面の見た目（空室／待機中／使用中）・顔情報の同期・オフライン時の動きも、それぞれ別のチケットの担当なのでここには出てきません。図の箱やテストケースをクリックすると、対応する場所が光ります。</p>
   <div class="controls">
     <button class="link" id="clearBtn" type="button">選択を解除</button>
     <span id="status">箱をクリックすると、その場所に関係するテストだけが残ります</span>
@@ -163,7 +163,7 @@ td.msg { font-weight: 500; }
 <section>
 <figure>
   <div class="scroll">
-  <svg class="map" viewBox="0 0 1440 400" role="img" aria-label="起動準備の流れ。上段は管理者が見る画面、下段は裏側で起きる確認。起動準備画面に着いたあと、タブレット名と設置場所が決まっているかを確認し、決まっていなければ設定画面へ戻す。決まっていれば予約データの到着を最大10秒待ってからホーム画面を表示する。">
+  <svg class="map" viewBox="0 0 1440 400" role="img" aria-label="起動準備の流れ。上段は管理者が見る画面、下段は裏側で起きる確認。起動準備画面に着いたあと、タブレット名と設置場所が決まっているかを確認し、決まっていなければ設定画面へ戻す。決まっていれば、顔情報の修復を除く準備（スペースデータ・解錠デバイスの接続確認・予約データ）がすべて揃うのを待ってからホーム画面を表示する。揃わない間はホーム画面へ進まず、待っている理由と次の再試行までの秒数を出して30秒ごとに再試行する。">
     <defs>
       <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-flow"/></marker>
       <marker id="arwS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-save"/></marker>
@@ -183,11 +183,11 @@ td.msg { font-weight: 500; }
     <path class="flow" marker-end="url(#arw)" d="M330 196 V140 H525 V120"/>
     <text class="lbl" x="338" y="152">どちらかが未設定</text>
     <path class="flow" marker-end="url(#arw)" d="M890 236 H940 V84 H996"/>
-    <text class="lbl" x="810" y="76" text-anchor="middle">予約データが届く（または10秒でタイムアウト）→ホーム画面へ</text>
+    <text class="lbl" x="810" y="76" text-anchor="middle">顔情報以外の準備がすべて揃う→ホーム画面へ</text>
 
     <!-- error exits -->
-    <text class="err" x="700" y="296">✕ 10秒待っても届かない→そのままホーム画面へ進み、届き次第自動で反映</text>
-    <text class="err" x="700" y="318">✕ 準備全体が60秒を超えた→それでも止まらず、そのままホーム画面へ進む</text>
+    <text class="err" x="700" y="296">✕ 30秒たっても揃わない→ホーム画面へ進まず、待っている理由と次の再試行までの秒数を表示</text>
+    <text class="err" x="700" y="318">✕ 揃うまで30秒ごとに未完了の処理だけ再試行。10回を超えるとログアウトの導線が出る</text>
 
     <!-- lane A: screens -->
     <g class="hit" data-key="P" tabindex="0" role="button" aria-label="起動準備画面">
@@ -206,7 +206,7 @@ td.msg { font-weight: 500; }
       <rect class="screen" x="1000" y="52" width="190" height="64" rx="10"/>
       <rect class="screen-bar" x="1080" y="58" width="30" height="3" rx="1.5"/>
       <text class="t-screen" x="1095" y="82" text-anchor="middle">ホーム画面</text>
-      <text class="t-sub" x="1095" y="102" text-anchor="middle">空室／待機中／使用中で表示が変わる</text>
+      <text class="t-sub" x="1095" y="102" text-anchor="middle">準備がすべて揃った後に表示される</text>
     </g>
 
     <!-- lane B: steps -->
@@ -215,11 +215,11 @@ td.msg { font-weight: 500; }
       <text class="t-name" x="330" y="229" text-anchor="middle">①名前・場所</text>
       <text class="t-name" x="330" y="245" text-anchor="middle">は決まってる？</text>
     </g>
-    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="予約データの到着を待つ">
+    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="顔情報以外の準備が揃うのを待つ">
       <rect class="step" x="700" y="204" width="190" height="64" rx="8"/>
-      <text class="t-name" x="795" y="228" text-anchor="middle">②予約データの</text>
-      <text class="t-name" x="795" y="246" text-anchor="middle">到着を待つ（最大10秒）</text>
-      <text class="t-sub" x="795" y="262" text-anchor="middle">準備全体の上限は60秒</text>
+      <text class="t-name" x="795" y="228" text-anchor="middle">②顔情報以外の準備が</text>
+      <text class="t-name" x="795" y="246" text-anchor="middle">揃うのを待つ</text>
+      <text class="t-sub" x="795" y="262" text-anchor="middle">揃うまでホーム画面へ進まない</text>
     </g>
   </svg>
   </div>
@@ -255,35 +255,42 @@ td.msg { font-weight: 500; }
   </div>
 
   <div class="group">
-    <h3>ルール③ 準備全体が60秒を超えても止まらない</h3>
+    <h3>ルール③ 顔情報以外の準備がすべて揃うまでホーム画面へ進まない</h3>
     <div class="cards">
-      <div class="card" data-keys="P,1,2,M"><div class="ttl"><i class="dot ng"></i>準備が60秒を超えた → それでも中断せずホーム画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,1,2,M"><div class="ttl"><i class="dot ok"></i>スペースデータ・解錠デバイスの接続確認・予約データがすべて揃う → ホーム画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,2"><div class="ttl"><i class="dot ng"></i>解錠デバイスの接続確認が終わらない → ホーム画面へ進まず待ち続ける</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,2"><div class="ttl"><i class="dot ng"></i>予約データが揃わない → ホーム画面へ進まず待ち続ける</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,2,M"><div class="ttl"><i class="dot ok"></i>顔情報の修復だけ終わっていない → 待たずにホーム画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,2,M"><div class="ttl"><i class="dot ok"></i>揃うまでに60秒以上かかる → 打ち切られず、揃った時点でホーム画面へ</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール④ 予約データの到着を待ってからホーム画面へ進む</h3>
+    <h3>ルール④ 予約データは4種すべてを受け取れば「揃った」</h3>
     <div class="cards">
-      <div class="card" data-keys="P,1,2,M"><div class="ttl"><i class="dot ok"></i>予約データが10秒以内に届く → 反映された状態でホーム画面へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="P,1,2,M"><div class="ttl"><i class="dot ok"></i>予約データが10秒待っても届かない → そのままホーム画面へ進み、届き次第自動で反映</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,2"><div class="ttl"><i class="dot ok"></i>予約認証モードで準備を始める → 予約一覧・空間ステータス・予約設定・利用不可時間の取得が始まる</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,2,M"><div class="ttl"><i class="dot ok"></i>4種すべてを受け取る → 揃ったものとして扱われる</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,2,M"><div class="ttl"><i class="dot ok"></i>予約が0件・利用不可時間の設定もない（中身が空） → それでも揃ったものとして扱われる</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,2"><div class="ttl"><i class="dot ng"></i>4種のうち一部しか受け取れない → 揃っていないものとして扱われ、待ちになる</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
-    <h3>ルール⑤ 予約データの状態でホーム画面の見た目が決まる</h3>
+    <h3>ルール⑤ 揃わない間は理由と再試行の秒数を出し、30秒ごとにやり直す</h3>
     <div class="cards">
-      <div class="card" data-keys="M"><div class="ttl"><i class="dot ok"></i>予約がない → 空室状態で表示</div><div class="chips"></div></div>
-      <div class="card" data-keys="M"><div class="ttl"><i class="dot ok"></i>予約はあるがまだ入室していない → 待機中状態で表示</div><div class="chips"></div></div>
-      <div class="card" data-keys="M"><div class="ttl"><i class="dot ok"></i>入室済みの予約がある → 使用中状態で表示</div><div class="chips"></div></div>
-      <div class="card" data-keys="M"><div class="ttl"><i class="dot ok"></i>予約はあるが入室可能時間の閾値に未到達 → 空室状態で表示</div><div class="chips"></div></div>
-      <div class="card" data-keys="M"><div class="ttl"><i class="dot ok"></i>入室可能時間の閾値に到達した直後（境界値） → 待機中状態で表示</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,2"><div class="ttl"><i class="dot ng"></i>30秒たっても揃わない → 待っている理由（未完了の処理）と次の再試行までの秒数が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,2"><div class="ttl"><i class="dot ng"></i>再試行でやり直すのは未完了の処理だけ（終わった処理はやり直さない）</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,2"><div class="ttl"><i class="dot ng"></i>再試行10回目まで → ログアウトの導線は出ない（エラーも出ない）</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,2"><div class="ttl"><i class="dot ng"></i>再試行が10回を超える → ログアウトの導線が出る（待っている表示は続く）</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,2,M"><div class="ttl"><i class="dot ok"></i>待っている間に揃う → 待っている表示が消え、ホーム画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="P"><div class="ttl"><i class="dot ok"></i>ログアウトの導線を選ぶ → ログインが求められる</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
     <h3>通し（実機で最後まで）</h3>
     <div class="cards">
-      <div class="card" data-keys="P,1,2,M"><div class="ttl"><i class="dot ok"></i>起動準備から予約データを反映したホーム画面表示までが正常に完了する</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,1,2,M"><div class="ttl"><i class="dot ok"></i>起動準備が完了してホーム画面が表示される</div><div class="chips"></div></div>
     </div>
   </div>
 </section>
@@ -298,7 +305,7 @@ td.msg { font-weight: 500; }
     <tr><td>利用不可・利用時間外の表示</td><td>利用不可・利用時間外を表示できる</td></tr>
     <tr><td>起動準備中に走る顔情報の修復</td><td>顔の特徴量を同期できる</td></tr>
     <tr><td>オフラインで起動したときの動き</td><td>オフライン時のフォールバックを設計・検討できる</td></tr>
-    <tr><td>解錠デバイスの接続確認待ち</td><td>未定（開発チームに確認中）</td></tr>
+    <tr><td>ホーム画面の見た目（空室／待機中／使用中）と、予約データがどこに反映されるか</td><td>ホーム画面の予約・予約状態の更新</td></tr>
   </table>
   </div>
   </div>
@@ -310,7 +317,9 @@ td.msg { font-weight: 500; }
   <div class="tbl-wrap">
   <table>
     <tr><th>画面に出る言葉</th><th>止まった場所</th></tr>
-    <tr><td class="msg">（この機能にはエラーメッセージの表示はない）</td><td>予約データが10秒で揃わなくても、準備全体が60秒を超えても、無言のままホーム画面へ進む</td></tr>
+    <tr><td class="msg">（エラーメッセージは表示されない）</td><td>準備が揃わないときもエラーは出ず、待っている理由と次の再試行までの秒数が出たまま再試行が続く</td></tr>
+    <tr><td class="msg">待っている理由（未完了の処理）＋次の再試行までの秒数</td><td>顔情報以外の準備が揃わず、ホーム画面へ進めずに待っている</td></tr>
+    <tr><td class="msg">ログアウトの導線</td><td>再試行が10回を超えても揃わない（約5分後）</td></tr>
   </table>
   </div>
   </div>

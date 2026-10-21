@@ -520,10 +520,10 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr data-keys="PREP"><td class="nm">オンラインモードの設定</td><td>画面表示時（オフライン起動時はスキップ）</td><td class="path"><code>SetupOnlineModeService.startFirestoreCommonListener()</code></td><td>㉛</td></tr>
     <tr data-keys="PREP"><td class="nm">タブレット名・設置空間の不備確認</td><td>共通セットアップ後</td><td class="path"><code>validateTabletSetting()</code></td><td>③</td></tr>
     <tr data-keys="PREP"><td class="nm">スペースデータのローカル展開</td><td>並列データ取得</td><td class="path"><code>StartSpaceStoreServiceUseCase / SpaceStoreService</code></td><td>③（観測できないためルール化しない）</td></tr>
-    <tr data-keys="PREP"><td class="nm">解錠デバイスの取得と接続確認待ち</td><td>並列データ取得</td><td class="path"><code>StartLockDeviceStoreServiceUseCase → UpdateStoreLockDeviceUseCase → CheckLockDeviceConnectionUseCase</code></td><td>未定（台帳 #8） <span class="pill p-open">要確認</span></td></tr>
+    <tr data-keys="PREP"><td class="nm">解錠デバイスの取得と接続確認待ち</td><td>並列データ取得</td><td class="path"><code>StartLockDeviceStoreServiceUseCase → UpdateStoreLockDeviceUseCase → CheckLockDeviceConnectionUseCase</code></td><td>③（台帳 #8）</td></tr>
     <tr data-keys="PREP"><td class="nm">顔情報の修復</td><td>並列データ取得（顔認証有効かつオンライン時）</td><td class="path"><code>FaceRecognitionServiceImpl.repairJobIfInvalidCondition()</code></td><td>⑱</td></tr>
-    <tr data-keys="PREP"><td class="nm">予約データの初回取得と到着待ち（最大10秒）</td><td>並列データ取得（予約認証モードのみ）</td><td class="path"><code>MainMenuStoreService.startJob() / ReceptionKeyDataListenerService.startJob()</code></td><td>③</td></tr>
-    <tr data-keys="PREP"><td class="nm">全体60秒の制限時間と、超過してもホーム画面へ進む処理</td><td>並列データ取得</td><td class="path"><code>withTimeout(Minute(1)) → router.moveToTop()</code></td><td>③</td></tr>
+    <tr data-keys="PREP"><td class="nm">予約データの初回取得と到着待ち</td><td>並列データ取得（予約認証モードのみ）</td><td class="path"><code>MainMenuStoreService.startJob() / ReceptionKeyDataListenerService.startJob()</code></td><td>③ ※Android版は台帳 #12 の決定により、参照元（iOS）の10秒打ち切りではなく4種すべての初回受信を待つ</td></tr>
+    <tr data-keys="PREP"><td class="nm">並列データ取得が揃うまでの待機表示・30秒間隔の再試行・ログアウト動線</td><td>並列データ取得が揃わない間</td><td class="path"><code>（Android版の新規実装。参照元のiOSは withTimeout(Minute(1)) → router.moveToTop() で先へ進む）</code></td><td>③（台帳 #12）</td></tr>
     <tr class="grp"><td colspan="4">ホーム画面</td></tr>
     <tr data-keys="HOME"><td class="nm">予約と予約状態の更新</td><td>常駐（リスナー通知のつど）</td><td class="path"><code>updateReservationAndStatus()</code></td><td>⑦</td></tr>
     <tr data-keys="HOME"><td class="nm">利用時間外の判定と表示切替（画面遷移ではない）</td><td>常駐</td><td class="path"><code>checkUnavailableTime() / isOutOfUsableTime()</code></td><td>⑩</td></tr>
@@ -629,17 +629,17 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="no">8</td>
       <td class="nm">起動準備中の「解錠デバイスの接続確認待ち」はどこで見るか</td>
       <td>③ ⑳ ㉕</td>
-      <td><span class="pill p-open">赤カード（開発チームへ持ち込み）</span></td>
-      <td>起動準備の所要時間を実質決めている処理（ソースのコメントに「接続確認で10秒以上かかる」と明記）だが、解錠そのものは⑳㉕の領域。QA側では決めきれないため開発チームに確認する</td>
-      <td class="no">—</td>
+      <td><span class="pill p-done">③ の待ち合わせ対象に含める（解錠の実行そのものは⑳㉕）</span></td>
+      <td>2026-10-21 のリファインメントでの決定。顔情報の修復（⑱）以外の並列処理はすべて揃うまでホーム画面へ遷移しない方針としたため、接続確認待ちも③の待ち合わせ対象に含める。接続確認が完了しない間は③の待機表示・再試行の対象となる（台帳 #12）。解錠の実行とログ送信は⑳㉕のまま</td>
+      <td class="no">2026-10-21</td>
     </tr>
     <tr>
       <td class="no">9</td>
       <td class="nm">ホーム画面の「空室／待機中／使用中」の表示はどこで見るか</td>
       <td>③ ⑦</td>
-      <td><span class="pill p-done">③ 起動時に予約データを準備してホームを表示できる に含める</span></td>
-      <td>リファインメントでの決定。起動準備で取得した予約データがホーム画面に反映されているかまでを③で見る（利用不可・利用時間外は #5 のとおり⑩）</td>
-      <td class="no">2026-10-19</td>
+      <td><span class="pill p-done">⑦ ホーム画面の予約・予約状態の更新（③では見ない）</span></td>
+      <td>2026-10-21 のリファインメントでの決定。2026-10-19 の「③に含める」から変更し、③はホーム画面に到達するまでを対象とする。予約データの状態（なし／未入室／入室済み／入室可能時間の閾値前後）に応じた表示の確認、反映先の詳細、日付変更を跨いだ更新の確認は⑦で行う（利用不可・利用時間外は #5 のとおり⑩）</td>
+      <td class="no">2026-10-21</td>
     </tr>
     <tr>
       <td class="no">10</td>
@@ -657,6 +657,14 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td>リファインメントでの決定。⑥の既存成果物が既にカバーしているため包含する（SettingLoader ルール④：通信エラーで失敗し続けてもエラーを出さず復旧を待ち30秒間隔で再試行／ルール⑨：起動時更新の通信エラーも同様）。㉛は起動準備以降のオフライン挙動に絞る</td>
       <td class="no">2026-10-19</td>
     </tr>
+    <tr>
+      <td class="no">12</td>
+      <td class="nm">起動準備の並列データ取得が揃わないまま滞留した場合の表示・再試行・ログアウト動線はどこで見るか</td>
+      <td>③ ⑥ ㉛</td>
+      <td><span class="pill p-done">③ 起動時に予約データを準備してホームを表示できる</span></td>
+      <td>2026-10-21 のリファインメントでの決定。顔情報の修復（⑱）以外の並列処理がすべて揃うまでホーム画面へ遷移しない方針としたことに伴い、揃わない間は起動準備画面に待機理由と次の再試行までの秒数を表示し、⑥の再試行方式に合わせて30秒間隔・上限なしで未完了の処理のみ再試行する。再試行が10回を超えた時点でログアウト動線を表示する（⑥ SettingLoader ルール④・⑤と同じ値）。オフライン起動そのものの振る舞いは #7 のとおり㉛で扱う</td>
+      <td class="no">2026-10-21</td>
+    </tr>
   </table>
   </div>
 </section>
@@ -672,7 +680,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr><td class="nm">⑥ 設定値の読み込みが行える</td><td>SettingLoader</td><td>10本</td><td>33件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">⑤ 管理メニューを開いて端末を管理できる</td><td>AdminMenu</td><td>8本</td><td>32件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">① タブレットにログインして組織を選択できる</td><td>Login</td><td>2本</td><td>23件</td><td><span class="pill p-done">成果物あり</span></td></tr>
-    <tr><td class="nm">③ 起動時に予約データを準備してホームを表示できる</td><td>PrepareHome</td><td>5本</td><td>15件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">③ 起動時に予約データを準備してホームを表示できる</td><td>PrepareHome</td><td>5本</td><td>20件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">残り25チケット</td><td>—</td><td>—</td><td>—</td><td><span class="pill p-todo">未着手</span></td></tr>
   </table>
   </div>
