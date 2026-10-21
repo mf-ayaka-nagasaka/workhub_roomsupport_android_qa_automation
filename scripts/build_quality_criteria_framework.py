@@ -43,11 +43,15 @@ DOC_FILES = [
     "06_default_severity_model.md",
     "07_how_to_prefill_from_source.md",
     "08_how_to_use_skill.md",
+    "09_standards_alignment.md",
+    "10_ai_extension.md",
 ]
 
 # assets/ に入れるファイル
 ASSET_FILES = [
     "metrics_catalog.csv",
+    "metrics_catalog_ai_extension.csv",
+    "organization_profile_template.md",
 ]
 
 
