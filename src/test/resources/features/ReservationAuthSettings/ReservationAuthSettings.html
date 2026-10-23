@@ -237,11 +237,11 @@ td.msg { font-weight: 500; }
       <text class="t-sub" x="995" y="106" text-anchor="middle">名前を付けるか、残さないか</text>
       <text class="err" x="900" y="140">✕ 名前が空だと残せない</text>
     </g>
-    <g class="hit" data-key="back" tabindex="0" role="button" aria-label="戻り先">
+    <g class="hit" data-key="back" tabindex="0" role="button" aria-label="戻り先（管理者メニュー／ホーム画面）">
       <rect class="screen" x="1180" y="56" width="200" height="64" rx="10"/>
       <rect class="screen-bar" x="1265" y="62" width="30" height="3" rx="1.5"/>
       <text class="t-screen" x="1280" y="86" text-anchor="middle">元の画面に戻る</text>
-      <text class="t-sub" x="1280" y="106" text-anchor="middle">管理者メニュー／トップ画面</text>
+      <text class="t-sub" x="1280" y="106" text-anchor="middle">管理者メニュー／ホーム画面</text>
     </g>
 
     <!-- lane B: steps -->
@@ -308,7 +308,7 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>何も変えずに保存しても保存される</div><div class="chips"></div></div>
       <div class="card" data-keys="4"><div class="ttl"><i class="dot ok"></i>保存中は画面を操作できない</div><div class="chips"></div></div>
       <div class="card" data-keys="4"><div class="ttl"><i class="dot ok"></i>続けて押しても保存は1回だけ</div><div class="chips"></div></div>
-      <div class="card" data-keys="4"><div class="ttl"><i class="dot ng"></i>保存に失敗する → その場に留まる</div><div class="chips"></div></div>
+      <div class="card" data-keys="4"><div class="ttl"><i class="dot ng"></i>保存に失敗する → 何で失敗したかが分かる案内が出て、その場に留まる</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -316,7 +316,7 @@ td.msg { font-weight: 500; }
     <h3>ルール② 保存したあとの効き方</h3>
     <div class="cards">
       <div class="card" data-keys="4,A"><div class="ttl"><i class="dot ok"></i>変えた内容がホーム画面などに出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="4,back"><div class="ttl"><i class="dot ok"></i>どこから開いたかで戻り先が変わる</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,back"><div class="ttl"><i class="dot ok"></i>どこから開いたかで戻り先が変わる（管理者メニュー／ホーム画面）</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -365,7 +365,7 @@ td.msg { font-weight: 500; }
   <div class="group">
     <h3>ルール⑦ 入力の不備の知らせ方</h3>
     <div class="cards">
-      <div class="card" data-keys="set,2"><div class="ttl"><i class="dot ng"></i>不備の数で知らせ方が変わる（1件／3件／4件）</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,2"><div class="ttl"><i class="dot ng"></i>不備の数で知らせ方が変わる（1件／2件／3件／4件）</div><div class="chips"></div></div>
       <div class="card" data-keys="set,2"><div class="ttl"><i class="dot ng"></i>どのまとまりに不備があるか数で分かる</div><div class="chips"></div></div>
       <div class="card" data-keys="set,2,4"><div class="ttl"><i class="dot ok"></i>直してもう一度保存 → 保存できる</div><div class="chips"></div></div>
       <div class="card" data-keys="set,2,4"><div class="ttl"><i class="dot ok"></i>隠した項目のうち、おかしな値は既定の値に戻して保存される</div><div class="chips"></div></div>
@@ -384,10 +384,10 @@ td.msg { font-weight: 500; }
   <div class="group">
     <h3>ルール⑨ コピーとして残す</h3>
     <div class="cards">
-      <div class="card" data-keys="confirm,5,back"><div class="ttl"><i class="dot ok"></i>名前を付けて残す → 元の画面に戻る</div><div class="chips"></div></div>
-      <div class="card" data-keys="confirm,back"><div class="ttl"><i class="dot ok"></i>残さないを選ぶ → 元の画面に戻る</div><div class="chips"></div></div>
-      <div class="card" data-keys="confirm"><div class="ttl"><i class="dot ng"></i>名前が空 → 残す操作ができない</div><div class="chips"></div></div>
-      <div class="card" data-keys="5"><div class="ttl"><i class="dot ng"></i>残すのに失敗 → 設定の保存自体は済んでいる</div><div class="chips"></div></div>
+      <div class="card" data-keys="confirm,5,back"><div class="ttl"><i class="dot ok"></i>コピー設定をONにして名前を入れて保存 → 設定といっしょに残る</div><div class="chips"></div></div>
+      <div class="card" data-keys="confirm,back"><div class="ttl"><i class="dot ok"></i>コピー設定をOFFのまま保存 → 残らない</div><div class="chips"></div></div>
+      <div class="card" data-keys="confirm"><div class="ttl"><i class="dot ng"></i>コピー設定ONで名前が空 → 保存できない</div><div class="chips"></div></div>
+      <div class="card" data-keys="5"><div class="ttl"><i class="dot ok"></i>※残すときの細かい決まり（失敗したときの扱いなど）は別チケットで決める</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -407,6 +407,7 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="set,copy"><div class="ttl"><i class="dot ok"></i>確認でやめる → 今の入力はそのまま</div><div class="chips"></div></div>
       <div class="card" data-keys="set,copy"><div class="ttl"><i class="dot ok"></i>入れ替えても名前と空間はそのまま</div><div class="chips"></div></div>
       <div class="card" data-keys="copy"><div class="ttl"><i class="dot ng"></i>元にできる設定が0件 → 選べない</div><div class="chips"></div></div>
+      <div class="card" data-keys="copy"><div class="ttl"><i class="dot ok"></i>元にする設定の一覧（並び・検索・絞り込み・削除）は「予約認証モードで初期設定できる」で見る</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -427,12 +428,15 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>親をOFFにすると隠れる</div><div class="chips"></div></div>
       <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>隠れた項目に入れた値はそのまま残る</div><div class="chips"></div></div>
       <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>使い方のタイプで2台目の機器が出る／出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>カスタムのときだけ2段階認証の機器が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>eX-SGアダプタが登録されている組織だけ、その選択が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>単独の切り替えを変えて保存できる</div><div class="chips"></div></div>
       <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>QRだけ／顔だけ／両方 に変えて保存できる</div><div class="chips"></div></div>
       <div class="card" data-keys="set,2"><div class="ttl"><i class="dot ng"></i>認証のしかたを全部外す → 保存できない</div><div class="chips"></div></div>
       <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>できることを1つずつ切り替えて保存できる</div><div class="chips"></div></div>
       <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>機器・音・時間帯を選んで保存できる</div><div class="chips"></div></div>
       <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>同じ機器を2つ選ぶと1台にまとまる</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,4"><div class="ttl"><i class="dot ok"></i>つなぎっぱなしの機器を1つも選ばない → すべての機器が対象になる</div><div class="chips"></div></div>
       <div class="card" data-keys="set,2"><div class="ttl"><i class="dot ng"></i>開けると決めたのに機器が空 → 保存できない</div><div class="chips"></div></div>
     </div>
   </div>
@@ -492,10 +496,11 @@ td.msg { font-weight: 500; }
     <tr><td class="msg">終了前リマインダーの回数は1以上の値を指定してください</td><td>② 入力を点検する</td></tr>
     <tr><td class="msg">アイドリング開始までの時間は1以上の値を設定してください</td><td>② 入力を点検する</td></tr>
     <tr><td class="msg">認証必要時間は0以上の値を設定してください</td><td>② 入力を点検する</td></tr>
-    <tr><td class="msg">認証成功類似度は0〜1の間の値を設定してください</td><td>② 入力を点検する（顔が使える組織のみ）</td></tr>
+    <tr><td class="msg">認証成功類似度は0.7〜1の間の値を設定してください</td><td>② 入力を点検する（顔が使える組織のみ）</td></tr>
     <tr><td class="msg">利用時間外メッセージは100文字以内で入力してください</td><td>② 入力を点検する</td></tr>
-    <tr><td class="msg">不正な入力値が存在します。入力値を修正してから再度保存してください。</td><td>② 入力を点検する（不備が複数のとき。3件まで並び、超えると「他N件」）</td></tr>
-    <tr><td class="msg">タブレット情報の保存に失敗しました</td><td>④ 設定を保存する ／ ⑤ コピーを登録する</td></tr>
+    <tr><td class="msg">不正な入力値が存在します。入力値を修正してから再度保存してください。</td><td>② 入力を点検する（不備が複数のとき。2件まで並び、超えると「他N件」）</td></tr>
+    <tr><td class="msg">保存に失敗した要因が分かる案内（文言は別チケットで確定）</td><td>④ 設定を保存する</td></tr>
+    <tr><td class="msg">タブレット情報の保存に失敗しました</td><td>⑤ コピーを登録する</td></tr>
   </table>
   </div>
   </div>
