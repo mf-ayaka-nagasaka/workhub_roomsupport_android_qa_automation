@@ -163,7 +163,7 @@ td.msg { font-weight: 500; }
 <section>
 <figure>
   <div class="scroll">
-  <svg class="map" viewBox="0 0 1440 400" role="img" aria-label="起動準備の流れ。上段は管理者が見る画面、下段は裏側で起きる確認。起動準備画面に着いたあと、タブレット名と設置場所が決まっているかを確認し、決まっていなければ設定画面へ戻す。決まっていれば、顔情報の修復を除く準備（スペースデータ・解錠デバイスの接続確認・予約データ）がすべて揃うのを待ってからホーム画面を表示する。揃わない間はホーム画面へ進まず、待っている理由と次の再試行までの秒数を出して30秒ごとに再試行する。">
+  <svg class="map" viewBox="0 0 1440 400" role="img" aria-label="起動準備の流れ。上段は管理者が見る画面、下段は裏側で起きる確認。起動準備画面に着いたあと、タブレット名と設置場所が決まっているかを確認し、決まっていなければ設定画面へ戻す。決まっていれば、顔情報の同期を除く準備（スペースデータ・解錠デバイスの接続確認・予約データ）がすべて揃うのを待ってからホーム画面を表示する。揃わない間はホーム画面へ進まず、待っている理由と次の再試行までの秒数を出して30秒ごとに再試行する。">
     <defs>
       <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-flow"/></marker>
       <marker id="arwS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-save"/></marker>
@@ -187,7 +187,7 @@ td.msg { font-weight: 500; }
 
     <!-- error exits -->
     <text class="err" x="700" y="296">✕ 30秒たっても揃わない→ホーム画面へ進まず、待っている理由と次の再試行までの秒数を表示</text>
-    <text class="err" x="700" y="318">✕ 揃うまで30秒ごとに未完了の処理だけ再試行。10回を超えるとログアウトの導線が出る</text>
+    <text class="err" x="700" y="318">✕ 揃うまで30秒ごとに未完了の処理だけ再試行。3回目の再試行が終わっても揃わないとログアウトの導線が出る</text>
 
     <!-- lane A: screens -->
     <g class="hit" data-key="P" tabindex="0" role="button" aria-label="起動準備画面">
@@ -260,8 +260,6 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="P,1,2,M"><div class="ttl"><i class="dot ok"></i>スペースデータ・解錠デバイスの接続確認・予約データがすべて揃う → ホーム画面へ</div><div class="chips"></div></div>
       <div class="card" data-keys="P,2"><div class="ttl"><i class="dot ng"></i>解錠デバイスの接続確認が終わらない → ホーム画面へ進まず待ち続ける</div><div class="chips"></div></div>
       <div class="card" data-keys="P,2"><div class="ttl"><i class="dot ng"></i>予約データが揃わない → ホーム画面へ進まず待ち続ける</div><div class="chips"></div></div>
-      <div class="card" data-keys="P,2,M"><div class="ttl"><i class="dot ok"></i>顔情報の修復だけ終わっていない → 待たずにホーム画面へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="P,2,M"><div class="ttl"><i class="dot ok"></i>揃うまでに60秒以上かかる → 打ち切られず、揃った時点でホーム画面へ</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -280,10 +278,10 @@ td.msg { font-weight: 500; }
     <div class="cards">
       <div class="card" data-keys="P,2"><div class="ttl"><i class="dot ng"></i>30秒たっても揃わない → 待っている理由（未完了の処理）と次の再試行までの秒数が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="P,2"><div class="ttl"><i class="dot ng"></i>再試行でやり直すのは未完了の処理だけ（終わった処理はやり直さない）</div><div class="chips"></div></div>
-      <div class="card" data-keys="P,2"><div class="ttl"><i class="dot ng"></i>再試行10回目まで → ログアウトの導線は出ない（エラーも出ない）</div><div class="chips"></div></div>
-      <div class="card" data-keys="P,2"><div class="ttl"><i class="dot ng"></i>再試行が10回を超える → ログアウトの導線が出る（待っている表示は続く）</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,2"><div class="ttl"><i class="dot ng"></i>再試行が2回目まで完了 → ログアウトの導線は出ない（エラーも出ない）</div><div class="chips"></div></div>
+      <div class="card" data-keys="P,2"><div class="ttl"><i class="dot ng"></i>3回目の再試行が完了 → ログアウトの導線が出る（待っている表示は続く）</div><div class="chips"></div></div>
       <div class="card" data-keys="P,2,M"><div class="ttl"><i class="dot ok"></i>待っている間に揃う → 待っている表示が消え、ホーム画面へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="P"><div class="ttl"><i class="dot ok"></i>ログアウトの導線を選ぶ → ログインが求められる</div><div class="chips"></div></div>
+      <div class="card" data-keys="P"><div class="ttl"><i class="dot ok"></i>ログアウトの導線を選ぶ →「ログアウトしますか」の確認で確定 → ログインが求められる（ログイン画面へ戻る）</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -303,7 +301,7 @@ td.msg { font-weight: 500; }
     <tr><th>見ないこと</th><th>どのチケットで見るか</th></tr>
     <tr><td>端末が登録されているか／初期設定が終わっているか／組織・端末設定の解決</td><td>設定値の読み込みが行える</td></tr>
     <tr><td>利用不可・利用時間外の表示</td><td>利用不可・利用時間外を表示できる</td></tr>
-    <tr><td>起動準備中に走る顔情報の修復</td><td>顔の特徴量を同期できる</td></tr>
+    <tr><td>起動準備中に走る顔情報の同期</td><td>顔の特徴量を同期できる</td></tr>
     <tr><td>オフラインで起動したときの動き</td><td>オフライン時のフォールバックを設計・検討できる</td></tr>
     <tr><td>ホーム画面の見た目（空室／待機中／使用中）と、予約データがどこに反映されるか</td><td>ホーム画面の予約・予約状態の更新</td></tr>
   </table>
@@ -319,7 +317,7 @@ td.msg { font-weight: 500; }
     <tr><th>画面に出る言葉</th><th>止まった場所</th></tr>
     <tr><td class="msg">（エラーメッセージは表示されない）</td><td>準備が揃わないときもエラーは出ず、待っている理由と次の再試行までの秒数が出たまま再試行が続く</td></tr>
     <tr><td class="msg">待っている理由（未完了の処理）＋次の再試行までの秒数</td><td>顔情報以外の準備が揃わず、ホーム画面へ進めずに待っている</td></tr>
-    <tr><td class="msg">ログアウトの導線</td><td>再試行が10回を超えても揃わない（約5分後）</td></tr>
+    <tr><td class="msg">ログアウトの導線</td><td>3回目の再試行が完了しても揃わない（約90秒後）</td></tr>
   </table>
   </div>
   </div>

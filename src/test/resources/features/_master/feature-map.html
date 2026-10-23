@@ -285,10 +285,10 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <text class="t-screen" x="250" y="624" text-anchor="middle">起動準備画面</text>
       <text class="t-sub" x="250" y="643" text-anchor="middle">③</text>
     </g>
-    <g class="hit" data-key="PREP" tabindex="0" role="button" aria-label="リスナー配線→名前・空間の確認→並列取得（予約10秒／全体60秒）（担当 ③）">
+    <g class="hit" data-key="PREP" tabindex="0" role="button" aria-label="リスナー配線→名前・空間の確認→並列取得（顔情報の同期を除く全件がそろうまで待機）（担当 ③）">
       <rect class="step" x="338" y="590" width="211" height="64" rx="8"/>
       <text class="t-name" x="443" y="612" text-anchor="middle">リスナー配線→名前・空間の確認</text>
-      <text class="t-name" x="443" y="628" text-anchor="middle">→並列取得（予約10秒／全体60秒）</text>
+      <text class="t-name" x="443" y="628" text-anchor="middle">→並列取得（全件そろうまで待機）</text>
       <text class="t-sub" x="443" y="645" text-anchor="middle">③</text>
     </g>
     <g class="hit" data-key="HOME" tabindex="0" role="button" aria-label="ホーム画面（担当 ⑦ ⑧ ⑨ ⑩）">
@@ -521,7 +521,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr data-keys="PREP"><td class="nm">タブレット名・設置空間の不備確認</td><td>共通セットアップ後</td><td class="path"><code>validateTabletSetting()</code></td><td>③</td></tr>
     <tr data-keys="PREP"><td class="nm">スペースデータのローカル展開</td><td>並列データ取得</td><td class="path"><code>StartSpaceStoreServiceUseCase / SpaceStoreService</code></td><td>③（観測できないためルール化しない）</td></tr>
     <tr data-keys="PREP"><td class="nm">解錠デバイスの取得と接続確認待ち</td><td>並列データ取得</td><td class="path"><code>StartLockDeviceStoreServiceUseCase → UpdateStoreLockDeviceUseCase → CheckLockDeviceConnectionUseCase</code></td><td>③（台帳 #8）</td></tr>
-    <tr data-keys="PREP"><td class="nm">顔情報の修復</td><td>並列データ取得（顔認証有効かつオンライン時）</td><td class="path"><code>FaceRecognitionServiceImpl.repairJobIfInvalidCondition()</code></td><td>⑱</td></tr>
+    <tr data-keys="PREP"><td class="nm">顔情報の同期</td><td>並列データ取得（顔認証有効かつオンライン時）</td><td class="path"><code>FaceRecognitionServiceImpl.repairJobIfInvalidCondition()</code></td><td>⑱</td></tr>
     <tr data-keys="PREP"><td class="nm">予約データの初回取得と到着待ち</td><td>並列データ取得（予約認証モードのみ）</td><td class="path"><code>MainMenuStoreService.startJob() / ReceptionKeyDataListenerService.startJob()</code></td><td>③ ※Android版は台帳 #12 の決定により、参照元（iOS）の10秒打ち切りではなく4種すべての初回受信を待つ</td></tr>
     <tr data-keys="PREP"><td class="nm">並列データ取得が揃うまでの待機表示・30秒間隔の再試行・ログアウト動線</td><td>並列データ取得が揃わない間</td><td class="path"><code>（Android版の新規実装。参照元のiOSは withTimeout(Minute(1)) → router.moveToTop() で先へ進む）</code></td><td>③（台帳 #12）</td></tr>
     <tr class="grp"><td colspan="4">ホーム画面</td></tr>
@@ -611,7 +611,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     </tr>
     <tr>
       <td class="no">6</td>
-      <td class="nm">起動準備中に走る「顔情報の修復」はどこで見るか</td>
+      <td class="nm">起動準備中に走る「顔情報の同期」はどこで見るか</td>
       <td>③ ⑱</td>
       <td><span class="pill p-done">⑱ 顔の特徴量を同期できる に包含</span></td>
       <td>リファインメントでの決定。<code>prepareFacePropertyIfNeeded()</code> は起動準備で実行されるが、検証は⑱で行う</td>
@@ -630,7 +630,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">起動準備中の「解錠デバイスの接続確認待ち」はどこで見るか</td>
       <td>③ ⑳ ㉕</td>
       <td><span class="pill p-done">③ の待ち合わせ対象に含める（解錠の実行そのものは⑳㉕）</span></td>
-      <td>2026-10-21 のリファインメントでの決定。顔情報の修復（⑱）以外の並列処理はすべて揃うまでホーム画面へ遷移しない方針としたため、接続確認待ちも③の待ち合わせ対象に含める。接続確認が完了しない間は③の待機表示・再試行の対象となる（台帳 #12）。解錠の実行とログ送信は⑳㉕のまま</td>
+      <td>2026-10-21 のリファインメントでの決定。顔情報の同期（⑱）以外の並列処理はすべて揃うまでホーム画面へ遷移しない方針としたため、接続確認待ちも③の待ち合わせ対象に含める。接続確認が完了しない間は③の待機表示・再試行の対象となる（台帳 #12）。解錠の実行とログ送信は⑳㉕のまま</td>
       <td class="no">2026-10-21</td>
     </tr>
     <tr>
@@ -662,8 +662,16 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">起動準備の並列データ取得が揃わないまま滞留した場合の表示・再試行・ログアウト動線はどこで見るか</td>
       <td>③ ⑥ ㉛</td>
       <td><span class="pill p-done">③ 起動時に予約データを準備してホームを表示できる</span></td>
-      <td>2026-10-21 のリファインメントでの決定。顔情報の修復（⑱）以外の並列処理がすべて揃うまでホーム画面へ遷移しない方針としたことに伴い、揃わない間は起動準備画面に待機理由と次の再試行までの秒数を表示し、⑥の再試行方式に合わせて30秒間隔・上限なしで未完了の処理のみ再試行する。再試行が10回を超えた時点でログアウト動線を表示する（⑥ SettingLoader ルール④・⑤と同じ値）。オフライン起動そのものの振る舞いは #7 のとおり㉛で扱う</td>
-      <td class="no">2026-10-21</td>
+      <td>2026-10-21 のリファインメントでの決定。顔情報の同期（⑱）以外の並列処理がすべて揃うまでホーム画面へ遷移しない方針としたことに伴い、揃わない間は起動準備画面に待機理由と次の再試行までの秒数を表示し、⑥の再試行方式に合わせて30秒間隔・上限なしで未完了の処理のみ再試行する。ログアウト動線は3回目の再試行が完了した時点（約90秒後）で表示する（2026-10-22 のリファインメントでの決定。揃う見込みのない端末を長時間放置させないため、⑥ SettingLoader の10回超過より早い段階で退避手段を提示する。⑥の閾値は据え置き）。オフライン起動そのものの振る舞いは #7 のとおり㉛で扱う</td>
+      <td class="no">2026-10-21 / 10-22</td>
+    </tr>
+    <tr>
+      <td class="no">13</td>
+      <td class="nm">ホーム画面の表示中に設置空間が未設定になった場合、どこでどう扱うか</td>
+      <td>⑦ ④ ③ ㉒</td>
+      <td><span class="pill p-open">赤カード（開発チームへ）</span></td>
+      <td>「未設定」の判定が画面ごとに食い違っている。起動準備画面は <code>(spaceId ?? "").isEmpty</code> で nil・空文字の両方を未設定として設定画面へ誘導するが、ホーム画面の <code>MainMenuView.initialize()</code> は <code>guard let spaceId</code> で <strong>nil のときしか誘導しない</strong>ため、設定画面が書き込む空文字（<code>SettingViewModel.spaceId: String = ""</code>）はすり抜ける。この状態で予約を実行すると空の spaceId のままAPIへ送られ、原因の分からない汎用エラーで失敗する（<code>MainMenuViewModel.createReservationAsync</code>）。QA観点として、(1)「未設定」の判定を nil／空文字／空白のみで統一する、(2) ホーム表示中に検知した場合は自動遷移ではなく非ブロッキングの通知と管理者メニュー経由の復旧導線を提示する（設定画面への直接遷移は管理者パスワードの検証を迂回するため）、(3) 設置空間に依存する操作は入口で止める、を提案。仕様を決めたうえで担当チケットへ割り当てる。④ ではこの経路をシナリオ化せず、ルール②の例から除外している</td>
+      <td class="no">—</td>
     </tr>
   </table>
   </div>
