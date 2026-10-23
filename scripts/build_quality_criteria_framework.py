@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""品質判定基準フレームワークの配布用Zipを作成する。
+"""品質評価フレームワークの配布用Zipを作成する。
 
 リポジトリ内の以下をソースとして、自己完結したパッケージを組み立てる。
   - docs/quality_criteria_framework/*.md   -> docs/ および README.md / INSTALL.md
@@ -45,6 +45,7 @@ DOC_FILES = [
     "08_how_to_use_skill.md",
     "09_standards_alignment.md",
     "10_ai_extension.md",
+    "11_how_to_build_manually.md",
 ]
 
 # assets/ に入れるファイル
@@ -52,6 +53,8 @@ ASSET_FILES = [
     "metrics_catalog.csv",
     "metrics_catalog_ai_extension.csv",
     "organization_profile_template.md",
+    "product_context_profile_template.md",
+    "criteria_document_template.md",
 ]
 
 

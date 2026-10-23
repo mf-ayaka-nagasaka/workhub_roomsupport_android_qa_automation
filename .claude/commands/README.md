@@ -110,11 +110,23 @@ Gherkinシナリオを作り始める前に、そのチケットでどこまで�
 画面／裏側の処理／残るものを段に分けた流れ図と、テストケースをクリックすると図の該当箇所が光る対応表、エラー文言の逆引き表を含みます。  
 テンプレート（完成例）: `src/test/resources/features/_templates/pbi-flow-map-template.html`
 
-### 📏 `/quality-criteria-generator` - 品質判定基準生成
-プロダクトの利用文脈（コンテキストプロファイル）への回答をもとに、ISO/IEC 25010:2023 に基づく品質判定基準のドラフトを生成します。  
-指標カタログから該当指標を導出し、閾値の根拠・測定方法・データソースを明示した判定基準ドキュメントとCSVを出力します。  
+### 📏 `/quality-criteria-generator` - 品質評価計画書生成
+プロダクトの利用文脈（コンテキストプロファイル）への回答をもとに、ISO/IEC 25010:2023 に基づく品質評価計画書のドラフトを生成します。  
+指標カタログから該当指標を導出し、閾値の根拠・測定方法・データソースを明示した品質評価計画書とCSVを出力します。  
 質問票は対象プラットフォーム（モバイル／Web）で分岐し、ソースコードがある場合はコードから回答の下書きを作成できます。  
 フレームワーク定義: `docs/quality_criteria_framework/`
+
+### 🌱 `/e2e-org-seeding` - テストデータ投入
+E2E・手動テスト用の3組織へ、メンバーの投入とアクティベートを行います。  
+CSV生成とアクティベートはスクリプトで自動実行しますが、**管理画面での取り込み・招待送信は人の操作**のため、該当工程で停止して引き渡します。  
+作業フォルダはリポジトリ外（`Documents\RoomSupport_E2Eテストデータ投入\`）です。実メールアドレスを含むCSVを扱うためです。
+
+```
+/e2e-org-seeding status                             → 進捗の確認
+/e2e-org-seeding csv --org rsa1 --from 1 --to 50    → 一括登録CSVの生成
+/e2e-org-seeding verify --org rsa1 --from 1 --to 50 → 招待メールの到達確認
+/e2e-org-seeding activate --org rsa1 --from 1 --to 50 → アクティベート
+```
 
 ### 🛠️ `/skill-improver` - Skill改善メタスキル
 Skill自体の改善を提案・実行するメタスキル。  
@@ -201,6 +213,7 @@ Skill自体の改善を提案・実行するメタスキル。
 | `/start` | ブランチの同期 |
 | `/sync-qa-docs` | ドキュメントの同期 |
 | `/skill-improver` | Skill自体の改善 |
-| `/quality-criteria-generator` | 品質判定基準ドラフトの生成 |
+| `/quality-criteria-generator` | 品質評価計画書ドラフトの生成 |
 | `/bdd-artifact-updater` | BDD成果物の修正反映（リファインメント後） |
 | `/feature-map` | 全体マップの参照・責務の確定・決定台帳の保守 |
+| `/e2e-org-seeding` | E2E用組織へのテストデータ投入 |
