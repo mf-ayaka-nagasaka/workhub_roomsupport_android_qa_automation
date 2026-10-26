@@ -612,9 +612,9 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
 
 <section>
   <h2>責務の境界線（決定台帳）</h2>
-  <p class="hint">「どちらのチケットで見るのか」で迷った論点と、その決定・根拠を残す場所です。<strong>新しいチケットに着手するときは、まずここを読んでください。</strong></p>
+  <p class="hint">「どちらのチケットで見るのか」で迷った論点と、その決定・根拠を残す場所です。<strong>新しいチケットに着手するときは、まずここを読んでください。</strong>チケットを選ぶと、そのチケットに関係する論点だけが残ります。</p>
   <div class="tbl-wrap">
-  <table>
+  <table id="ledger">
     <tr><th>#</th><th>論点</th><th>関係チケット</th><th>決定</th><th>根拠</th><th>決定日</th></tr>
     <tr>
       <td class="no">1</td>
@@ -826,6 +826,9 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
   var implRows = Array.prototype.slice.call(document.querySelectorAll("#impl tr[data-keys]"));
   var procRows = Array.prototype.slice.call(document.querySelectorAll("#procs tr[data-keys]"));
   var procGroups = Array.prototype.slice.call(document.querySelectorAll("#procs tr.grp"));
+  var ledgerRows = Array.prototype.slice.call(document.querySelectorAll("#ledger tr")).filter(function (r) {
+    return !r.querySelector("th");
+  });
   var groups = Array.prototype.slice.call(document.querySelectorAll("#tickets tr.grp"));
   var statusEl = document.getElementById("status");
   var screenKey = null, ticketKey = null;
@@ -843,6 +846,11 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
   rows.forEach(function (r) {
     r._tk = tk(r.querySelector("td").textContent)[0] || null;
     r._screens = r.getAttribute("data-keys").split(",");
+  });
+  ledgerRows.forEach(function (r) {
+    var tds = r.querySelectorAll("td");
+    r._tk = tds.length > 2 ? tk(tds[2].textContent) : [];
+    r._open = r.textContent.indexOf("赤カード") !== -1;
   });
 
   function apply() {
@@ -883,8 +891,24 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     });
     procGroups.forEach(function (g) { g.classList.toggle("dim", !!k || !!t); });
 
+    var screenTickets = [];
+    if (k) {
+      rows.forEach(function (r) {
+        if (r._tk && has(r._screens, k)) { screenTickets.push(r._tk); }
+      });
+    }
+    var shownLedger = 0;
+    ledgerRows.forEach(function (r) {
+      var hit = t
+        ? has(r._tk, t)
+        : (!k || r._tk.some(function (x) { return has(screenTickets, x); }));
+      r.classList.toggle("dim", !hit);
+      r.classList.toggle("flag", (!!t || !!k) && hit && r._open);
+      if (hit) { shownLedger++; }
+    });
+
     if (t) {
-      statusEl.textContent = t + " に関わる処理 " + shownProcs + " 件と、図の該当箇所だけを表示中（もう一度クリックすると解除）";
+      statusEl.textContent = t + " に関わる処理 " + shownProcs + " 件・論点 " + shownLedger + " 件と、図の該当箇所だけを表示中（もう一度クリックすると解除）";
     } else if (k) {
       statusEl.textContent = LABEL[k] + " に関わるチケット " + shownTickets + " 件を表示中（選択を解除すると全31件に戻ります）";
     } else {
