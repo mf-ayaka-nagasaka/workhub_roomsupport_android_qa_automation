@@ -249,7 +249,7 @@ td.msg { font-weight: 500; }
       <rect class="step" x="100" y="280" width="170" height="64" rx="8"/>
       <text class="t-name" x="185" y="304" text-anchor="middle">① 今の設定を読み込む</text>
       <text class="t-sub" x="185" y="322" text-anchor="middle">全項目に今の値を入れる</text>
-      <text class="err" x="100" y="372">✕ 空間の一覧が出てこない</text>
+      <text class="err" x="100" y="372">✕ 空間の一覧が取れない（選ぶときに取り直す）</text>
     </g>
     <g class="hit" data-key="2" tabindex="0" role="button" aria-label="入力を点検する">
       <rect class="step" x="480" y="280" width="160" height="64" rx="8"/>
@@ -325,9 +325,9 @@ td.msg { font-weight: 500; }
     <div class="cards">
       <div class="card" data-keys="1,set,A"><div class="ttl"><i class="dot ok"></i>今までの値が全部入って表示される</div><div class="chips"></div></div>
       <div class="card" data-keys="1,set"><div class="ttl"><i class="dot ok"></i>親がONなら、ぶら下がる項目も開いて出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>今のモードに関係ない項目は出ない</div><div class="chips"></div></div>
-      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>顔が使えない組織 → 顔のまとまりが出ない</div><div class="chips"></div></div>
-      <div class="card" data-keys="set"><div class="ttl"><i class="dot ng"></i>顔が使えない組織 → 顔の認証を選べない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>予約ならではの項目（今すぐ入室・予約情報の表示 ほか）が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ok"></i>顔が使えない端末 → 顔のまとまりは残り、中身だけ出ない（理由つき）</div><div class="chips"></div></div>
+      <div class="card" data-keys="set"><div class="ttl"><i class="dot ng"></i>顔が使えない端末 → 顔の認証を選べない</div><div class="chips"></div></div>
       <div class="card" data-keys="set,menu"><div class="ttl"><i class="dot ok"></i>名前か空間が空だと、やめる操作が出ない</div><div class="chips"></div></div>
     </div>
   </div>
@@ -336,8 +336,10 @@ td.msg { font-weight: 500; }
     <h3>ルール④ 使う空間を選ぶ</h3>
     <div class="cards">
       <div class="card" data-keys="set,1"><div class="ttl"><i class="dot ok"></i>予約の設定がある空間だけ選べる</div><div class="chips"></div></div>
-      <div class="card" data-keys="set,1"><div class="ttl"><i class="dot ng"></i>選べる空間が0件 → 空間を選べない</div><div class="chips"></div></div>
-      <div class="card" data-keys="1"><div class="ttl"><i class="dot ng"></i>空間の一覧が出てこない → 選べない</div><div class="chips"></div></div>
+      <div class="card" data-keys="set,1"><div class="ttl"><i class="dot ng"></i>選べる空間が0件 → 「選択可能な空間がありません」</div><div class="chips"></div></div>
+      <div class="card" data-keys="1"><div class="ttl"><i class="dot ok"></i>一覧が取れていない → 空間を選ぶときに取り直す</div><div class="chips"></div></div>
+      <div class="card" data-keys="1"><div class="ttl"><i class="dot ok"></i>遠くから取れない → 手元に残っている一覧を出す</div><div class="chips"></div></div>
+      <div class="card" data-keys="1"><div class="ttl"><i class="dot ng"></i>手元にも残っていない → 「時間をおいて再度試してください」</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -485,6 +487,8 @@ td.msg { font-weight: 500; }
     <tr><td class="msg">「タブレットからの機能制御」&gt;「予約作成（今すぐ入室）」が不適切です</td><td>② 入力を点検する</td></tr>
     <tr><td class="msg">「タブレットからの機能制御」&gt;「予約削除」が不適切です</td><td>② 入力を点検する</td></tr>
     <tr><td class="msg">予約認証の認証方法を選択してください</td><td>② 入力を点検する</td></tr>
+    <tr><td class="msg">選択可能な空間がありません</td><td>① 今の設定を読み込む（空間を選ぶとき・0件）</td></tr>
+    <tr><td class="msg">時間をおいて再度試してください</td><td>① 今の設定を読み込む（空間の一覧が取れず、手元にも残っていないとき）</td></tr>
     <tr><td class="msg">タブレット名を入力してください</td><td>② 入力を点検する</td></tr>
     <tr><td class="msg">パスワードが一致しません</td><td>② 入力を点検する</td></tr>
     <tr><td class="msg">タブレットでのカギの解錠をするかを選択してください</td><td>② 入力を点検する</td></tr>
@@ -498,7 +502,7 @@ td.msg { font-weight: 500; }
     <tr><td class="msg">認証必要時間は0以上の値を設定してください</td><td>② 入力を点検する</td></tr>
     <tr><td class="msg">認証成功類似度は0.7〜1の間の値を設定してください</td><td>② 入力を点検する（顔が使える組織のみ）</td></tr>
     <tr><td class="msg">利用時間外メッセージは100文字以内で入力してください</td><td>② 入力を点検する</td></tr>
-    <tr><td class="msg">不正な入力値が存在します。入力値を修正してから再度保存してください。</td><td>② 入力を点検する（不備が複数のとき。2件まで並び、超えると「他N件」）</td></tr>
+    <tr><td class="msg">不正な入力値が存在します。入力値を修正してから再度保存してください。</td><td>② 入力を点検する（不備が複数のとき。3件まで並び、超えると「他N件」）</td></tr>
     <tr><td class="msg">保存に失敗した要因が分かる案内（文言は別チケットで確定）</td><td>④ 設定を保存する</td></tr>
     <tr><td class="msg">タブレット情報の保存に失敗しました</td><td>⑤ コピーを登録する</td></tr>
   </table>
