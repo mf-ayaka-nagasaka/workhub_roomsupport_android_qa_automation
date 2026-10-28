@@ -291,6 +291,8 @@ td.msg { font-weight: 500; }
     <div class="cards">
       <div class="card" data-keys="2,3,4,6,H"><div class="ttl"><i class="dot ok"></i>予約の状況に応じて3つの表示が切り替わる</div><div class="chips"></div></div>
       <div class="card" data-keys="2,4,6,H"><div class="ttl"><i class="dot ok"></i>早入りの時間の設定どおりに入室待ちへ変わる</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,3,4,6,H"><div class="ttl"><i class="dot ok"></i>先の予約の前に割り込んだ予約が表示に出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,3,4"><div class="ttl"><i class="dot ng"></i>同じ時間に予約が2件あっても入室待ちで出る</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -300,7 +302,10 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="2,6,H"><div class="ttl"><i class="dot ok"></i>空室では次の予約まで1時間未満のときだけ出る</div><div class="chips"></div></div>
       <div class="card" data-keys="4,6,H"><div class="ttl"><i class="dot ok"></i>入室待ちは自動キャンセルの有無で中身が変わる</div><div class="chips"></div></div>
       <div class="card" data-keys="6,H"><div class="ttl"><i class="dot ok"></i>利用中は1時間を境に表示の形が変わる</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,4,6,H"><div class="ttl"><i class="dot ok"></i>予約が始まる前の入室待ちも同じ基準で数える</div><div class="chips"></div></div>
       <div class="card" data-keys="6,H"><div class="ttl"><i class="dot ok"></i>残り時間が1秒ごとに減る</div><div class="chips"></div></div>
+      <div class="card" data-keys="6,H"><div class="ttl"><i class="dot ok"></i>残り時間が0になった瞬間も正しく出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="6,H"><div class="ttl"><i class="dot ng"></i>スリープから戻ると残り時間が追いつく</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -310,10 +315,11 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="2,3,4,6,H"><div class="ttl"><i class="dot ok"></i>よそで予約が作られると入室待ちへ変わる</div><div class="chips"></div></div>
       <div class="card" data-keys="2,3,6,H"><div class="ttl"><i class="dot ok"></i>時間の離れた予約が作られても空室のまま</div><div class="chips"></div></div>
       <div class="card" data-keys="2,3,6,H"><div class="ttl"><i class="dot ok"></i>よそで予約が消されると空室へ戻る</div><div class="chips"></div></div>
-      <div class="card" data-keys="2"><div class="ttl"><i class="dot ng"></i>先すぎる日付の予約は表示に出てこない</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,3,6,H"><div class="ttl"><i class="dot ok"></i>よそで予約の時間が変わると表示も追いかける</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,3,6,H"><div class="ttl"><i class="dot ok"></i>利用中の予約がよそで消されると空室へ戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="2"><div class="ttl"><i class="dot ng"></i>取りに行く日数の境目で出る・出ないが決まる</div><div class="chips"></div></div>
       <div class="card" data-keys="2,4,6,H"><div class="ttl"><i class="dot ok"></i>日付が変わっても利用中の表示が途切れない</div><div class="chips"></div></div>
       <div class="card" data-keys="2,6,H"><div class="ttl"><i class="dot ok"></i>日付が変わると翌日の予約が1分以内に出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="5,4,6,H"><div class="ttl"><i class="dot ok"></i>ほかの端末で入室されると利用中へ変わる</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -322,6 +328,9 @@ td.msg { font-weight: 500; }
     <div class="cards">
       <div class="card" data-keys="3,4,6,H"><div class="ttl"><i class="dot ok"></i>次の予約があれば入室待ちへ戻る</div><div class="chips"></div></div>
       <div class="card" data-keys="3,4,6,H"><div class="ttl"><i class="dot ok"></i>次の予約がなければ空室へ戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="3,4,6,H"><div class="ttl"><i class="dot ok"></i>自動キャンセルされると空室へ戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="3,4,6,H"><div class="ttl"><i class="dot ok"></i>自動キャンセルを切っていても終了時刻で空室へ戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="3,4,6,H"><div class="ttl"><i class="dot ok"></i>自動延長で終わりが延びると残り時間も延びる</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -338,6 +347,8 @@ td.msg { font-weight: 500; }
     <h3>ルール⑥ 部屋の名前の表示</h3>
     <div class="cards">
       <div class="card" data-keys="6,H"><div class="ttl"><i class="dot ok"></i>短い名前はそのまま、長い名前は自動で流れる</div><div class="chips"></div></div>
+      <div class="card" data-keys="6,H"><div class="ttl"><i class="dot ok"></i>横向きのときも同じように境目で決まる</div><div class="chips"></div></div>
+      <div class="card" data-keys="6,H"><div class="ttl"><i class="dot ng"></i>半角まじりや空っぽの名前でも崩れない</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -345,6 +356,7 @@ td.msg { font-weight: 500; }
     <h3>ルール⑦ ほかの端末との足並み</h3>
     <div class="cards">
       <div class="card" data-keys="5,H"><div class="ttl"><i class="dot ok"></i>同じ部屋の2台目にも同じ状態が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="5,4,6,H"><div class="ttl"><i class="dot ok"></i>ほかの端末で入室されると利用中へ変わる</div><div class="chips"></div></div>
       <div class="card" data-keys="5,4"><div class="ttl"><i class="dot ok"></i>切り替わるときに前の状態へ戻らない</div><div class="chips"></div></div>
       <div class="card" data-keys="5"><div class="ttl"><i class="dot ng"></i>自動更新を切った端末は自分から知らせない</div><div class="chips"></div></div>
     </div>
@@ -363,7 +375,8 @@ td.msg { font-weight: 500; }
     <div class="cards">
       <div class="card" data-keys="4,A,H"><div class="ttl"><i class="dot ng"></i>控えの予約が時間内なら利用中の表示に戻せる</div><div class="chips"></div></div>
       <div class="card" data-keys="4,A"><div class="ttl"><i class="dot ng"></i>控えの予約が時間を過ぎていれば戻さない</div><div class="chips"></div></div>
-      <div class="card" data-keys="4,A"><div class="ttl"><i class="dot ng"></i>控えがなければ戻さない</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,A"><div class="ttl"><i class="dot ng"></i>控えの予約がよそで消えていれば戻さない</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,A"><div class="ttl"><i class="dot ng"></i>控えがなければ戻さない（ほかの端末で入室した予約もこれ）</div><div class="chips"></div></div>
     </div>
   </div>
 
