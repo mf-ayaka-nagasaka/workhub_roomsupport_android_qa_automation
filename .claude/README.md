@@ -25,6 +25,7 @@
 │   ├── feature-map.md                # 🗺️ 全体マップ・責務の確定
 │   ├── bdd-workflow-manager.md       # 🔗 BDDテスト設計ワークフロー (オーケストレーター)
 │   ├── bdd-artifact-updater.md       # ♻️ BDD成果物の修正反映
+│   ├── review-bdd-artifacts.md       # 🪞 BDD成果物セルフレビュー
 │   ├── rule-example-extractor.md     # 📐 ルール・実例抽出
 │   ├── gherkin-scenario-generator.md # 🧪 Gherkinシナリオ生成
 │   ├── viewpoint-extractor.md        # 🔭 テスト観点抽出・観点分岐Gherkin生成
@@ -51,6 +52,7 @@
     ├── feature-map.md                 # 全体マップ・責務確定の学習ログ
     ├── bdd-workflow-manager.md        # BDDテスト設計ワークフローの学習ログ
     ├── bdd-artifact-updater.md        # BDD成果物の修正反映の学習ログ
+    ├── review-bdd-artifacts.md        # BDD成果物セルフレビューの学習ログ
     ├── rule-example-extractor.md      # ルール・実例抽出の学習ログ
     ├── gherkin-scenario-generator.md  # Gherkinシナリオ生成の学習ログ
     ├── viewpoint-extractor.md         # テスト観点抽出の学習ログ
@@ -82,6 +84,7 @@
 | 全体マップ・責務の確定 | `/feature-map` | チケットの責務を確定し決定台帳へ記録 |
 | BDDテスト設計ワークフロー | `/bdd-workflow-manager` | 責務の確定から全体図生成までを統合管理 |
 | BDD成果物の修正反映 | `/bdd-artifact-updater` | 作成済みBDD成果物の部分更新 |
+| BDD成果物セルフレビュー | `/review-bdd-artifacts` | 作成した成果物の食い違い・不足観点を外部レビュー前に自己点検 |
 | ルール・実例抽出 | `/rule-example-extractor` | 仕様書からビジネスルールと実例を抽出 |
 | Gherkinシナリオ生成 | `/gherkin-scenario-generator` | ルール・実例からGherkinシナリオを生成 |
 | テスト観点抽出 | `/viewpoint-extractor` | 観点マスターと観点分岐Gherkinを生成 |
