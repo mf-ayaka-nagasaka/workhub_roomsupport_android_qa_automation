@@ -104,8 +104,9 @@ Gherkinの `# @TestLevel:` コメントから変換します。
 | `ApplicationUnit (JVM)` | `UNIT` |
 | `PresentationUnit (JVM / Turbine)` | `UNIT` |
 | `E2E (Cloud実機 / Nightly)` | 追記対象外 |
+| `Manual` | 追記対象外 |
 
-> Qase の `Test Level` は Unit / Integration / E2E / Manual の4択です。ApplicationUnit と PresentationUnit を区別する選択肢が無いため、いずれも `UNIT` に寄せています。区別が必要になった場合は、Qase側の選択肢追加から検討します。
+> Qase の `Test Level` は Unit / Integration / E2E / Manual の4択です。ApplicationUnit と PresentationUnit を区別する選択肢が無いため、いずれも `UNIT` に寄せています。区別が必要になった場合は、Qase側の選択肢追加から検討します。`Manual` は自動テストのコードが無いため追記対象外とし、Qase 側では手動ケースとして `Manual` を設定します。
 
 ### 2.5 `description` — 説明
 

@@ -98,6 +98,10 @@ th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--lin
 th { background: var(--lane); font-weight: 700; font-size: 12px; white-space: nowrap; }
 tr:last-child td { border-bottom: none; }
 tr.dim { opacity: .28; }
+#tickets tr[data-keys] { cursor: pointer; }
+#tickets tr[data-keys]:hover td { background: var(--lane); }
+tr.sel td { background: var(--hot-soft); }
+tr.flag td:first-child { box-shadow: inset 3px 0 0 var(--hot); }
 td.no { white-space: nowrap; color: var(--muted); font-variant-numeric: tabular-nums; }
 td.nm { font-weight: 500; min-width: 22ch; }
 
@@ -157,7 +161,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
 <section>
 <figure>
   <div class="scroll">
-  <svg class="map" viewBox="0 0 1440 1060" role="img" aria-label="画面と、その画面で走る内部処理と、遷移先の流れ。実線の箱が画面、破線の箱が内部処理で、どちらにも担当チケットを記載している。ブート画面からログイン画面、組織選択画面を経て設定読み込み画面へ進む。設定読み込み画面で端末設定を取得し、未登録なら再インストール画面、初期設定が未完了なら初期設定画面、解決済みなら起動準備画面へ進む。起動準備画面で名前と空間を確認し、不備があれば設定画面、なければホーム画面へ進む。ホーム画面では利用時間外を判定して画面内の表示を切り替える。ホーム画面から認証が必要な操作でカメラ認証画面へ進み、その再判定で利用時間外画面へ進む。ホーム画面に着いたあとは7つの処理が裏側で動き続ける。常時認証モード専用の画面は対象外のため含まない。">
+  <svg class="map" viewBox="0 0 1440 1250" role="img" aria-label="画面と、その画面で走る内部処理と、遷移先の流れ。実線の箱が画面、破線の箱が内部処理で、どちらにも担当チケットを記載している。ブート画面からログイン画面、組織選択画面を経て設定読み込み画面へ進む。設定読み込み画面で端末設定を取得し、未登録なら再インストール画面、初期設定が未完了なら初期設定画面、解決済みなら起動準備画面へ進む。起動準備画面で名前と空間を確認し、不備があれば設定画面、なければホーム画面へ進む。ホーム画面では利用時間外を判定して画面内の表示を切り替える。ホーム画面から認証が必要な操作でカメラ認証画面へ進み、その再判定で利用時間外画面へ進む。ホーム画面に着いたあとは7つの処理が裏側で動き続ける。常時認証モード専用の画面は対象外のため含まない。">
     <defs>
       <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-flow"/></marker>
     </defs>
@@ -393,6 +397,49 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <text class="t-name" x="1248" y="994" text-anchor="middle">切替</text>
       <text class="t-sub" x="1248" y="1011" text-anchor="middle">㉛</text>
     </g>
+    <rect class="lane" x="0" y="1070" width="1440" height="166" rx="12"/>
+    <text class="lane-label" x="16" y="1092">ホーム画面の中身（担当チケット別）</text>
+    <g class="hit" data-key="HOME" tabindex="0" role="button" aria-label="予約状況の表示（担当 ⑦）">
+      <rect class="step" x="190" y="1116" width="185" height="86" rx="8"/>
+      <text class="t-name" x="282" y="1140" text-anchor="middle">予約状況の表示</text>
+      <text class="t-sub" x="282" y="1158" text-anchor="middle">空室／入室待ち／利用中</text>
+      <text class="t-sub" x="282" y="1174" text-anchor="middle">残り時間・主ボタン・空間名</text>
+      <text class="t-sub" x="282" y="1194" text-anchor="middle">⑦</text>
+    </g>
+    <g class="hit" data-key="HOME" tabindex="0" role="button" aria-label="当日の予約タイムライン（担当 ⑧）">
+      <rect class="step" x="395" y="1116" width="185" height="86" rx="8"/>
+      <text class="t-name" x="487" y="1140" text-anchor="middle">当日の予約タイムライン</text>
+      <text class="t-sub" x="487" y="1158" text-anchor="middle">画面下部の予約インジケータ</text>
+      <text class="t-sub" x="487" y="1194" text-anchor="middle">⑧</text>
+    </g>
+    <g class="hit" data-key="HOME" tabindex="0" role="button" aria-label="予約の参加者情報（担当 ⑨）">
+      <rect class="step" x="600" y="1116" width="185" height="86" rx="8"/>
+      <text class="t-name" x="692" y="1140" text-anchor="middle">予約の参加者情報</text>
+      <text class="t-sub" x="692" y="1158" text-anchor="middle">予約情報の表示が有効なとき</text>
+      <text class="t-sub" x="692" y="1194" text-anchor="middle">⑨</text>
+    </g>
+    <g class="hit" data-key="HOME" tabindex="0" role="button" aria-label="利用不可・利用時間外の表示（担当 ⑩）">
+      <rect class="step" x="805" y="1116" width="185" height="86" rx="8"/>
+      <text class="t-name" x="897" y="1140" text-anchor="middle">利用不可・利用時間外</text>
+      <text class="t-sub" x="897" y="1158" text-anchor="middle">画面全体を差し替える</text>
+      <text class="t-sub" x="897" y="1174" text-anchor="middle">（主ボタンは描画されない）</text>
+      <text class="t-sub" x="897" y="1194" text-anchor="middle">⑩</text>
+    </g>
+    <g class="hit" data-key="HOME" tabindex="0" role="button" aria-label="ホーム上の操作（担当 ㉐ ㉑ ㉒ ㉓ ㉔ ㉕ ㉙）">
+      <rect class="step" x="1010" y="1116" width="185" height="86" rx="8"/>
+      <text class="t-name" x="1102" y="1140" text-anchor="middle">ホーム上の操作</text>
+      <text class="t-sub" x="1102" y="1158" text-anchor="middle">入室・退室・延長・再解錠</text>
+      <text class="t-sub" x="1102" y="1174" text-anchor="middle">今すぐ予約・予約削除</text>
+      <text class="t-sub" x="1102" y="1194" text-anchor="middle">⑳ ㉑ ㉒ ㉓ ㉔ ㉕ ㉙</text>
+    </g>
+    <g class="hit" data-key="HOME" tabindex="0" role="button" aria-label="ヘッダー（担当 ⑤）">
+      <rect class="step" x="1215" y="1116" width="185" height="86" rx="8"/>
+      <text class="t-name" x="1307" y="1140" text-anchor="middle">ヘッダー</text>
+      <text class="t-sub" x="1307" y="1158" text-anchor="middle">ロゴ長押しで管理メニュー</text>
+      <text class="t-sub" x="1307" y="1174" text-anchor="middle">言語切替は全画面共通</text>
+      <text class="t-sub" x="1307" y="1194" text-anchor="middle">⑤</text>
+    </g>
+
   </svg>
   </div>
   <figcaption>実線の箱が画面、破線の箱がその画面で走る内部処理。箱の下の丸数字が担当チケットです。</figcaption>
@@ -417,7 +464,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr data-keys="PREP,SET,HOME"><td class="no">③</td><td class="nm">起動時に予約データを準備してホームを表示できる</td><td><span class="scr">起動準備</span><span class="scr">設定</span><span class="scr">ホーム</span></td><td><span class="pill p-done">成果物あり</span></td><td>PrepareHome</td></tr>
 
     <tr class="grp"><td colspan="5">B. ホーム画面の表示</td></tr>
-    <tr data-keys="HOME,BG1"><td class="no">⑦</td><td class="nm">部屋の予約状況をホーム画面に表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="HOME,BG1"><td class="no">⑦</td><td class="nm">部屋の予約状況をホーム画面に表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-done">成果物あり</span></td><td>Home</td></tr>
     <tr data-keys="HOME"><td class="no">⑧</td><td class="nm">当日の予約タイムラインを表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
     <tr data-keys="HOME"><td class="no">⑨</td><td class="nm">予約の参加者情報を表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
     <tr data-keys="HOME,OUT"><td class="no">⑩</td><td class="nm">利用不可・利用時間外を表示できる</td><td><span class="scr">ホーム</span><span class="scr">利用時間外</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
@@ -565,9 +612,9 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
 
 <section>
   <h2>責務の境界線（決定台帳）</h2>
-  <p class="hint">「どちらのチケットで見るのか」で迷った論点と、その決定・根拠を残す場所です。<strong>新しいチケットに着手するときは、まずここを読んでください。</strong></p>
+  <p class="hint">「どちらのチケットで見るのか」で迷った論点と、その決定・根拠を残す場所です。<strong>新しいチケットに着手するときは、まずここを読んでください。</strong>チケットを選ぶと、そのチケットに関係する論点だけが残ります。</p>
   <div class="tbl-wrap">
-  <table>
+  <table id="ledger">
     <tr><th>#</th><th>論点</th><th>関係チケット</th><th>決定</th><th>根拠</th><th>決定日</th></tr>
     <tr>
       <td class="no">1</td>
@@ -638,8 +685,8 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">ホーム画面の「空室／待機中／使用中」の表示はどこで見るか</td>
       <td>③ ⑦</td>
       <td><span class="pill p-done">⑦ ホーム画面の予約・予約状態の更新（③では見ない）</span></td>
-      <td>2026-10-21 のリファインメントでの決定。2026-10-19 の「③に含める」から変更し、③はホーム画面に到達するまでを対象とする。予約データの状態（なし／未入室／入室済み／入室可能時間の閾値前後）に応じた表示の確認、反映先の詳細、日付変更を跨いだ更新の確認は⑦で行う（利用不可・利用時間外は #5 のとおり⑩）</td>
-      <td class="no">2026-10-21</td>
+      <td>2026-10-21 のリファインメントでの決定。2026-10-19 の「③に含める」から変更し、③はホーム画面に到達するまでを対象とする。予約データの状態（なし／未入室／入室済み／入室可能時間の閾値前後）に応じた表示の確認、反映先の詳細、日付変更を跨いだ更新の確認は⑦で行う（利用不可・利用時間外は #5 のとおり⑩）。<strong>2026-10-28 の決定</strong>：⑦と各操作チケットの境界は「<strong>この端末での操作を伴わずに部屋の状態が変わるか</strong>」で判定する。他経路（Web等）での予約の作成・変更・削除、自動キャンセル・自動延長の実行、時刻の経過、他端末での入室・退室は操作を伴わないため、その結果としてのホーム画面の表示の切り替わりを⑦で見る。この端末での入室・退室・延長・再解錠・予約作成は各操作チケットが担当し、そちらでは<strong>操作そのものと成否・エラー表示</strong>を見る（自動キャンセル・自動延長の<strong>実行</strong>の成否は⑯のまま）</td>
+      <td class="no">2026-10-21 / 10-28</td>
     </tr>
     <tr>
       <td class="no">10</td>
@@ -669,8 +716,80 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="no">13</td>
       <td class="nm">ホーム画面の表示中に設置空間が未設定になった場合、どこでどう扱うか</td>
       <td>⑦ ④ ③ ㉒</td>
-      <td><span class="pill p-open">赤カード（開発チームへ）</span></td>
-      <td>「未設定」の判定が画面ごとに食い違っている。起動準備画面は <code>(spaceId ?? "").isEmpty</code> で nil・空文字の両方を未設定として設定画面へ誘導するが、ホーム画面の <code>MainMenuView.initialize()</code> は <code>guard let spaceId</code> で <strong>nil のときしか誘導しない</strong>ため、設定画面が書き込む空文字（<code>SettingViewModel.spaceId: String = ""</code>）はすり抜ける。この状態で予約を実行すると空の spaceId のままAPIへ送られ、原因の分からない汎用エラーで失敗する（<code>MainMenuViewModel.createReservationAsync</code>）。QA観点として、(1)「未設定」の判定を nil／空文字／空白のみで統一する、(2) ホーム表示中に検知した場合は自動遷移ではなく非ブロッキングの通知と管理者メニュー経由の復旧導線を提示する（設定画面への直接遷移は管理者パスワードの検証を迂回するため）、(3) 設置空間に依存する操作は入口で止める、を提案。仕様を決めたうえで担当チケットへ割り当てる。④ ではこの経路をシナリオ化せず、ルール②の例から除外している</td>
+      <td><span class="pill p-done">現時点は⑦で iOS 版の振る舞いどおりにルール化（赤カードは継続）</span></td>
+      <td>「未設定」の判定が画面ごとに食い違っている。起動準備画面は <code>(spaceId ?? "").isEmpty</code> で nil・空文字の両方を未設定として設定画面へ誘導するが、ホーム画面の <code>MainMenuView.initialize()</code> は <code>guard let spaceId</code> で <strong>nil のときしか誘導しない</strong>ため、設定画面が書き込む空文字（<code>SettingViewModel.spaceId: String = ""</code>）はすり抜ける。この状態で予約を実行すると空の spaceId のままAPIへ送られ、原因の分からない汎用エラーで失敗する（<code>MainMenuViewModel.createReservationAsync</code>）。QA観点として、(1)「未設定」の判定を nil／空文字／空白のみで統一する、(2) ホーム表示中に検知した場合は自動遷移ではなく非ブロッキングの通知と管理者メニュー経由の復旧導線を提示する（設定画面への直接遷移は管理者パスワードの検証を迂回するため）、(3) 設置空間に依存する操作は入口で止める、を提案。仕様を決めたうえで担当チケットへ割り当てる。④ ではこの経路をシナリオ化せず、ルール②の例から除外している。2026-10-26 のリファインメントでの決定。④・③は担保せず、㉒は未着手のため、ホーム表示中の検知を担保するチケットが存在しない。⑦で「未設定」の判定を nil／空文字／空白のみに統一する前提でルール化し、現状の振る舞いとの差分は開発チームへの確認事項として残す。シナリオは現時点の iOS 版の振る舞い（値なし＝設定画面へ遷移／空文字＝素通り）に沿わせる。値なし・空文字・空白のみを同じ未設定として扱い、主ボタンを押した時点で「スペースが未設定です。管理者にお問い合わせください」旨のエラーを表示する案を、リファインメントへの提案として赤カードに残す。<strong>2026-10-28 の追記</strong>：⑦のルール⑧は Gherkin の背景「ホーム画面を表示している」と両立しないため、ホーム画面へ到達しようとする時点の判定として背景を適用しない形に是正した。あわせて、この判定を⑦で持つべきか（起動準備③の責務ではないか）、空文字が起動準備をすり抜けてホームまで到達する経路が実在するかを確認事項として残す</td>
+      <td class="no">2026-10-26</td>
+    </tr>
+    <tr>
+      <td class="no">14</td>
+      <td class="nm">ホーム画面のヘッダー（ロゴ長押し／空間名のオートスクロール／言語切替）はどこで見るか</td>
+      <td>⑦ ⑤</td>
+      <td><span class="pill p-done">ロゴ長押し＝⑤ ／ 空間名のオートスクロール＝⑦ ／ 言語切替＝⑦では見ない</span></td>
+      <td>ロゴ長押しは処理対応表のとおり⑤（<code>AdminMenuTriggerModifier</code>）。オートスクロールはホーム常駐の表示のため⑦。言語切替は全画面共通の機能のため⑦では扱わず、状態表示の文言が日英で切り替わることのみを観点に残す</td>
+      <td class="no">2026-10-26</td>
+    </tr>
+    <tr>
+      <td class="no">15</td>
+      <td class="nm">利用不可のときホームの主ボタンが表示されないことはどこで見るか</td>
+      <td>⑦ ⑩</td>
+      <td><span class="pill p-done">⑩（⑦では見ない）</span></td>
+      <td><code>MainMenuView.body</code> は <code>isUnavailableTime</code> で画面全体を <code>renderUnavailableContent</code> に差し替えるため、主ボタンを含むコンテンツがそもそも描画されない。<code>isShowButtonSpace</code> の <code>.unavailable</code> 分岐は到達しない二重のガード。⑩の「ボタンのない画面が表示される」シナリオと重複するため⑦では扱わない</td>
+      <td class="no">2026-10-26</td>
+    </tr>
+    <tr>
+      <td class="no">16</td>
+      <td class="nm">入室待ちの残り時間が「自動キャンセルまで／予約終了まで」で切り替わることはどこで見るか</td>
+      <td>⑦ ㉖</td>
+      <td><span class="pill p-done">表示の切り替わり＝⑦ ／ 自動キャンセルの実行・再試行＝㉖</span></td>
+      <td>切り替え条件は <code>MeetingTimerCircle.shouldAutoCancel</code>（自動キャンセル有効・猟予秒数が0より大・チェックイン済みゲストなし・自動キャンセルに失敗していない）。表示はホームの中央サークルの責務、実行と再試行は㉖</td>
+      <td class="no">2026-10-26</td>
+    </tr>
+    <tr>
+      <td class="no">17</td>
+      <td class="nm">予約キャンセル・延長・再入室のサブボタンの表示条件はどこで見るか</td>
+      <td>⑦ ㉔ ㉓ ㉕</td>
+      <td><span class="pill p-done">表示条件も各チケット（㉔／㉓／㉕）</span></td>
+      <td>⑦は状態ごとに切り替わる主ボタンまでを対象とする。サブボタンは表示条件が各操作の可否判定そのもの（キャンセル可能期間・次の予約との重なり・解錠デバイスの有無）であるため、操作側のチケットで一体として扱う</td>
+      <td class="no">2026-10-26</td>
+    </tr>
+    <tr>
+      <td class="no">18</td>
+      <td class="nm">会員向けガイド（空室時の会員向け導線とQRコード）はどこで見るか</td>
+      <td>⑦ ㉙</td>
+      <td><span class="pill p-done">㉙ サードプレイス(有料)予約を作成できる</span></td>
+      <td>リファインメントでの決定。<code>enableDisplayRegistrationGuide</code> は会員（サードプレイス）向けの導線であり、空室表示の一部ではなく㉙の責務とする</td>
+      <td class="no">2026-10-26</td>
+    </tr>
+    <tr>
+      <td class="no">19</td>
+      <td class="nm">空室時オートロック（<code>enableVacantAutolock</code>）はどこで見るか</td>
+      <td>⑦ ㉐ ㉕</td>
+      <td><span class="pill p-done">⑦では見ない</span></td>
+      <td>リファインメントでの決定。観測できる結果がスマートロックの施錠状態であり、解錠・施錠を扱う㉐㉕側で扱う</td>
+      <td class="no">2026-10-26</td>
+    </tr>
+    <tr>
+      <td class="no">20</td>
+      <td class="nm">「利用中なのに表示対象の予約が無い」状態からの復旧はどこで見るか</td>
+      <td>⑦ ③</td>
+      <td><span class="pill p-done">⑦（iOS 版に合わせて暂定でルール化）／移植の要否はリファインメントの議題</span></td>
+      <td>iOS版は端末内の最終チェックイン予約IDから予約を取り直し、現在時刻が予約時間内のときのみ採用する。台帳 #8・#12 の「揃うまで待つ」方針により起動時の処理順に起因する発生は想定されないが、Android版は iOS版をベースに実装される前提のため⑦の責務に含める。手動では再現できない。<strong>2026-10-26 のリファインメントでの決定</strong>：台帳 #8・#12 の「揃うまでホーム画面へ遷移しない」方針のもとではこの復旧が必要になる状況が発生しない。ただし移植しない理由もないため、iOS版と同様に実装される前提とする。発生し得るかは未確認のため、暂定で iOS 版の振る舞いに合わせて⑦でルール化し（rules.md ルール⑨）、移植の要否はリファインメントの議題として赤カードに残す</td>
+      <td class="no">2026-10-26</td>
+    </tr>
+    <tr>
+      <td class="no">21</td>
+      <td class="nm">ホーム画面の状態の呼称をどうするか</td>
+      <td>⑦ ⑩</td>
+      <td><span class="pill p-done">空室／入室待ち／利用中／利用不可</span></td>
+      <td>Android版の決定としてPBIの呼称を採用する。iOS版仕様書の「待機中／使用中」とは一致しないが、呼称はAndroid版の決定を優先する</td>
+      <td class="no">2026-10-26</td>
+    </tr>
+    <tr>
+      <td class="no">22</td>
+      <td class="nm">設置空間が組織側で削除されたとき／予約設定が無い部屋のホーム表示はどこで見るか</td>
+      <td>⑦ ④ ㉒</td>
+      <td><span class="pill p-open">赤カード（未割り当て）</span></td>
+      <td>2026-10-28 のレビューで、ホーム画面に一日中出ている常設画面として確認すべき場面として挙がった。設置空間が組織側で削除された場合と、予約設定そのものが無い部屋に端末を設置した場合に、ホームが何を表示するかが仕様・成果物のいずれにも無い。台帳 #9 の判定基準（この端末での操作を伴わない状態変化の表示は⑦）に当てはめると⑦だが、設置空間そのものの不備は #4・#13 と同じ系統のため、担当チケットを決めてから成果物へ反映する。現時点ではどのチケットも担保していない</td>
       <td class="no">—</td>
     </tr>
   </table>
@@ -679,7 +798,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
 
 <section>
   <h2>カバレッジ</h2>
-  <div class="cov"><b>6 / 31</b><span class="hint">チケット（19%）に成果物あり。</span></div>
+  <div class="cov"><b>7 / 31</b><span class="hint">チケット（23%）に成果物あり。</span></div>
   <div class="tbl-wrap">
   <table>
     <tr><th>チケット</th><th>成果物</th><th>ルール</th><th>シナリオ</th><th>状態</th></tr>
@@ -689,7 +808,8 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr><td class="nm">⑤ 管理メニューを開いて端末を管理できる</td><td>AdminMenu</td><td>8本</td><td>32件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">① タブレットにログインして組織を選択できる</td><td>Login</td><td>2本</td><td>23件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">③ 起動時に予約データを準備してホームを表示できる</td><td>PrepareHome</td><td>5本</td><td>20件</td><td><span class="pill p-done">成果物あり</span></td></tr>
-    <tr><td class="nm">残り25チケット</td><td>—</td><td>—</td><td>—</td><td><span class="pill p-todo">未着手</span></td></tr>
+    <tr><td class="nm">⑦ 部屋の予約状況をホーム画面に表示できる</td><td>Home</td><td>9本</td><td>28件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">残り24チケット</td><td>—</td><td>—</td><td>—</td><td><span class="pill p-todo">未着手</span></td></tr>
   </table>
   </div>
 </section>
@@ -705,46 +825,139 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     BG1: "予約データのリアルタイム反映", BG2: "予約の自動キャンセル", BG3: "予約の自動延長",
     BG4: "予約終了リマインドの通知", BG5: "解錠デバイスのBLE接続維持", BG6: "低電力モードの制御", BG7: "ネットワークモードの切替"
   };
+  var TICKET = /[\u2460-\u2473\u3251-\u325F\u3250]/g;
+  function tk(t) { return (t || "").match(TICKET) || []; }
+  function has(list, t) { return list.indexOf(t) !== -1; }
+
   var hits = Array.prototype.slice.call(document.querySelectorAll(".hit"));
   var rows = Array.prototype.slice.call(document.querySelectorAll("#tickets tr[data-keys]"));
-  var implRows = Array.prototype.slice.call(document.querySelectorAll("#impl tr[data-keys], #procs tr[data-keys]"));
+  var implRows = Array.prototype.slice.call(document.querySelectorAll("#impl tr[data-keys]"));
+  var procRows = Array.prototype.slice.call(document.querySelectorAll("#procs tr[data-keys]"));
   var procGroups = Array.prototype.slice.call(document.querySelectorAll("#procs tr.grp"));
+  var ledgerRows = Array.prototype.slice.call(document.querySelectorAll("#ledger tr")).filter(function (r) {
+    return !r.querySelector("th");
+  });
   var groups = Array.prototype.slice.call(document.querySelectorAll("#tickets tr.grp"));
   var statusEl = document.getElementById("status");
-  var active = null;
+  var screenKey = null, ticketKey = null;
+
+  hits.forEach(function (h) {
+    var subs = Array.prototype.slice.call(h.querySelectorAll(".t-sub"));
+    h._tk = tk(subs.map(function (n) { return n.textContent; }).join(" "));
+  });
+  procRows.forEach(function (r) {
+    var tds = r.querySelectorAll("td");
+    var last = tds[tds.length - 1];
+    r._tk = tk(last.textContent);
+    r._todo = last.textContent.indexOf("要確認") !== -1;
+  });
+  rows.forEach(function (r) {
+    r._tk = tk(r.querySelector("td").textContent)[0] || null;
+    r._screens = r.getAttribute("data-keys").split(",");
+  });
+  ledgerRows.forEach(function (r) {
+    var tds = r.querySelectorAll("td");
+    r._tk = tds.length > 2 ? tk(tds[2].textContent) : [];
+    r._open = r.textContent.indexOf("赤カード") !== -1;
+  });
 
   function apply() {
+    var t = ticketKey, k = screenKey;
+    var screens = [];
+    if (t) {
+      rows.forEach(function (r) { if (r._tk === t) { screens = r._screens; } });
+    }
     hits.forEach(function (h) {
-      var k = h.getAttribute("data-key");
-      h.classList.toggle("on", active === k);
-      h.classList.toggle("dim", !!active && active !== k);
+      var on = t ? has(h._tk, t) : (k && h.getAttribute("data-key") === k);
+      var off = t ? !has(h._tk, t) : (!!k && h.getAttribute("data-key") !== k);
+      h.classList.toggle("on", !!on);
+      h.classList.toggle("dim", !!off);
     });
-    var shown = 0;
+    var shownTickets = 0;
     rows.forEach(function (r) {
-      var keys = r.getAttribute("data-keys").split(",");
-      var hit = !active || keys.indexOf(active) !== -1;
+      var hit = t ? (r._tk === t) : (!k || has(r._screens, k));
       r.classList.toggle("dim", !hit);
-      if (hit) { shown++; }
+      r.classList.toggle("sel", !!t && r._tk === t);
+      if (hit) { shownTickets++; }
     });
-    groups.forEach(function (g) { g.classList.toggle("dim", !!active); });
+    groups.forEach(function (g) { g.classList.toggle("dim", !!k || !!t); });
+    var shownProcs = 0;
+    procRows.forEach(function (r) {
+      var hit = t
+        ? has(r._tk, t)
+        : (!k || has(r.getAttribute("data-keys").split(","), k));
+      r.classList.toggle("dim", !hit);
+      r.classList.toggle("flag", !!t && hit && r._todo);
+      if (hit) { shownProcs++; }
+    });
     implRows.forEach(function (r) {
       var ks = r.getAttribute("data-keys").split(",");
-      r.classList.toggle("dim", !!active && ks.indexOf(active) === -1);
+      var hit = t
+        ? ks.some(function (x) { return has(screens, x); })
+        : (!k || has(ks, k));
+      r.classList.toggle("dim", !hit);
     });
-    procGroups.forEach(function (g) { g.classList.toggle("dim", !!active); });
-    statusEl.textContent = active
-      ? LABEL[active] + " に関わるチケット " + shown + " 件を表示中（選択を解除すると全31件に戻ります）"
-      : "画面をクリックすると、その画面に関係するチケットだけが残ります";
+    procGroups.forEach(function (g) { g.classList.toggle("dim", !!k || !!t); });
+
+    var screenTickets = [];
+    if (k) {
+      rows.forEach(function (r) {
+        if (r._tk && has(r._screens, k)) { screenTickets.push(r._tk); }
+      });
+    }
+    var shownLedger = 0;
+    ledgerRows.forEach(function (r) {
+      var hit = t
+        ? has(r._tk, t)
+        : (!k || r._tk.some(function (x) { return has(screenTickets, x); }));
+      r.classList.toggle("dim", !hit);
+      r.classList.toggle("flag", (!!t || !!k) && hit && r._open);
+      if (hit) { shownLedger++; }
+    });
+
+    if (t) {
+      statusEl.textContent = t + " に関わる処理 " + shownProcs + " 件・論点 " + shownLedger + " 件と、図の該当箇所だけを表示中（もう一度クリックすると解除）";
+    } else if (k) {
+      statusEl.textContent = LABEL[k] + " に関わるチケット " + shownTickets + " 件を表示中（選択を解除すると全31件に戻ります）";
+    } else {
+      statusEl.textContent = "画面をクリックするとその画面のチケットだけが残ります。チケットの行をクリックすると、そのチケットが担当する処理と図の箇所だけが残ります";
+    }
   }
 
   hits.forEach(function (h) {
-    function toggle() { active = (active === h.getAttribute("data-key")) ? null : h.getAttribute("data-key"); apply(); }
+    function toggle() {
+      var k = h.getAttribute("data-key");
+      screenKey = (screenKey === k && !ticketKey) ? null : k;
+      ticketKey = null;
+      apply();
+    }
     h.addEventListener("click", toggle);
     h.addEventListener("keydown", function (e) {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
     });
   });
-  document.getElementById("clearBtn").addEventListener("click", function () { active = null; apply(); });
+
+  rows.forEach(function (r) {
+    if (!r._tk) { return; }
+    r.setAttribute("tabindex", "0");
+    r.setAttribute("role", "button");
+    function toggle() {
+      ticketKey = (ticketKey === r._tk) ? null : r._tk;
+      screenKey = null;
+      apply();
+    }
+    r.addEventListener("click", function (e) {
+      if (e.target.closest("a")) { return; }
+      toggle();
+    });
+    r.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+    });
+  });
+
+  document.getElementById("clearBtn").addEventListener("click", function () {
+    screenKey = null; ticketKey = null; apply();
+  });
   apply();
 })();
 </script>

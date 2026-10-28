@@ -160,8 +160,10 @@ Gherkinと対象テストを突き合わせ、テストごとに `@Qase` の中�
 | `ApplicationUnit (JVM)` | `UNIT` |
 | `PresentationUnit (JVM / Turbine)` | `UNIT` |
 | `E2E (Cloud実機 / Nightly)` | **対象外**（追記しない） |
+| `Manual` | **対象外**（追記しない） |
 
 > Qase の Test Level は Unit / Integration / E2E / Manual の4択のため、ApplicationUnit と PresentationUnit は区別できず、いずれも `UNIT` に寄せます。
+> `Manual` は自動テストのコードが存在しないため、E2E と同じく本スキルの追記対象外です（Qase 側の `Test Level` は手動ケースの登録時に `Manual` を選びます）。
 
 #### 2-3. steps の粒度
 

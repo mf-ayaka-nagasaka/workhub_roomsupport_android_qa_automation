@@ -55,7 +55,7 @@ rules.md の各ルールをもとに、Gherkinシナリオを作成する。
 | 予約確認〜解錠準備などの一連のフロー・ユースケース | **Application Unitテスト** | JVM (超高速) |
 | ボタン押下後のLoading/Success表示、UiState/Effect変化 | **Presentation Unitテスト** | JVM (Turbine) |
 | Room DBデータの読み書き・ローカル通信 | **Infrastructure Integration** | Robolectric / JVM |
-| FaceMe、カメラX、NFC、実ゲート機器などのハード連携 | **CI対象外 (手動/実機エージェント)** | 実物ハードウェア |
+| FaceMe、カメラX、NFC、実ゲート機器などのハード連携、複数端末での同時検証、実機の見た目・動きの確認 | **Manual**（CI対象外。手動／実機エージェントで実施） | 実物ハードウェア |
 | ユーザーストーリー（失敗すると業務停止する重要フロー） | **E2Eテスト** | Cloud実機 / Appium |
 
 #### 出力例（アンカー）：
