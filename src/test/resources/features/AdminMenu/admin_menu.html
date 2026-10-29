@@ -232,7 +232,7 @@ td.msg { font-weight: 500; }
       <rect class="screen" x="1180" y="52" width="180" height="64" rx="10"/>
       <rect class="screen-bar" x="1255" y="58" width="30" height="3" rx="1.5"/>
       <text class="t-screen" x="1270" y="82" text-anchor="middle">設定などの画面</text>
-      <text class="t-sub" x="1270" y="102" text-anchor="middle">設定・対象者検索・デバッグ等</text>
+      <text class="t-sub" x="1270" y="102" text-anchor="middle">設定・社員番号検索・デバッグ等</text>
     </g>
 
     <!-- lane B: steps -->
@@ -345,10 +345,15 @@ td.msg { font-weight: 500; }
   <div class="group">
     <h3>ルール⑥ メニューから各機能を開く</h3>
     <div class="cards">
-      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「タブレット情報」を選ぶ → 情報が見られる</div><div class="chips"></div></div>
-      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「アクセスコントロールの確認」を選ぶ → データが見られる</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「タブレット情報」を選ぶ → 13の項目が見られる</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ok"></i>解錠のテストボタン → 設定と解錠機器のつながり方で出かたが変わる</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ok"></i>通知のテストボタン → いつでも出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「アクセスコントロールの確認」を選ぶ → 最終取得日時と一覧が見られる</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ng"></i>突き合わせ先（解錠機器・人の情報）が無い行 → 一覧に出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ng"></i>0件／100件超 → それぞれの知らせが出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ok"></i>絞り込みに文字を入れる → 当てはまる行だけ残る</div><div class="chips"></div></div>
       <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「基本設定の更新」を選ぶ → 設定の画面へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「顔情報登録」を選ぶ → 対象者を探す画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「顔情報登録」を選ぶ → 社員番号を入れる画面へ</div><div class="chips"></div></div>
       <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ok"></i>「顔情報の再取得」を選ぶ → その場で取り直される</div><div class="chips"></div></div>
       <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「顔認識機能のデバッグ」を選ぶ → 確認用の画面へ</div><div class="chips"></div></div>
       <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ok"></i>「顔認証アクティベーション申請」を選ぶ → 申請が送られる</div><div class="chips"></div></div>
