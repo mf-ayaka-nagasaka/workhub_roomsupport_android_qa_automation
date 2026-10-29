@@ -10,6 +10,9 @@ build/
 # Pythonのキャッシュ
 __pycache__/
 
+# セルフレビューの記録（ローカルでのみ参照。前回との差分は同一PC内で完結する）
+reviews/
+
 # 作業用のスクリーンショット・ローカル設定
 *.png
 *.code-workspace
