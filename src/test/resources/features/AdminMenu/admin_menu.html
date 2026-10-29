@@ -291,7 +291,7 @@ td.msg { font-weight: 500; }
     <h3>ルール① 決まった操作でメニューを開く</h3>
     <div class="cards">
       <div class="card" data-keys="H,1,2,C"><div class="ttl"><i class="dot ok"></i>ホーム画面で決まった操作をする → 確認画面が開く</div><div class="chips"></div></div>
-      <div class="card" data-keys="H"><div class="ttl"><i class="dot ng"></i>別の画面（カメラ確認画面）で同じ操作をしても反応しない</div><div class="chips"></div></div>
+      <div class="card" data-keys="H"><div class="ttl"><i class="dot ng"></i>別の画面（予約認証のカメラ確認画面）で同じ操作をしても反応しない</div><div class="chips"></div></div>
       <div class="card" data-keys="H,1"><div class="ttl"><i class="dot ng"></i>操作の一部だけ行う → 反応しない</div><div class="chips"></div></div>
       <div class="card" data-keys="H,1"><div class="ttl"><i class="dot ng"></i>操作の間隔が空きすぎる → 反応しない</div><div class="chips"></div></div>
       <div class="card" data-keys="D,M,A"><div class="ttl"><i class="dot ok"></i>設定などの画面から戻る → 確かめ直さずメインメニューへ</div><div class="chips"></div></div>
@@ -301,8 +301,7 @@ td.msg { font-weight: 500; }
   <div class="group">
     <h3>ルール② 確認方法が自動で決まる</h3>
     <div class="cards">
-      <div class="card" data-keys="H,1,2,C"><div class="ttl"><i class="dot ok"></i>顔で確かめる設定＆対応機種 → 顔の確認画面</div><div class="chips"></div></div>
-      <div class="card" data-keys="H,1,2,C"><div class="ttl"><i class="dot ok"></i>顔で確かめる設定でも非対応の機種 → パスワードの確認画面</div><div class="chips"></div></div>
+      <div class="card" data-keys="H,1,2,C"><div class="ttl"><i class="dot ok"></i>顔で確かめる設定オン → 顔の確認画面（決められた動作をしてもらう方式）</div><div class="chips"></div></div>
       <div class="card" data-keys="H,1,2,C"><div class="ttl"><i class="dot ok"></i>顔で確かめる設定がオフ → パスワードの確認画面</div><div class="chips"></div></div>
     </div>
   </div>
@@ -313,6 +312,7 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="C,4,M,A"><div class="ttl"><i class="dot ok"></i>権限がある人が顔で確かめられる → メインメニューへ</div><div class="chips"></div></div>
       <div class="card" data-keys="C,4,H"><div class="ttl"><i class="dot ng"></i>本人だと確かめられても権限がない → 入れずホーム画面へ</div><div class="chips"></div></div>
       <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>顔がうまく確かめられない → 確認画面のまま</div><div class="chips"></div></div>
+      <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>決められた動作をしない・違う動作をする → 確認画面のまま</div><div class="chips"></div></div>
       <div class="card" data-keys="C"><div class="ttl"><i class="dot ok"></i>パスワードでの確認に切り替える</div><div class="chips"></div></div>
       <div class="card" data-keys="C,H"><div class="ttl"><i class="dot ok"></i>顔の確認をやめる → 元の画面に戻る</div><div class="chips"></div></div>
     </div>

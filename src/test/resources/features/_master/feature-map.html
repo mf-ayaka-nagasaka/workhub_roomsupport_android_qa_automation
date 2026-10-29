@@ -613,6 +613,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
 <section>
   <h2>責務の境界線（決定台帳）</h2>
   <p class="hint">「どちらのチケットで見るのか」で迷った論点と、その決定・根拠を残す場所です。<strong>新しいチケットに着手するときは、まずここを読んでください。</strong>チケットを選ぶと、そのチケットに関係する論点だけが残ります。</p>
+  <p class="hint">責務の分類はQAが先に行い、リファインメントで合意します。「決定」列は合意後の割り当て、「決定日」列は合意した日です。判断を支える詳細（実装の分析・代替案・残課題）は各機能の <code>rules.md</code> の注記・赤カードに置きます。</p>
   <div class="tbl-wrap">
   <table id="ledger">
     <tr><th>#</th><th>論点</th><th>関係チケット</th><th>決定</th><th>根拠</th><th>決定日</th></tr>
@@ -621,7 +622,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">端末が未登録のときのインストール確認（新規設置／再設置）はどこで見るか</td>
       <td>⑥ ③</td>
       <td><span class="pill p-done">⑥ 設定値の読み込み</span></td>
-      <td><code>SettingLoaderViewModel.loadSetting()</code>／仕様書 3-1(4-a)・3-2</td>
+      <td>未登録かどうかの判定を⑥の <code>SettingLoaderViewModel.loadSetting()</code> が行うため。</td>
       <td class="no">2026-10-19</td>
     </tr>
     <tr>
@@ -629,7 +630,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">初期設定が完了しているかの判定はどこで見るか</td>
       <td>⑥ ② ③</td>
       <td><span class="pill p-done">判定＝⑥ ／ 中身＝②</span></td>
-      <td>仕様書 3-1(4-c) <code>settingState != .completed</code> で初期設定画面へ</td>
+      <td>完了判定は⑥が <code>settingState != .completed</code> で行い、②は初期設定の中身を担当するため。</td>
       <td class="no">2026-10-19</td>
     </tr>
     <tr>
@@ -637,7 +638,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">組織 → タブレットID → 端末設定(Thing) の解決はどこで見るか</td>
       <td>⑥ ③</td>
       <td><span class="pill p-done">⑥ 設定値の読み込み</span></td>
-      <td><code>SettingLoaderViewModel.swift:95</code> で解決済みの設定を起動準備へ引数で渡す</td>
+      <td>⑥が解決済みの設定を起動準備へ引数で渡すため（<code>SettingLoaderViewModel.swift:95</code>）。</td>
       <td class="no">2026-10-19</td>
     </tr>
     <tr>
@@ -645,7 +646,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">タブレット名・設置空間はどこで見るか</td>
       <td>② ③ ④</td>
       <td><span class="pill p-done">入力＝②④ ／ 不備の検出と設定画面への誘導＝③ ／ 誘導された後＝④</span></td>
-      <td><code>legacy_prepare.md</code> 5.バリデーション／<code>validateTabletSetting()</code>／④ルール③に受け側のみ存在</td>
+      <td>入力は②④の画面、不備の検出と誘導は③の <code>validateTabletSetting()</code> が担い、④には受け側のみ存在するため。</td>
       <td class="no">2026-10-19</td>
     </tr>
     <tr>
@@ -653,7 +654,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">ホーム画面の表示状態（空室／待機中／使用中／利用時間外）はどこで見るか</td>
       <td>③ ⑦ ⑩</td>
       <td><span class="pill p-done">利用不可・利用時間外＝⑩（③では見ない）</span></td>
-      <td>リファインメントでの決定。③は起動準備の完了までを対象とし、利用不可・利用時間外の表示までは踏み込まない</td>
+      <td>③は起動準備の完了までを対象とし、利用不可・利用時間外の表示には踏み込まないため。</td>
       <td class="no">2026-10-19</td>
     </tr>
     <tr>
@@ -661,7 +662,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">起動準備中に走る「顔情報の同期」はどこで見るか</td>
       <td>③ ⑱</td>
       <td><span class="pill p-done">⑱ 顔の特徴量を同期できる に包含</span></td>
-      <td>リファインメントでの決定。<code>prepareFacePropertyIfNeeded()</code> は起動準備で実行されるが、検証は⑱で行う</td>
+      <td><code>prepareFacePropertyIfNeeded()</code> は起動準備で実行されるが、同期の検証自体は⑱の責務であるため。</td>
       <td class="no">2026-10-19</td>
     </tr>
     <tr>
@@ -669,7 +670,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">オフライン起動時の振る舞いはどこで見るか</td>
       <td>③ ㉛ ⑥</td>
       <td><span class="pill p-done">③では対象外（㉛で扱う）</span></td>
-      <td>リファインメントでの決定。㉛「オフライン時のフォールバックを設計・検討できる」が専用チケットとして存在する</td>
+      <td>㉛「オフライン時のフォールバックを設計・検討できる」が専用チケットとして存在するため。</td>
       <td class="no">2026-10-19</td>
     </tr>
     <tr>
@@ -677,7 +678,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">起動準備中の「解錠デバイスの接続確認待ち」はどこで見るか</td>
       <td>③ ⑳ ㉕</td>
       <td><span class="pill p-done">③ の待ち合わせ対象に含める（解錠の実行そのものは⑳㉕）</span></td>
-      <td>2026-10-21 のリファインメントでの決定。顔情報の同期（⑱）以外の並列処理はすべて揃うまでホーム画面へ遷移しない方針としたため、接続確認待ちも③の待ち合わせ対象に含める。接続確認が完了しない間は③の待機表示・再試行の対象となる（台帳 #12）。解錠の実行とログ送信は⑳㉕のまま</td>
+      <td>顔情報の同期（⑱）以外の並列処理は揃うまでホーム画面へ遷移しない方針であり、接続確認もその対象となるため。</td>
       <td class="no">2026-10-21</td>
     </tr>
     <tr>
@@ -685,7 +686,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">ホーム画面の「空室／待機中／使用中」の表示はどこで見るか</td>
       <td>③ ⑦</td>
       <td><span class="pill p-done">⑦ ホーム画面の予約・予約状態の更新（③では見ない）</span></td>
-      <td>2026-10-21 のリファインメントでの決定。2026-10-19 の「③に含める」から変更し、③はホーム画面に到達するまでを対象とする。予約データの状態（なし／未入室／入室済み／入室可能時間の閾値前後）に応じた表示の確認、反映先の詳細、日付変更を跨いだ更新の確認は⑦で行う（利用不可・利用時間外は #5 のとおり⑩）。<strong>2026-10-28 の決定</strong>：⑦と各操作チケットの境界は「<strong>この端末での操作を伴わずに部屋の状態が変わるか</strong>」で判定する。他経路（Web等）での予約の作成・変更・削除、自動キャンセル・自動延長の実行、時刻の経過、他端末での入室・退室は操作を伴わないため、その結果としてのホーム画面の表示の切り替わりを⑦で見る。この端末での入室・退室・延長・再解錠・予約作成は各操作チケットが担当し、そちらでは<strong>操作そのものと成否・エラー表示</strong>を見る（自動キャンセル・自動延長の<strong>実行</strong>の成否は⑯のまま）</td>
+      <td>⑦と各操作チケットの境界は「この端末での操作を伴わずに部屋の状態が変わるか」で分かれ、操作を伴わない変化の表示は⑦が担うため。</td>
       <td class="no">2026-10-21 / 10-28</td>
     </tr>
     <tr>
@@ -693,7 +694,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">利用時間外画面には、予約認証モードでどの経路から到達するのか</td>
       <td>⑩ ③ ⑮</td>
       <td><span class="pill p-open">赤カード（開発チームへ）</span></td>
-      <td>ソース上、予約認証モードで <code>OutOfUsableTimeRoute</code> へ遷移するのはカメラ認証画面の <code>initialize()</code> 内の再判定のみ。ホーム画面は <code>isUnavailableTime</code> で画面内の表示を切り替えるだけで遷移しない。図ではホーム画面側の判定から派生させているが、実際に別画面へ遷移する経路があるかを確認する</td>
+      <td>予約認証モードで <code>OutOfUsableTimeRoute</code> へ遷移するのはカメラ認証画面の再判定のみで、ホーム画面からの遷移経路が実在するか未確認であるため。</td>
       <td class="no">—</td>
     </tr>
     <tr>
@@ -701,7 +702,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">ブート画面〜設定読み込みの通信・オフライン系は⑥と㉛のどちらで見るか</td>
       <td>⑥ ㉛</td>
       <td><span class="pill p-done">⑥ 設定値の読み込みが行える に包含</span></td>
-      <td>リファインメントでの決定。⑥の既存成果物が既にカバーしているため包含する（SettingLoader ルール④：通信エラーで失敗し続けてもエラーを出さず復旧を待ち30秒間隔で再試行／ルール⑨：起動時更新の通信エラーも同様）。㉛は起動準備以降のオフライン挙動に絞る</td>
+      <td>通信エラー時の再試行を⑥の既存成果物（ルール④・⑨）が既にカバーしているため。</td>
       <td class="no">2026-10-19</td>
     </tr>
     <tr>
@@ -709,7 +710,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">起動準備の並列データ取得が揃わないまま滞留した場合の表示・再試行・ログアウト動線はどこで見るか</td>
       <td>③ ⑥ ㉛</td>
       <td><span class="pill p-done">③ 起動時に予約データを準備してホームを表示できる</span></td>
-      <td>2026-10-21 のリファインメントでの決定。顔情報の同期（⑱）以外の並列処理がすべて揃うまでホーム画面へ遷移しない方針としたことに伴い、揃わない間は起動準備画面に待機理由と次の再試行までの秒数を表示し、⑥の再試行方式に合わせて30秒間隔・上限なしで未完了の処理のみ再試行する。ログアウト動線は3回目の再試行が完了した時点（約90秒後）で表示する（2026-10-22 のリファインメントでの決定。揃う見込みのない端末を長時間放置させないため、⑥ SettingLoader の10回超過より早い段階で退避手段を提示する。⑥の閾値は据え置き）。オフライン起動そのものの振る舞いは #7 のとおり㉛で扱う</td>
+      <td>待機表示・再試行・ログアウト動線はいずれも起動準備画面に現れる振る舞いであるため。</td>
       <td class="no">2026-10-21 / 10-22</td>
     </tr>
     <tr>
@@ -717,7 +718,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">ホーム画面の表示中に設置空間が未設定になった場合、どこでどう扱うか</td>
       <td>⑦ ④ ③ ㉒</td>
       <td><span class="pill p-done">現時点は⑦で iOS 版の振る舞いどおりにルール化（赤カードは継続）</span></td>
-      <td>「未設定」の判定が画面ごとに食い違っている。起動準備画面は <code>(spaceId ?? "").isEmpty</code> で nil・空文字の両方を未設定として設定画面へ誘導するが、ホーム画面の <code>MainMenuView.initialize()</code> は <code>guard let spaceId</code> で <strong>nil のときしか誘導しない</strong>ため、設定画面が書き込む空文字（<code>SettingViewModel.spaceId: String = ""</code>）はすり抜ける。この状態で予約を実行すると空の spaceId のままAPIへ送られ、原因の分からない汎用エラーで失敗する（<code>MainMenuViewModel.createReservationAsync</code>）。QA観点として、(1)「未設定」の判定を nil／空文字／空白のみで統一する、(2) ホーム表示中に検知した場合は自動遷移ではなく非ブロッキングの通知と管理者メニュー経由の復旧導線を提示する（設定画面への直接遷移は管理者パスワードの検証を迂回するため）、(3) 設置空間に依存する操作は入口で止める、を提案。仕様を決めたうえで担当チケットへ割り当てる。④ ではこの経路をシナリオ化せず、ルール②の例から除外している。2026-10-26 のリファインメントでの決定。④・③は担保せず、㉒は未着手のため、ホーム表示中の検知を担保するチケットが存在しない。⑦で「未設定」の判定を nil／空文字／空白のみに統一する前提でルール化し、現状の振る舞いとの差分は開発チームへの確認事項として残す。シナリオは現時点の iOS 版の振る舞い（値なし＝設定画面へ遷移／空文字＝素通り）に沿わせる。値なし・空文字・空白のみを同じ未設定として扱い、主ボタンを押した時点で「スペースが未設定です。管理者にお問い合わせください」旨のエラーを表示する案を、リファインメントへの提案として赤カードに残す。<strong>2026-10-28 の追記</strong>：⑦のルール⑧は Gherkin の背景「ホーム画面を表示している」と両立しないため、ホーム画面へ到達しようとする時点の判定として背景を適用しない形に是正した。あわせて、この判定を⑦で持つべきか（起動準備③の責務ではないか）、空文字が起動準備をすり抜けてホームまで到達する経路が実在するかを確認事項として残す</td>
+      <td>④・③は担保せず㉒も未着手で、ホーム表示中の検知を担保するチケットが⑦以外に存在しないため。</td>
       <td class="no">2026-10-26</td>
     </tr>
     <tr>
@@ -725,7 +726,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">ホーム画面のヘッダー（ロゴ長押し／空間名のオートスクロール／言語切替）はどこで見るか</td>
       <td>⑦ ⑤</td>
       <td><span class="pill p-done">ロゴ長押し＝⑤ ／ 空間名のオートスクロール＝⑦ ／ 言語切替＝⑦では見ない</span></td>
-      <td>ロゴ長押しは処理対応表のとおり⑤（<code>AdminMenuTriggerModifier</code>）。オートスクロールはホーム常駐の表示のため⑦。言語切替は全画面共通の機能のため⑦では扱わず、状態表示の文言が日英で切り替わることのみを観点に残す</td>
+      <td>ロゴ長押しは処理対応表で⑤（<code>AdminMenuTriggerModifier</code>）、オートスクロールはホーム常駐の表示、言語切替は全画面共通の機能であるため。</td>
       <td class="no">2026-10-26</td>
     </tr>
     <tr>
@@ -733,7 +734,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">利用不可のときホームの主ボタンが表示されないことはどこで見るか</td>
       <td>⑦ ⑩</td>
       <td><span class="pill p-done">⑩（⑦では見ない）</span></td>
-      <td><code>MainMenuView.body</code> は <code>isUnavailableTime</code> で画面全体を <code>renderUnavailableContent</code> に差し替えるため、主ボタンを含むコンテンツがそもそも描画されない。<code>isShowButtonSpace</code> の <code>.unavailable</code> 分岐は到達しない二重のガード。⑩の「ボタンのない画面が表示される」シナリオと重複するため⑦では扱わない</td>
+      <td><code>isUnavailableTime</code> で画面全体が差し替わって主ボタンが描画されず、⑩の「ボタンのない画面」シナリオと重複するため。</td>
       <td class="no">2026-10-26</td>
     </tr>
     <tr>
@@ -741,7 +742,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">入室待ちの残り時間が「自動キャンセルまで／予約終了まで」で切り替わることはどこで見るか</td>
       <td>⑦ ㉖</td>
       <td><span class="pill p-done">表示の切り替わり＝⑦ ／ 自動キャンセルの実行・再試行＝㉖</span></td>
-      <td>切り替え条件は <code>MeetingTimerCircle.shouldAutoCancel</code>（自動キャンセル有効・猟予秒数が0より大・チェックイン済みゲストなし・自動キャンセルに失敗していない）。表示はホームの中央サークルの責務、実行と再試行は㉖</td>
+      <td>切り替えの表示はホーム中央サークルの責務であり、自動キャンセルの実行・再試行は㉖の責務であるため。</td>
       <td class="no">2026-10-26</td>
     </tr>
     <tr>
@@ -749,7 +750,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">予約キャンセル・延長・再入室のサブボタンの表示条件はどこで見るか</td>
       <td>⑦ ㉔ ㉓ ㉕</td>
       <td><span class="pill p-done">表示条件も各チケット（㉔／㉓／㉕）</span></td>
-      <td>⑦は状態ごとに切り替わる主ボタンまでを対象とする。サブボタンは表示条件が各操作の可否判定そのもの（キャンセル可能期間・次の予約との重なり・解錠デバイスの有無）であるため、操作側のチケットで一体として扱う</td>
+      <td>サブボタンの表示条件が各操作の可否判定そのもの（キャンセル可能期間・次の予約との重なり・解錠デバイスの有無）であるため。</td>
       <td class="no">2026-10-26</td>
     </tr>
     <tr>
@@ -757,7 +758,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">会員向けガイド（空室時の会員向け導線とQRコード）はどこで見るか</td>
       <td>⑦ ㉙</td>
       <td><span class="pill p-done">㉙ サードプレイス(有料)予約を作成できる</span></td>
-      <td>リファインメントでの決定。<code>enableDisplayRegistrationGuide</code> は会員（サードプレイス）向けの導線であり、空室表示の一部ではなく㉙の責務とする</td>
+      <td><code>enableDisplayRegistrationGuide</code> は会員（サードプレイス）向けの導線であり、空室表示の一部ではないため。</td>
       <td class="no">2026-10-26</td>
     </tr>
     <tr>
@@ -765,7 +766,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">空室時オートロック（<code>enableVacantAutolock</code>）はどこで見るか</td>
       <td>⑦ ㉐ ㉕</td>
       <td><span class="pill p-done">⑦では見ない</span></td>
-      <td>リファインメントでの決定。観測できる結果がスマートロックの施錠状態であり、解錠・施錠を扱う㉐㉕側で扱う</td>
+      <td>観測できる結果がスマートロックの施錠状態であるため。</td>
       <td class="no">2026-10-26</td>
     </tr>
     <tr>
@@ -773,7 +774,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">「利用中なのに表示対象の予約が無い」状態からの復旧はどこで見るか</td>
       <td>⑦ ③</td>
       <td><span class="pill p-done">⑦（iOS 版に合わせて暂定でルール化）／移植の要否はリファインメントの議題</span></td>
-      <td>iOS版は端末内の最終チェックイン予約IDから予約を取り直し、現在時刻が予約時間内のときのみ採用する。台帳 #8・#12 の「揃うまで待つ」方針により起動時の処理順に起因する発生は想定されないが、Android版は iOS版をベースに実装される前提のため⑦の責務に含める。手動では再現できない。<strong>2026-10-26 のリファインメントでの決定</strong>：台帳 #8・#12 の「揃うまでホーム画面へ遷移しない」方針のもとではこの復旧が必要になる状況が発生しない。ただし移植しない理由もないため、iOS版と同様に実装される前提とする。発生し得るかは未確認のため、暂定で iOS 版の振る舞いに合わせて⑦でルール化し（rules.md ルール⑨）、移植の要否はリファインメントの議題として赤カードに残す</td>
+      <td>発生し得るかは未確認だが、Android版は iOS版をベースに実装される前提であるため。</td>
       <td class="no">2026-10-26</td>
     </tr>
     <tr>
@@ -781,7 +782,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">ホーム画面の状態の呼称をどうするか</td>
       <td>⑦ ⑩</td>
       <td><span class="pill p-done">空室／入室待ち／利用中／利用不可</span></td>
-      <td>Android版の決定としてPBIの呼称を採用する。iOS版仕様書の「待機中／使用中」とは一致しないが、呼称はAndroid版の決定を優先する</td>
+      <td>呼称はiOS版仕様書ではなくAndroid版PBIの決定を優先するため。</td>
       <td class="no">2026-10-26</td>
     </tr>
     <tr>
@@ -789,8 +790,16 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">設置空間が組織側で削除されたとき／予約設定が無い部屋のホーム表示はどこで見るか</td>
       <td>⑦ ④ ㉒</td>
       <td><span class="pill p-open">赤カード（未割り当て）</span></td>
-      <td>2026-10-28 のレビューで、ホーム画面に一日中出ている常設画面として確認すべき場面として挙がった。設置空間が組織側で削除された場合と、予約設定そのものが無い部屋に端末を設置した場合に、ホームが何を表示するかが仕様・成果物のいずれにも無い。台帳 #9 の判定基準（この端末での操作を伴わない状態変化の表示は⑦）に当てはめると⑦だが、設置空間そのものの不備は #4・#13 と同じ系統のため、担当チケットを決めてから成果物へ反映する。現時点ではどのチケットも担保していない</td>
+      <td>台帳 #9 の判定基準では⑦だが、設置空間そのものの不備は #4・#13 と同系統で担当が未確定であるため。</td>
       <td class="no">—</td>
+    </tr>
+    <tr>
+      <td class="no">23</td>
+      <td class="nm">管理メニューの顔認証のなりすまし防止方式はどこで見るか</td>
+      <td>⑤ ⑰</td>
+      <td><span class="pill p-done">⑤ 管理メニューを開いて端末を管理できる</span></td>
+      <td>⑰が担当するのは予約認証のカメラ認証画面で、⑤が扱う管理メニューの顔認証ダイアログとは画面が別であるため。</td>
+      <td class="no">2026-10-29</td>
     </tr>
   </table>
   </div>
