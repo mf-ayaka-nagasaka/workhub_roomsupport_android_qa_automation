@@ -232,7 +232,7 @@ td.msg { font-weight: 500; }
       <rect class="screen" x="1180" y="52" width="180" height="64" rx="10"/>
       <rect class="screen-bar" x="1255" y="58" width="30" height="3" rx="1.5"/>
       <text class="t-screen" x="1270" y="82" text-anchor="middle">設定などの画面</text>
-      <text class="t-sub" x="1270" y="102" text-anchor="middle">設定・対象者検索・デバッグ等</text>
+      <text class="t-sub" x="1270" y="102" text-anchor="middle">設定・社員番号検索・デバッグ等</text>
     </g>
 
     <!-- lane B: steps -->
@@ -260,8 +260,8 @@ td.msg { font-weight: 500; }
       <rect class="step" x="950" y="204" width="150" height="64" rx="8"/>
       <text class="t-name" x="1025" y="228" text-anchor="middle">⑤選んだ項目</text>
       <text class="t-name" x="1025" y="246" text-anchor="middle">を実行</text>
-      <text class="err" x="950" y="292">✕「顔登録」を選んだが</text>
-      <text class="err" x="950" y="308">　設定が無効化された→実行できない</text>
+      <text class="err" x="950" y="292">✕ 顔に関する項目を選んだが</text>
+      <text class="err" x="950" y="308">　設定が無効化された→実行できずメニューが並び直す</text>
     </g>
 
     <!-- lane C: saved things -->
@@ -291,7 +291,7 @@ td.msg { font-weight: 500; }
     <h3>ルール① 決まった操作でメニューを開く</h3>
     <div class="cards">
       <div class="card" data-keys="H,1,2,C"><div class="ttl"><i class="dot ok"></i>ホーム画面で決まった操作をする → 確認画面が開く</div><div class="chips"></div></div>
-      <div class="card" data-keys="H"><div class="ttl"><i class="dot ng"></i>別の画面（カメラ確認画面）で同じ操作をしても反応しない</div><div class="chips"></div></div>
+      <div class="card" data-keys="H"><div class="ttl"><i class="dot ng"></i>別の画面（予約認証のカメラ確認画面）で同じ操作をしても反応しない</div><div class="chips"></div></div>
       <div class="card" data-keys="H,1"><div class="ttl"><i class="dot ng"></i>操作の一部だけ行う → 反応しない</div><div class="chips"></div></div>
       <div class="card" data-keys="H,1"><div class="ttl"><i class="dot ng"></i>操作の間隔が空きすぎる → 反応しない</div><div class="chips"></div></div>
       <div class="card" data-keys="D,M,A"><div class="ttl"><i class="dot ok"></i>設定などの画面から戻る → 確かめ直さずメインメニューへ</div><div class="chips"></div></div>
@@ -301,8 +301,7 @@ td.msg { font-weight: 500; }
   <div class="group">
     <h3>ルール② 確認方法が自動で決まる</h3>
     <div class="cards">
-      <div class="card" data-keys="H,1,2,C"><div class="ttl"><i class="dot ok"></i>顔で確かめる設定＆対応機種 → 顔の確認画面</div><div class="chips"></div></div>
-      <div class="card" data-keys="H,1,2,C"><div class="ttl"><i class="dot ok"></i>顔で確かめる設定でも非対応の機種 → パスワードの確認画面</div><div class="chips"></div></div>
+      <div class="card" data-keys="H,1,2,C"><div class="ttl"><i class="dot ok"></i>顔で確かめる設定オン → 顔の確認画面（決められた動作をしてもらう方式）</div><div class="chips"></div></div>
       <div class="card" data-keys="H,1,2,C"><div class="ttl"><i class="dot ok"></i>顔で確かめる設定がオフ → パスワードの確認画面</div><div class="chips"></div></div>
     </div>
   </div>
@@ -312,9 +311,15 @@ td.msg { font-weight: 500; }
     <div class="cards">
       <div class="card" data-keys="C,4,M,A"><div class="ttl"><i class="dot ok"></i>権限がある人が顔で確かめられる → メインメニューへ</div><div class="chips"></div></div>
       <div class="card" data-keys="C,4,H"><div class="ttl"><i class="dot ng"></i>本人だと確かめられても権限がない → 入れずホーム画面へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>顔がうまく確かめられない → 確認画面のまま</div><div class="chips"></div></div>
+      <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ok"></i>決められた動作の案内（絵と言葉）が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>決められた動作をしない・違う動作をする → 最初の案内からやり直し</div><div class="chips"></div></div>
+      <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>なりすましを見つける → 理由に合った案内が出て、確認は続く</div><div class="chips"></div></div>
+      <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>顔が端末に登録されていない → 「顔情報が未登録です」が出て、確認は続く</div><div class="chips"></div></div>
+      <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>端末の顔情報と合わない → 何も出ないまま、確認は続く</div><div class="chips"></div></div>
+      <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>顔が画面の外に出る → 案内が新しくならない</div><div class="chips"></div></div>
+      <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>立ち位置・顔の向き・明るさが合わない → 理由に合った案内が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="C"><div class="ttl"><i class="dot ok"></i>パスワードでの確認に切り替える</div><div class="chips"></div></div>
-      <div class="card" data-keys="C,H"><div class="ttl"><i class="dot ok"></i>顔の確認をやめる → 元の画面に戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="C,H"><div class="ttl"><i class="dot ok"></i>顔の確認をやめる（「キャンセル」／枠の外を押す） → 元の画面に戻る</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -332,21 +337,26 @@ td.msg { font-weight: 500; }
     <h3>ルール⑤ メニューの並びが設定で変わる</h3>
     <div class="cards">
       <div class="card" data-keys="M"><div class="ttl"><i class="dot ok"></i>顔で確かめる設定オン → 顔に関する項目も並ぶ</div><div class="chips"></div></div>
-      <div class="card" data-keys="M"><div class="ttl"><i class="dot ok"></i>顔で確かめる設定オフ → 代わりに「使えるようにする申請」だけ並ぶ</div><div class="chips"></div></div>
-      <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ng"></i>開いている間に設定がオフになった状態で「顔を登録」を選ぶ → 実行できない</div><div class="chips"></div></div>
+      <div class="card" data-keys="M"><div class="ttl"><i class="dot ok"></i>顔で確かめる設定オフ → 代わりに「顔認証アクティベーション申請」だけ並ぶ</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ng"></i>開いている間に設定がオフになった状態で顔に関する項目を選ぶ → 実行できず、メニューが今の状態に合わせて並び直す</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
     <h3>ルール⑥ メニューから各機能を開く</h3>
     <div class="cards">
-      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「端末の情報」を選ぶ → 情報が見られる</div><div class="chips"></div></div>
-      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「解錠のデータ」を選ぶ → データが見られる</div><div class="chips"></div></div>
-      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「設定を変える」を選ぶ → 設定の画面へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「顔を登録」を選ぶ → 対象者を探す画面へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ok"></i>「顔のデータをリセット」を選ぶ → その場でリセットされる</div><div class="chips"></div></div>
-      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「顔認証の確認用画面」を選ぶ → 確認用の画面へ</div><div class="chips"></div></div>
-      <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ok"></i>「使えるようにする申請」を選ぶ → 申請が送られる</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「タブレット情報」を選ぶ → 13の項目が見られる</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ok"></i>解錠のテストボタン → 設定と解錠機器のつながり方で出かたが変わる</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ok"></i>通知のテストボタン → いつでも出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「アクセスコントロールの確認」を選ぶ → 最終取得日時と一覧が見られる</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ng"></i>突き合わせ先（解錠機器・人の情報）が無い行 → 一覧に出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ng"></i>0件／100件超 → それぞれの知らせが出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ok"></i>絞り込みに文字を入れる → 当てはまる行だけ残る</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「基本設定の更新」を選ぶ → 設定の画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「顔情報登録」を選ぶ → 社員番号を入れる画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ok"></i>「顔情報の再取得」を選ぶ → その場で取り直される</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「顔認識機能のデバッグ」を選ぶ → 確認用の画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ok"></i>「顔認証アクティベーション申請」を選ぶ → 申請が送られる</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -376,7 +386,8 @@ td.msg { font-weight: 500; }
     <tr><th>画面に出る言葉</th><th>止まった場所</th></tr>
     <tr><td class="msg">管理メニューを開く権限がありません</td><td>④ 顔で本人確認（本人だが権限がないとき）</td></tr>
     <tr><td class="msg">パスワードに誤りがあります</td><td>③ パスワードを確認</td></tr>
-    <tr><td class="msg">顔認証が有効化されていません</td><td>⑤ 選んだ項目を実行（顔を登録しようとしたが設定がオフのとき）</td></tr>
+    <tr><td class="msg">顔認証の利用が制限されています。利用する場合はBitkeyにお問い合わせください。</td><td>⑤ 選んだ項目を実行（顔に関する項目を選んだが設定がオフのとき）</td></tr>
+    <tr><td class="msg">顔情報が未登録です</td><td>④ 顔で本人確認（端末にその顔が登録されていないとき）</td></tr>
   </table>
   </div>
   </div>

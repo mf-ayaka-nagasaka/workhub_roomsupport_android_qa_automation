@@ -30,7 +30,7 @@ quality-criteria-framework/
 │   ├── 10_ai_extension.md                 # 📗 AI/ML機能向けの拡張（AI機能がなければ不要）
 │   └── 11_how_to_build_manually.md        # 🛠️ Skillを使わずに基準を作る全手順
 ├── assets/
-│   ├── metrics_catalog.csv                # 指標カタログの初期データ（59行）
+│   ├── metrics_catalog.csv                # 指標カタログの初期データ（61行）
 │   ├── metrics_catalog_ai_extension.csv   # AI拡張指標の初期データ（10行・AI機能がなければ不要）
 │   ├── organization_profile_template.md   # 組織プロファイル（組織に1枚）
 │   ├── product_context_profile_template.md # コンテキストプロファイル記入用（プロダクトに1枚）
@@ -87,7 +87,7 @@ Zip内の各 Markdown は、Notion 等のドキュメントツールのページ
 
 **指標カタログはデータベース化することを推奨します。** 03 §5「データベースのスキーマ定義」に、
 プロパティ定義（型・選択肢）をそのまま設定できる表があります。データは `assets/metrics_catalog.csv` を
-インポートすれば59行を一括登録できます。取り込んだDBが以降の**正本**になります（§3 の「指標カタログの正本引き継ぎ」を参照）。
+インポートすれば61行を一括登録できます。取り込んだDBが以降の**正本**になります（§3 の「指標カタログの正本引き継ぎ」を参照）。
 
 > **表計算ソフトでも運用できます。** セレクト型は入力規則（リスト）、マルチセレクト型はカンマ区切りのテキストに読み替えてください。
 > データベース化しない場合は、CSV そのものを正本として扱い、所在を組織プロファイル §4 に記録します。
@@ -166,7 +166,7 @@ Zip内の各 Markdown は、Notion 等のドキュメントツールのページ
 
 ```
 1. 自組織でデータベースを作成する（スキーマ定義は 03 §5 の表をそのまま設定）
-2. assets/metrics_catalog.csv をインポートする（59行）
+2. assets/metrics_catalog.csv をインポートする（61行）
    ※ AI/ML機能を含むプロダクトでは、assets/metrics_catalog_ai_extension.csv（10行）も追加インポートする
      （列定義は同一。詳細は docs/10_ai_extension.md）
 3. データソース列のプレースホルダー（[不具合管理ツール] 等）を、
