@@ -309,14 +309,15 @@ td.msg { font-weight: 500; }
   <div class="group">
     <h3>ルール③ 顔で確認するときは管理する権限がある人だけ入れる</h3>
     <div class="cards">
-      <div class="card" data-keys="C,4,M,A"><div class="ttl"><i class="dot ok"></i>権限がある人が顔で確かめられる → メインメニューへ</div><div class="chips"></div></div>
-      <div class="card" data-keys="C,4,H"><div class="ttl"><i class="dot ng"></i>本人だと確かめられても権限がない → 入れずホーム画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="C,4,M,A"><div class="ttl"><i class="dot ok"></i>管理する権限がある人（オーナー組織のシステム管理者）が顔で確かめられる → メインメニューへ</div><div class="chips"></div></div>
+      <div class="card" data-keys="C,4,M,A"><div class="ttl"><i class="dot ok"></i>管理する権限がある人なら、ほかの会社（テナント組織）にも所属していても入れる</div><div class="chips"></div></div>
+      <div class="card" data-keys="C,4,H"><div class="ttl"><i class="dot ng"></i>本人だと確かめられても権限がない（ほかの会社だけに所属している人を含む） → 入れずホーム画面へ</div><div class="chips"></div></div>
       <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ok"></i>決められた動作の案内（絵と言葉）が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>決められた動作をしない・違う動作をする → 最初の案内からやり直し</div><div class="chips"></div></div>
       <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>なりすましを見つける → 理由に合った案内が出て、確認は続く</div><div class="chips"></div></div>
       <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>顔が端末に登録されていない → 「顔情報が未登録です」が出て、確認は続く</div><div class="chips"></div></div>
-      <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>端末の顔情報と合わない → 何も出ないまま、確認は続く</div><div class="chips"></div></div>
-      <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>顔が画面の外に出る → 案内が新しくならない</div><div class="chips"></div></div>
+      <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>端末の顔情報と合わない（同期が終わっていない） → 「顔情報が未登録です」が出て、確認は続く</div><div class="chips"></div></div>
+      <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>顔が画面の外に出たまま数秒たつ（顔を見ている間は2秒／決められた動作の最中は5秒） → 案内が消えて、最初からやり直しになる</div><div class="chips"></div></div>
       <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>立ち位置・顔の向き・明るさが合わない → 理由に合った案内が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="C"><div class="ttl"><i class="dot ok"></i>パスワードでの確認に切り替える</div><div class="chips"></div></div>
       <div class="card" data-keys="C,H"><div class="ttl"><i class="dot ok"></i>顔の確認をやめる（「キャンセル」／枠の外を押す） → 元の画面に戻る</div><div class="chips"></div></div>
@@ -348,7 +349,7 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「タブレット情報」を選ぶ → 13の項目が見られる</div><div class="chips"></div></div>
       <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ok"></i>解錠のテストボタン → 設定と解錠機器のつながり方で出かたが変わる</div><div class="chips"></div></div>
       <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ok"></i>通知のテストボタン → いつでも出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「アクセスコントロールの確認」を選ぶ → 最終取得日時と一覧が見られる</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5,D"><div class="ttl"><i class="dot ok"></i>「アクセスコントロールの確認」を選ぶ → 最終更新日時と、見出し付きの一覧（従業員番号・氏名・解錠デバイス）が見られる</div><div class="chips"></div></div>
       <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ng"></i>突き合わせ先（解錠機器・人の情報）が無い行 → 一覧に出ない</div><div class="chips"></div></div>
       <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ng"></i>0件／100件超 → それぞれの知らせが出る</div><div class="chips"></div></div>
       <div class="card" data-keys="M,5"><div class="ttl"><i class="dot ok"></i>絞り込みに文字を入れる → 当てはまる行だけ残る</div><div class="chips"></div></div>
@@ -365,7 +366,7 @@ td.msg { font-weight: 500; }
     <div class="cards">
       <div class="card" data-keys="C,H"><div class="ttl"><i class="dot ok"></i>確認画面でやめる → 元の画面に戻り、印も消える</div><div class="chips"></div></div>
       <div class="card" data-keys="M,H,A"><div class="ttl"><i class="dot ok"></i>メインメニューを閉じる → 元の画面に戻り、印も消える</div><div class="chips"></div></div>
-      <div class="card" data-keys="M,5,A"><div class="ttl"><i class="dot ok"></i>ログアウトを選ぶ → ログイン画面に戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="M,5,A"><div class="ttl"><i class="dot ok"></i>ログアウトを選ぶ → 「ログアウトしますか」の確認を経て、ログイン画面に戻る</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -387,7 +388,7 @@ td.msg { font-weight: 500; }
     <tr><td class="msg">管理メニューを開く権限がありません</td><td>④ 顔で本人確認（本人だが権限がないとき）</td></tr>
     <tr><td class="msg">パスワードに誤りがあります</td><td>③ パスワードを確認</td></tr>
     <tr><td class="msg">顔認証の利用が制限されています。利用する場合はBitkeyにお問い合わせください。</td><td>⑤ 選んだ項目を実行（顔に関する項目を選んだが設定がオフのとき）</td></tr>
-    <tr><td class="msg">顔情報が未登録です</td><td>④ 顔で本人確認（端末にその顔が登録されていないとき）</td></tr>
+    <tr><td class="msg">顔情報が未登録です</td><td>④ 顔で本人確認（端末にその顔が登録されていない／端末の顔情報と合わないとき）</td></tr>
   </table>
   </div>
   </div>
