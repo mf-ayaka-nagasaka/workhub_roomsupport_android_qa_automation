@@ -309,8 +309,9 @@ td.msg { font-weight: 500; }
   <div class="group">
     <h3>ルール③ 顔で確認するときは管理する権限がある人だけ入れる</h3>
     <div class="cards">
-      <div class="card" data-keys="C,4,M,A"><div class="ttl"><i class="dot ok"></i>権限がある人が顔で確かめられる → メインメニューへ</div><div class="chips"></div></div>
-      <div class="card" data-keys="C,4,H"><div class="ttl"><i class="dot ng"></i>本人だと確かめられても権限がない → 入れずホーム画面へ</div><div class="chips"></div></div>
+      <div class="card" data-keys="C,4,M,A"><div class="ttl"><i class="dot ok"></i>管理する権限がある人（オーナー組織のシステム管理者）が顔で確かめられる → メインメニューへ</div><div class="chips"></div></div>
+      <div class="card" data-keys="C,4,M,A"><div class="ttl"><i class="dot ok"></i>管理する権限がある人なら、ほかの会社（テナント組織）にも所属していても入れる</div><div class="chips"></div></div>
+      <div class="card" data-keys="C,4,H"><div class="ttl"><i class="dot ng"></i>本人だと確かめられても権限がない（ほかの会社だけに所属している人を含む） → 入れずホーム画面へ</div><div class="chips"></div></div>
       <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ok"></i>決められた動作の案内（絵と言葉）が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>決められた動作をしない・違う動作をする → 最初の案内からやり直し</div><div class="chips"></div></div>
       <div class="card" data-keys="C,4"><div class="ttl"><i class="dot ng"></i>なりすましを見つける → 理由に合った案内が出て、確認は続く</div><div class="chips"></div></div>
