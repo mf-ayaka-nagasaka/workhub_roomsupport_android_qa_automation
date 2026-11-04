@@ -465,7 +465,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
 
     <tr class="grp"><td colspan="5">B. ホーム画面の表示</td></tr>
     <tr data-keys="HOME,BG1"><td class="no">⑦</td><td class="nm">部屋の予約状況をホーム画面に表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-done">成果物あり</span></td><td>Home</td></tr>
-    <tr data-keys="HOME"><td class="no">⑧</td><td class="nm">当日の予約タイムラインを表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="HOME"><td class="no">⑧</td><td class="nm">当日の予約タイムラインを表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-done">成果物あり</span></td><td>ReservationTimeline</td></tr>
     <tr data-keys="HOME"><td class="no">⑨</td><td class="nm">予約の参加者情報を表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
     <tr data-keys="HOME,OUT"><td class="no">⑩</td><td class="nm">利用不可・利用時間外を表示できる</td><td><span class="scr">ホーム</span><span class="scr">利用時間外</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
 
@@ -801,13 +801,29 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td>⑰が担当するのは予約認証のカメラ認証画面で、⑤が扱う管理メニューの顔認証ダイアログとは画面が別であるため。</td>
       <td class="no">2026-10-29</td>
     </tr>
+    <tr>
+      <td class="no">24</td>
+      <td class="nm">ホーム下部の予約タイムラインと、予約バーのタップで開く予約の詳細はどこで見るか</td>
+      <td>⑦ ⑧ ⑨</td>
+      <td><span class="pill p-done">⑧ 当日の予約タイムラインを表示できる</span></td>
+      <td>タイムラインとその予約の詳細は、ホーム本体の表示や参加者情報エリアとはUIが別であるため。</td>
+      <td class="no">2026-11-04</td>
+    </tr>
+    <tr>
+      <td class="no">25</td>
+      <td class="nm">タイムラインの予約の詳細の「予約を削除」ボタンはどこで見るか</td>
+      <td>⑧ ㉔</td>
+      <td><span class="pill p-done">表示の有無＝⑧ ／ 可否判定と削除の実行＝㉔</span></td>
+      <td>ボタンが出るか出ないかは予約の詳細の表示仕様であり、可否判定の中身は㉔のキャンセル可能条件そのものであるため。</td>
+      <td class="no">2026-11-04</td>
+    </tr>
   </table>
   </div>
 </section>
 
 <section>
   <h2>カバレッジ</h2>
-  <div class="cov"><b>7 / 31</b><span class="hint">チケット（23%）に成果物あり。</span></div>
+  <div class="cov"><b>8 / 31</b><span class="hint">チケット（26%）に成果物あり。</span></div>
   <div class="tbl-wrap">
   <table>
     <tr><th>チケット</th><th>成果物</th><th>ルール</th><th>シナリオ</th><th>状態</th></tr>
@@ -816,8 +832,9 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr><td class="nm">⑥ 設定値の読み込みが行える</td><td>SettingLoader</td><td>10本</td><td>33件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">⑤ 管理メニューを開いて端末を管理できる</td><td>AdminMenu</td><td>8本</td><td>43件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">① タブレットにログインして組織を選択できる</td><td>Login</td><td>2本</td><td>23件</td><td><span class="pill p-done">成果物あり</span></td></tr>
-    <tr><td class="nm">③ 起動時に予約データを準備してホームを表示できる</td><td>PrepareHome</td><td>5本</td><td>20件</td><td><span class="pill p-done">成果物あり</span></td></tr>
-    <tr><td class="nm">⑦ 部屋の予約状況をホーム画面に表示できる</td><td>Home</td><td>9本</td><td>28件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">③ 起動時に予約データを準備してホームを表示できる</td><td>PrepareHome</td><td>5本</td><td>18件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">⑦ 部屋の予約状況をホーム画面に表示できる</td><td>Home</td><td>9本</td><td>32件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">⑧ 当日の予約タイムラインを表示できる</td><td>ReservationTimeline</td><td>10本</td><td>24件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">残り24チケット</td><td>—</td><td>—</td><td>—</td><td><span class="pill p-todo">未着手</span></td></tr>
   </table>
   </div>
