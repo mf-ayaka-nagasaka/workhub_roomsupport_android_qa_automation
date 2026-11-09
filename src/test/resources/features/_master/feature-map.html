@@ -869,8 +869,8 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr><td class="no">PE-04</td><td class="nm">長時間稼働時のメモリ増加量</td><td>⑦</td><td>性能効率性</td><td>設計対象外（プロファイラで測定）</td></tr>
     <tr><td class="no">PE-05</td><td class="nm">発熱（Thermal Status）</td><td>㉚ ⑦</td><td>性能効率性</td><td>未着手</td></tr>
     <tr><td class="no">PE-12</td><td class="nm">バッテリー消費</td><td>㉚</td><td>性能効率性</td><td>未着手。<span class="pill p-open">基準値が TBD</span></td></tr>
-    <tr><td class="no">PE-06</td><td class="nm">CPU使用率</td><td>⑦ ⑪ ⑫</td><td>性能効率性</td><td><span class="pill p-open">未カバー</span> タイマー・リスナーの生存を見る観点が⑦に無い</td></tr>
-    <tr><td class="no">PE-07</td><td class="nm">大量データ時の容量耐性</td><td>⑦ ⑧</td><td>性能効率性</td><td><span class="pill p-open">未カバー</span> 件数の軸と、通知の同時受信時の整合を見る観点が⑦⑧に無い</td></tr>
+    <tr><td class="no">PE-06</td><td class="nm">CPU使用率</td><td>⑦ ⑪ ⑫</td><td>性能効率性</td><td>⑦は観点「経過時間のカウントダウン表示」の要素『連続稼働後の更新の継続』で担保。⑪⑫は未着手</td></tr>
+    <tr><td class="no">PE-07</td><td class="nm">大量データ時の容量耐性</td><td>⑦ ⑧</td><td>性能効率性</td><td>⑦は観点「取得対象データの範囲」の『想定最大件数』と「状態更新の確定と整合」の『通知の同時受信』で担保。<span class="pill p-open">⑧は未カバー</span></td></tr>
   </table>
   </div>
 </section>
