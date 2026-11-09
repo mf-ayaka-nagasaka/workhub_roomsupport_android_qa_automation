@@ -847,6 +847,33 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
   </table>
   </div>
 </section>
+<section>
+  <h2>品質判定基準の担保先</h2>
+  <p class="hint">品質判定基準（正本は Notion、参照用の写しは <code>docs/quality_criteria/workhub_roomsupport/criteria.md</code>）の各指標を、どのチケットで担保するかを割り付けた表です。<strong>チケットに着手するときは、自分が担保先になっている指標を確認してください。</strong>チケットを選ぶと、その担保分だけが残ります（「横断」の指標は常に表示されます）。</p>
+  <div class="tbl-wrap">
+  <table id="quality">
+    <tr><th>指標ID</th><th>指標名</th><th>担保先</th><th>品質特性</th><th>成果物での扱い</th></tr>
+    <tr><td class="no">FS-01 / FS-02</td><td class="nm">未対応重大不具合件数</td><td>横断</td><td>機能適合性</td><td>設計対象外（テスト実行の結果を集計）</td></tr>
+    <tr><td class="no">FS-12</td><td class="nm">未対応中程度不具合件数</td><td>横断</td><td>機能適合性</td><td>設計対象外（テスト実行の結果を集計）</td></tr>
+    <tr><td class="no">FS-03</td><td class="nm">業務シナリオテスト通過率</td><td>横断</td><td>機能適合性</td><td>各チケットの E2E シナリオが母数</td></tr>
+    <tr><td class="no">CO-01</td><td class="nm">サポートOS×端末の動作保証</td><td>横断</td><td>互換性</td><td>設計対象外（端末マトリクスで担保）</td></tr>
+    <tr><td class="no">RE-01</td><td class="nm">クラッシュフリー率</td><td>横断</td><td>信頼性</td><td>設計対象外（監視ツールで測定）</td></tr>
+    <tr><td class="no">MA-01</td><td class="nm">分析可能性（エラーログの記録）</td><td>横断</td><td>保守性</td><td>設計対象外（ログ基盤で確認）</td></tr>
+    <tr><td class="no">MA-02</td><td class="nm">分析可能性（クラッシュログのトレース）</td><td>横断</td><td>保守性</td><td>設計対象外（監視ツールで確認）</td></tr>
+    <tr><td class="no">RE-02</td><td class="nm">ANR発生率</td><td>⑦ ⑪ ⑫ ⑬ ⑲</td><td>信頼性</td><td>観点なし（測定で判定）。メインスレッド処理が集中するのは⑦の常駐ループ</td></tr>
+    <tr><td class="no">RE-03</td><td class="nm">ロングラン検証（ソークテスト）</td><td>⑦</td><td>信頼性</td><td>観点なし（測定で判定）</td></tr>
+    <tr><td class="no">RE-04</td><td class="nm">クラッシュ復帰時間</td><td>⑥ ③ ⑦</td><td>信頼性</td><td>復帰の経路は⑥③の成果物で担保済み。時間の基準は観点に無い</td></tr>
+    <tr><td class="no">PE-01</td><td class="nm">E2E応答時間（認証→解錠完了）</td><td>⑪ ⑫ ⑬ ⑲ ⑳ ㉕</td><td>性能効率性</td><td>未着手。着手時に渡す</td></tr>
+    <tr><td class="no">PE-02</td><td class="nm">E2E応答時間（予約作成）</td><td>㉒</td><td>性能効率性</td><td>未着手。着手時に渡す</td></tr>
+    <tr><td class="no">PE-03</td><td class="nm">メモリ使用量</td><td>⑦ ⑪ ⑫</td><td>性能効率性</td><td>設計対象外（プロファイラで測定）</td></tr>
+    <tr><td class="no">PE-04</td><td class="nm">長時間稼働時のメモリ増加量</td><td>⑦</td><td>性能効率性</td><td>設計対象外（プロファイラで測定）</td></tr>
+    <tr><td class="no">PE-05</td><td class="nm">発熱（Thermal Status）</td><td>㉚ ⑦</td><td>性能効率性</td><td>未着手</td></tr>
+    <tr><td class="no">PE-12</td><td class="nm">バッテリー消費</td><td>㉚</td><td>性能効率性</td><td>未着手。<span class="pill p-open">基準値が TBD</span></td></tr>
+    <tr><td class="no">PE-06</td><td class="nm">CPU使用率</td><td>⑦ ⑪ ⑫</td><td>性能効率性</td><td><span class="pill p-open">未カバー</span> タイマー・リスナーの生存を見る観点が⑦に無い</td></tr>
+    <tr><td class="no">PE-07</td><td class="nm">大量データ時の容量耐性</td><td>⑦ ⑧</td><td>性能効率性</td><td><span class="pill p-open">未カバー</span> 件数の軸と、通知の同時受信時の整合を見る観点が⑦⑧に無い</td></tr>
+  </table>
+  </div>
+</section>
 
 </div>
 
@@ -871,6 +898,9 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
   var ledgerRows = Array.prototype.slice.call(document.querySelectorAll("#ledger tr")).filter(function (r) {
     return !r.querySelector("th");
   });
+  var qualityRows = Array.prototype.slice.call(document.querySelectorAll("#quality tr")).filter(function (r) {
+    return !r.querySelector("th");
+  });
   var groups = Array.prototype.slice.call(document.querySelectorAll("#tickets tr.grp"));
   var statusEl = document.getElementById("status");
   var screenKey = null, ticketKey = null;
@@ -893,6 +923,11 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     var tds = r.querySelectorAll("td");
     r._tk = tds.length > 2 ? tk(tds[2].textContent) : [];
     r._open = r.textContent.indexOf("赤カード") !== -1;
+  });
+  qualityRows.forEach(function (r) {
+    var tds = r.querySelectorAll("td");
+    r._tk = tds.length > 2 ? tk(tds[2].textContent) : [];
+    r._all = tds.length > 2 && tds[2].textContent.indexOf("横断") !== -1;
   });
 
   function apply() {
@@ -947,6 +982,13 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       r.classList.toggle("dim", !hit);
       r.classList.toggle("flag", (!!t || !!k) && hit && r._open);
       if (hit) { shownLedger++; }
+    });
+
+    qualityRows.forEach(function (r) {
+      var hit = r._all || (t
+        ? has(r._tk, t)
+        : (!k || r._tk.some(function (x) { return has(screenTickets, x); })));
+      r.classList.toggle("dim", !hit);
     });
 
     if (t) {
