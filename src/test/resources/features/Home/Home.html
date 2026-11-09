@@ -164,7 +164,7 @@ td.msg { font-weight: 500; }
 <section>
 <figure>
   <div class="scroll">
-  <svg class="map" viewBox="0 0 1440 560" role="img" aria-label="ホーム画面の予約状況表示の流れ。上段は利用者が見る画面、中段は1秒ごとに繰り返される裏側の処理、下段はタブレットに残るもの。処理は設置空間の確認、いまの予約を探す、予約があるかの判定、部屋の状態を決める、ほかの端末に知らせる、画面に出すの順に進む。">
+  <svg class="map" viewBox="0 0 1440 420" role="img" aria-label="ホーム画面の予約状況表示の流れ。上段は利用者が見る画面、下段は1秒ごとに繰り返される裏側の処理。処理は設置空間の確認、いまの予約を探す、予約があるかの判定、部屋の状態を決める、ほかの端末に知らせる、画面に出すの順に進む。">
     <defs>
       <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-flow"/></marker>
       <marker id="arwS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-save"/></marker>
@@ -174,18 +174,12 @@ td.msg { font-weight: 500; }
     <!-- lanes -->
     <rect class="lane" x="0" y="16" width="1440" height="128" rx="12"/>
     <rect class="lane" x="0" y="156" width="1440" height="250" rx="12"/>
-    <rect class="lane" x="0" y="418" width="1440" height="126" rx="12"/>
     <text class="lane-label" x="16" y="38">画面（通りかかった人が見るもの）</text>
     <text class="lane-label" x="16" y="178">裏側で起きていること（1秒ごとに繰り返す）</text>
-    <text class="lane-label" x="16" y="440">タブレットに残るもの</text>
-    <text class="lane-label" x="16" y="456">（予約が見つからないときの戻り先）</text>
 
     <!-- flow arrows -->
     <path class="flow" marker-end="url(#arw)" d="M135 116 V232 H168"/>
-    <path class="flow" marker-end="url(#arw)" d="M250 190 V84 H328"/>
-    <text class="lbl" x="258" y="150">空間が未設定</text>
-    <path class="flow" marker-end="url(#arw)" d="M332 232 H368"/>
-    <text class="lbl" x="350" y="224" text-anchor="middle">OK</text>
+    <path class="flow" marker-end="url(#arw)" d="M318 232 H368"/>
     <path class="flow" marker-end="url(#arw)" d="M520 232 H538"/>
     <path class="flow" marker-end="url(#arw)" d="M702 232 H758"/>
     <text class="lbl" x="756" y="222" text-anchor="end">予約あり</text>
@@ -197,12 +191,8 @@ td.msg { font-weight: 500; }
     <text class="lbl" x="1170" y="150" text-anchor="end">色・残り時間・ボタン</text>
 
     <!-- error exits -->
-    <path class="err-line" marker-end="url(#arwE)" d="M835 274 V294"/>
 
     <!-- save links -->
-    <path class="save" marker-end="url(#arwS)" d="M880 445 V268"/>
-    <path class="save" d="M790 264 V445"/>
-    <text class="t-save-note" x="700" y="506">予約が見つからないとき ここから戻す</text>
 
     <!-- lane A: screens -->
     <g class="hit" data-key="prep" tabindex="0" role="button" aria-label="起動準備">
@@ -211,25 +201,18 @@ td.msg { font-weight: 500; }
       <text class="t-screen" x="135" y="82" text-anchor="middle">起動準備</text>
       <text class="t-sub" x="135" y="102" text-anchor="middle">予約がそろってから来る</text>
     </g>
-    <g class="hit" data-key="S" tabindex="0" role="button" aria-label="設定画面">
-      <rect class="screen" x="330" y="52" width="150" height="64" rx="10"/>
-      <rect class="screen-bar" x="390" y="58" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="405" y="82" text-anchor="middle">設定画面</text>
-      <text class="t-sub" x="405" y="102" text-anchor="middle">空間を設定し直す</text>
-    </g>
     <g class="hit" data-key="H" tabindex="0" role="button" aria-label="ホーム画面">
       <rect class="screen" x="1000" y="52" width="180" height="64" rx="10"/>
       <rect class="screen-bar" x="1075" y="58" width="30" height="3" rx="1.5"/>
       <text class="t-screen" x="1090" y="82" text-anchor="middle">ホーム画面</text>
       <text class="t-sub" x="1090" y="102" text-anchor="middle">空室／入室待ち／利用中</text>
-      <text class="err" x="1000" y="136">✕ 空間が空っぽ（空文字）→ 気づかず空室のまま</text>
     </g>
 
     <!-- lane B: steps -->
-    <g class="hit" data-key="1" tabindex="0" role="button" aria-label="設置空間の確認">
-      <polygon class="step-diamond" points="250,190 332,232 250,274 168,232"/>
-      <text class="t-name" x="250" y="229" text-anchor="middle">① どの部屋か</text>
-      <text class="t-name" x="250" y="245" text-anchor="middle">決まってる？</text>
+    <g class="hit" data-key="1" tabindex="0" role="button" aria-label="どの部屋かを見る">
+      <rect class="step" x="168" y="200" width="150" height="64" rx="8"/>
+      <text class="t-name" x="243" y="224" text-anchor="middle">① どの部屋かを見る</text>
+      <text class="t-sub" x="243" y="242" text-anchor="middle">空間は起動準備で確認済み</text>
     </g>
     <g class="hit" data-key="2" tabindex="0" role="button" aria-label="いまの予約を探す">
       <rect class="step" x="370" y="200" width="150" height="64" rx="8"/>
@@ -247,8 +230,6 @@ td.msg { font-weight: 500; }
       <rect class="step" x="760" y="200" width="150" height="64" rx="8"/>
       <text class="t-name" x="835" y="224" text-anchor="middle">④ 部屋の状態を決める</text>
       <text class="t-sub" x="835" y="242" text-anchor="middle">入っていれば利用中</text>
-      <text class="err" x="760" y="312">✕ 利用中なのに予約が</text>
-      <text class="err" x="760" y="328">　見つからない</text>
     </g>
     <g class="hit" data-key="5" tabindex="0" role="button" aria-label="ほかの端末に知らせる">
       <rect class="step" x="950" y="200" width="150" height="64" rx="8"/>
@@ -264,19 +245,12 @@ td.msg { font-weight: 500; }
       <text class="err" x="1140" y="292">✕ 設定で切ってある操作</text>
       <text class="err" x="1140" y="308">　はボタンが出ない</text>
     </g>
-
-    <!-- lane C: saved things -->
-    <g class="hit" data-key="A" tabindex="0" role="button" aria-label="最後に入った予約の控え">
-      <rect class="save-box" x="790" y="445" width="180" height="40" rx="8"/>
-      <text class="t-save" x="880" y="469" text-anchor="middle">残る：最後に入った予約</text>
-    </g>
   </svg>
   </div>
-  <figcaption>緑の線が「うまくいく道」。赤の ✕ は「ここでつまずくと表示が変わる」。青の点線は「タブレットに残る → 予約が見つからないときに戻ってこられる場所」。</figcaption>
+  <figcaption>緑の線が「うまくいく道」。赤の ✕ は「ここでつまずくと表示が変わる」。</figcaption>
   <div class="legend">
     <span><i class="sw flow"></i>うまくいく道</span>
     <span><i class="sw err"></i>つまずく場所とその理由</span>
-    <span><i class="sw save"></i>タブレットに残る（戻り先）</span>
   </div>
 </figure>
 </section>
@@ -336,11 +310,13 @@ td.msg { font-weight: 500; }
   </div>
 
   <div class="group">
-    <h3>ルール⑤ 中央のボタン</h3>
+    <h3>ルール⑤ 画面のボタン</h3>
     <div class="cards">
       <div class="card" data-keys="prep,6,H"><div class="ttl"><i class="dot ok"></i>ホームに着いた直後からボタンが出ている</div><div class="chips"></div></div>
       <div class="card" data-keys="6,H"><div class="ttl"><i class="dot ok"></i>設定が有効なときだけボタンが出る</div><div class="chips"></div></div>
       <div class="card" data-keys="6"><div class="ttl"><i class="dot ng"></i>設定を切ってある操作はボタンが出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="6,H"><div class="ttl"><i class="dot ok"></i>下に並ぶボタン（予約削除・予約延長・再入室）も設定が有効なときだけ出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="6"><div class="ttl"><i class="dot ng"></i>下に並ぶボタンも設定を切ってあると出ない</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -358,33 +334,14 @@ td.msg { font-weight: 500; }
     <div class="cards">
       <div class="card" data-keys="5,H"><div class="ttl"><i class="dot ok"></i>同じ部屋の2台目にも同じ状態が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="5,4,6,H"><div class="ttl"><i class="dot ok"></i>ほかの端末で入室されると利用中へ変わる</div><div class="chips"></div></div>
-      <div class="card" data-keys="5,4"><div class="ttl"><i class="dot ok"></i>切り替わるときに前の状態へ戻らない</div><div class="chips"></div></div>
       <div class="card" data-keys="5"><div class="ttl"><i class="dot ng"></i>自動更新を切った端末は自分から知らせない</div><div class="chips"></div></div>
-    </div>
-  </div>
-
-  <div class="group">
-    <h3>ルール⑧ 部屋が決まっていないとき</h3>
-    <div class="cards">
-      <div class="card" data-keys="1,S"><div class="ttl"><i class="dot ng"></i>部屋が決まっていないと設定画面へ移る</div><div class="chips"></div></div>
-      <div class="card" data-keys="1,H"><div class="ttl"><i class="dot ng"></i>空っぽ（空文字）だと気づかず空室のまま出る</div><div class="chips"></div></div>
-    </div>
-  </div>
-
-  <div class="group">
-    <h3>ルール⑨ 予約が見つからないとき</h3>
-    <div class="cards">
-      <div class="card" data-keys="4,A,H"><div class="ttl"><i class="dot ng"></i>控えの予約が時間内なら利用中の表示に戻せる</div><div class="chips"></div></div>
-      <div class="card" data-keys="4,A"><div class="ttl"><i class="dot ng"></i>控えの予約が時間を過ぎていれば戻さない</div><div class="chips"></div></div>
-      <div class="card" data-keys="4,A"><div class="ttl"><i class="dot ng"></i>控えの予約がよそで消えていれば戻さない</div><div class="chips"></div></div>
-      <div class="card" data-keys="4,A"><div class="ttl"><i class="dot ng"></i>控えがなければ戻さない（ほかの端末で入室した予約もこれ）</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
     <h3>通し（実機で最後まで）</h3>
     <div class="cards">
-      <div class="card" data-keys="prep,2,3,4,5,6,H"><div class="ttl"><i class="dot ok"></i>空室から入室待ちへ変わるまでを操作なしで見る</div><div class="chips"></div></div>
+      <div class="card" data-keys="prep,1,2,3,4,5,6,H"><div class="ttl"><i class="dot ok"></i>空室から入室待ちへ変わるまでを操作なしで見る</div><div class="chips"></div></div>
     </div>
   </div>
 </section>
@@ -400,7 +357,8 @@ td.msg { font-weight: 500; }
     <tr><td class="msg">自動キャンセルまであと</td><td>⑥ 入室待ちで、自動キャンセルが効くとき</td></tr>
     <tr><td class="msg">残り時間</td><td>⑥ 入室待ちで、自動キャンセルが効かないとき</td></tr>
     <tr><td class="msg">残り時間</td><td>⑥ 利用中のとき</td></tr>
-    <tr><td class="msg">今すぐ入室 ／ 入室する ／ 退室する</td><td>⑥ 状態と、設定で出す操作が決まる</td></tr>
+    <tr><td class="msg">今すぐ入室 ／ 入室 ／ 退室</td><td>⑥ 状態と、設定で出す操作が決まる（中央のボタン）</td></tr>
+    <tr><td class="msg">予約削除 ／ 予約延長 ／ 再入室</td><td>⑥ 状態と、設定で出す操作が決まる（下に並ぶボタン）</td></tr>
     <tr><td class="msg">（ボタンが出ない）</td><td>⑥ その操作を設定で切っているとき</td></tr>
   </table>
   </div>
@@ -413,10 +371,9 @@ td.msg { font-weight: 500; }
 <script>
 (function () {
   var LABEL = {
-    prep: "起動準備", S: "設定画面", H: "ホーム画面",
-    1: "① 部屋は決まってる？", 2: "② 予約を探す", 3: "③ 予約はある？",
-    4: "④ 状態を決める", 5: "⑤ ほかの端末へ", 6: "⑥ 画面に出す",
-    A: "控え：最後に入った予約"
+    prep: "起動準備", H: "ホーム画面",
+    1: "① どの部屋かを見る", 2: "② 予約を探す", 3: "③ 予約はある？",
+    4: "④ 状態を決める", 5: "⑤ ほかの端末へ", 6: "⑥ 画面に出す"
   };
   var root = document.documentElement;
   var hits = Array.prototype.slice.call(document.querySelectorAll(".hit"));
