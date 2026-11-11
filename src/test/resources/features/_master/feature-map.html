@@ -863,8 +863,16 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">ホームの参加者情報と、タイムラインの予約の詳細で主催者名の解決方式が違うことをどう扱うか</td>
       <td>⑨ ⑧</td>
       <td><span class="pill p-done">⑨（取得・再試行ありの振る舞いをそのままルール化。⑨では赤カードにしない）</span></td>
-      <td>⑨は人物情報を取得し失敗時に再試行する（<code>GetReservationParticipantInfoUseCase.swift:58-93</code>）一方、⑧は予約データ内の名前をそのまま表示する（<code>MeetingIndicator.swift:243</code>）。参照元で裏取りできているため。⑧の赤カード①は継続。</td>
+      <td>⑨は人物情報を取得し失敗時に再試行する（<code>GetReservationParticipantInfoUseCase.swift:58-93</code>）一方、⑧は予約データ内の名前をそのまま表示する（<code>MeetingIndicator.swift:243</code>）。参照元で裏取りできているため。⑧の主催者名はサーバ側が決めていることを 2026-11-11 に確認し、⑧の赤カード①は解決済み。</td>
       <td class="no">2026-11-10</td>
+    </tr>
+    <tr>
+      <td class="no">32</td>
+      <td class="nm">主催者のアイコン画像の取得に失敗したときのフォールバック表示はどこで見るか</td>
+      <td>⑨</td>
+      <td><span class="pill p-done">検証対象外（⑨では見ない）</span></td>
+      <td>アプリの責務は「画像のURLが無ければ既定の人型を出す／あれば渡す」までで、渡した先の取得失敗時のフォールバックは画像表示ライブラリ（参照元は <code>WebImage(url:).placeholder(DefaultPeopleIcon)</code>、Android は Coil の同等の仕組み）の責務であり、CLAUDE.md の「外部SDKの内部ロジック検証は対象外」に当たるため。</td>
+      <td class="no">2026-11-11</td>
     </tr>
   </table>
   </div>
