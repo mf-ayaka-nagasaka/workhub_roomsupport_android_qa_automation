@@ -154,7 +154,7 @@ td.msg { font-weight: 500; }
 <header>
   <p class="eyebrow">ReservationTimeline ／ 全体マップ</p>
   <h1>当日の予約タイムラインを表示できる</h1>
-  <p class="lead">会議室の前のタブレットが、ホーム画面の下に当日0時から24時までのタイムラインを描き、予約を押すと中身を見せるまでを1枚にしたもの。図の箱やテストケースをクリックすると、対応する場所が光ります。</p>
+  <p class="lead">会議室の前のタブレットが、ホーム画面の下に当日0時から25時（翌日1時）までのタイムラインを描き、予約を押すと中身を見せるまでを1枚にしたもの。図の箱やテストケースをクリックすると、対応する場所が光ります。</p>
   <div class="controls">
     <button class="link" id="clearBtn" type="button">選択を解除</button>
     <span id="status">箱をクリックすると、その場所に関係するテストだけが残ります</span>
@@ -276,19 +276,22 @@ td.msg { font-weight: 500; }
     <div class="cards">
       <div class="card" data-keys="H,2,3"><div class="ttl"><i class="dot ok"></i>当日の予約 → その時間の位置に帯が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="H,2,3"><div class="ttl"><i class="dot ok"></i>前の日から続く予約 → 0時の手前から出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="H,2,3"><div class="ttl"><i class="dot ok"></i>次の日まで続く予約 → 右のはしの先まで出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="H,2,3"><div class="ttl"><i class="dot ok"></i>次の日まで続く予約 → 右のはし（25時）まで出る</div><div class="chips"></div></div>
       <div class="card" data-keys="H,2,3"><div class="ttl"><i class="dot ok"></i>前の日から次の日まで続く → まる1日ぶん出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="2"><div class="ttl"><i class="dot ng"></i>前の日だけ・次の日だけの予約 → 出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="H,2,3"><div class="ttl"><i class="dot ok"></i>次の日の0時すぎだけの予約（25時より前） → 右のはしのあたりに出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="2"><div class="ttl"><i class="dot ng"></i>表示するはんいに重ならない予約（0時ちょうど終わり・25時ちょうど始まり） → 出ない</div><div class="chips"></div></div>
       <div class="card" data-keys="3"><div class="ttl"><i class="dot ok"></i>遅れて入っても、帯の始まりは変わらない</div><div class="chips"></div></div>
       <div class="card" data-keys="3"><div class="ttl"><i class="dot ok"></i>早く出ていくと、帯の終わりがそこまで縮む</div><div class="chips"></div></div>
+      <div class="card" data-keys="H,3"><div class="ttl"><i class="dot ok"></i>横にスクロールして帯の左はしが画面の外に出ても、時刻は画面の左はしに残る</div><div class="chips"></div></div>
       <div class="card" data-keys="H,2"><div class="ttl"><i class="dot ok"></i>当日の予約が無い → 目盛りと今の時刻だけ</div><div class="chips"></div></div>
+      <div class="card" data-keys="H,2,3"><div class="ttl"><i class="dot ok"></i>当日の予約がたくさんあっても、どの帯も時間どおりの位置に出る</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
     <h3>ルール② 目盛り・今の時刻・日付</h3>
     <div class="cards">
-      <div class="card" data-keys="H,3"><div class="ttl"><i class="dot ok"></i>0から23が並び、右のはしにもう一つ0が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="H,3"><div class="ttl"><i class="dot ok"></i>0から23が並び、そのあとに24時の0と25時の1が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="H,3"><div class="ttl"><i class="dot ok"></i>今の時刻のところに線が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="H"><div class="ttl"><i class="dot ok"></i>その日の日付と曜日が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="H,5,2"><div class="ttl"><i class="dot ok"></i>0時をまたぐと、日付と帯が新しい日のものに変わる</div><div class="chips"></div></div>
@@ -322,6 +325,7 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="H,6,D"><div class="ttl"><i class="dot ok"></i>主催者だけ公開 → 件名は出ず、時間と主催者が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="H,6,D"><div class="ttl"><i class="dot ng"></i>非公開 → 時間だけが出る</div><div class="chips"></div></div>
       <div class="card" data-keys="H,6,D"><div class="ttl"><i class="dot ng"></i>端末の設定が切ってある → 公開の範囲によらず時間だけ</div><div class="chips"></div></div>
+      <div class="card" data-keys="H,6,D"><div class="ttl"><i class="dot ok"></i>よその組織の人が予約 → 主催者の欄に人の名前ではなく組織の名前が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="6,D"><div class="ttl"><i class="dot ok"></i>件名が長い → 折り返して出る（全角100文字まで確認）</div><div class="chips"></div></div>
       <div class="card" data-keys="D"><div class="ttl"><i class="dot ok"></i>「閉じる」／外側を押す → タイムラインに戻る</div><div class="chips"></div></div>
     </div>

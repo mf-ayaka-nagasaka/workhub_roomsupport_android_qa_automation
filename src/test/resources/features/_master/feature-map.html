@@ -573,7 +573,6 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr data-keys="PREP"><td class="nm">並列データ取得が揃うまでの待機表示・30秒間隔の再試行・ログアウト動線</td><td>並列データ取得が揃わない間</td><td class="path"><code>（Android版の新規実装。参照元のiOSは withTimeout(Minute(1)) → router.moveToTop() で先へ進む）</code></td><td>③（台帳 #12）</td></tr>
     <tr class="grp"><td colspan="4">ホーム画面</td></tr>
     <tr data-keys="HOME"><td class="nm">予約と予約状態の更新</td><td>常駐（リスナー通知のつど）</td><td class="path"><code>updateReservationAndStatus()</code></td><td>⑦</td></tr>
-    <tr data-keys="HOME"><td class="nm">参加者情報の取得と表示（予約情報の表示が有効、かつ入室待ち・利用中のとき）</td><td>常駐（メインループ）</td><td class="path"><code>updateParticipantInfo() / GetReservationParticipantInfoUseCase.execute() / ReservationParticipantInfoContent</code></td><td>⑨</td></tr>
     <tr data-keys="HOME"><td class="nm">利用時間外の判定と表示切替（画面遷移ではない）</td><td>常駐</td><td class="path"><code>checkUnavailableTime() / isOutOfUsableTime()</code></td><td>⑩</td></tr>
     <tr data-keys="HOME"><td class="nm">入室可能時間の判定</td><td>常駐</td><td class="path"><code>makeReservationAvailableTimerHelper().isRoomAvailableForMembers() / isRoomAvailableForCustomer()</code></td><td>⑦</td></tr>
     <tr data-keys="HOME"><td class="nm">入室（チェックイン）</td><td>ボタン操作時</td><td class="path"><code>enterReservationUseCase.execute() / enterRoom()</code></td><td>⑳</td></tr>
@@ -586,6 +585,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr data-keys="HOME"><td class="nm">サードプレイスの契約・決済の確認</td><td>予約作成時</td><td class="path"><code>thirdPlaceUseCase.getContractAndPayment() / supportPaymentMethodType</code></td><td>㉙</td></tr>
     <tr data-keys="HOME"><td class="nm">ネットワーク状態の表示</td><td>常駐</td><td class="path"><code>setDisconnectedNetworkState() / addOperationError()</code></td><td>㉛</td></tr>
     <tr data-keys="HOME"><td class="nm">認証画面への遷移</td><td>ボタン操作時</td><td class="path"><code>ReservationCameraAuthenticationRoute</code></td><td>⑪ ⑫ ⑬ ⑲</td></tr>
+    <tr data-keys="HOME"><td class="nm">参加者情報の取得と表示（予約情報の表示が有効、かつ入室待ち・利用中のとき）</td><td>常駐（メインループ）</td><td class="path"><code>updateParticipantInfo() / GetReservationParticipantInfoUseCase.execute() / ReservationParticipantInfoContent</code></td><td>⑨</td></tr>
     <tr class="grp"><td colspan="4">設定画面</td></tr>
     <tr data-keys="SET"><td class="nm">設定値の保存</td><td>保存操作時</td><td class="path"><code>SettingViewModel</code></td><td>④</td></tr>
     <tr data-keys="SET"><td class="nm">保存後のトップ遷移先の再設定</td><td>保存成功時</td><td class="path"><code>setTopRouteIfNeeded() / router.setTopRoute(isAlwaysAuthMode:)</code></td><td>④</td></tr>
@@ -718,9 +718,9 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="no">13</td>
       <td class="nm">ホーム画面の表示中に設置空間が未設定になった場合、どこでどう扱うか</td>
       <td>⑦ ④ ③ ㉒</td>
-      <td><span class="pill p-done">現時点は⑦で iOS 版の振る舞いどおりにルール化（赤カードは継続）</span></td>
-      <td>④・③は担保せず㉒も未着手で、ホーム表示中の検知を担保するチケットが⑦以外に存在しないため。</td>
-      <td class="no">2026-10-26</td>
+      <td><span class="pill p-done">起動準備時の未設定＝③で担保済み ／ ホーム表示中の検知＝未割り当て（赤カード継続）</span></td>
+      <td>起動準備時の検知と設定画面への誘導は③のシナリオで担保済みであり、⑦が担っていたのは同じ判定の重複であったため。</td>
+      <td class="no">2026-11-09</td>
     </tr>
     <tr>
       <td class="no">14</td>
@@ -750,9 +750,9 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="no">17</td>
       <td class="nm">予約キャンセル・延長・再入室のサブボタンの表示条件はどこで見るか</td>
       <td>⑦ ㉔ ㉓ ㉕</td>
-      <td><span class="pill p-done">表示条件も各チケット（㉔／㉓／㉕）</span></td>
-      <td>サブボタンの表示条件が各操作の可否判定そのもの（キャンセル可能期間・次の予約との重なり・解錠デバイスの有無）であるため。</td>
-      <td class="no">2026-10-26</td>
+      <td><span class="pill p-done">端末設定による出し分け＝⑦ ／ 可否判定（キャンセル可能期間・次の予約との重なり・解錠デバイスの有無）＝各チケット（㉔／㉓／㉕）</span></td>
+      <td>サブボタンの表示が端末設定による出し分けと各操作の可否判定の2層に分かれており、前者はホームの表示そのものであるため。</td>
+      <td class="no">2026-11-09</td>
     </tr>
     <tr>
       <td class="no">18</td>
@@ -774,9 +774,9 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="no">20</td>
       <td class="nm">「利用中なのに表示対象の予約が無い」状態からの復旧はどこで見るか</td>
       <td>⑦ ③</td>
-      <td><span class="pill p-done">⑦（iOS 版に合わせて暂定でルール化）／移植の要否はリファインメントの議題</span></td>
-      <td>発生し得るかは未確認だが、Android版は iOS版をベースに実装される前提であるため。</td>
-      <td class="no">2026-10-26</td>
+      <td><span class="pill p-done">⑦では見ない（Android版へ移植しない）</span></td>
+      <td>Android版は予約データが全て揃ってからホーム画面を表示する方針（台帳 #8・#12）のため、表示対象の予約が手元に無い状態が発生しないため。</td>
+      <td class="no">2026-11-09</td>
     </tr>
     <tr>
       <td class="no">21</td>
@@ -820,6 +820,14 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     </tr>
     <tr>
       <td class="no">26</td>
+      <td class="nm">古い状態を流通させないことは、どこで担保するか</td>
+      <td>⑦</td>
+      <td><span class="pill p-done">⑦の振る舞いとしては見ない（送信処理の単体テストレビューで担保する）</span></td>
+      <td>「古い状態を送らない」ことはユーザーから観測できず、観測できるのは送られた結果だけであるため。</td>
+      <td class="no">2026-11-09</td>
+    </tr>
+    <tr>
+      <td class="no">27</td>
       <td class="nm">ホームに着いてから参加者情報が出るまでの待ち時間はどこで見るか</td>
       <td>⑨ ③ ⑦</td>
       <td><span class="pill p-done">⑨（ホーム表示の時点で参加者情報が揃っている前提でルール化）</span></td>
@@ -827,7 +835,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="no">2026-11-10</td>
     </tr>
     <tr>
-      <td class="no">27</td>
+      <td class="no">28</td>
       <td class="nm">同じ予約のまま参加者の顔ぶれが入れ替わったときの表示の更新はどこで見るか</td>
       <td>⑨</td>
       <td><span class="pill p-done">⑨（更新されることを正しい振る舞いとしてルール化／参照元との差分は赤カード）</span></td>
@@ -835,7 +843,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="no">2026-11-10</td>
     </tr>
     <tr>
-      <td class="no">28</td>
+      <td class="no">29</td>
       <td class="nm">入室・退室などの操作のアニメーション表示中に参加者情報エリアが出ないことはどこで見るか</td>
       <td>⑨ ⑳ ㉑ ㉓ ㉔ ㉕</td>
       <td><span class="pill p-done">各操作チケット（⑨では見ない）</span></td>
@@ -843,7 +851,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="no">2026-11-10</td>
     </tr>
     <tr>
-      <td class="no">29</td>
+      <td class="no">30</td>
       <td class="nm">サードプレイスの顧客が関わる予約のホーム表示（参加者アイコンを含む）はどこで見るか</td>
       <td>⑨ ㉙</td>
       <td><span class="pill p-done">㉙ サードプレイス(有料)予約を作成できる（⑨では見ない）</span></td>
@@ -851,7 +859,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="no">2026-11-10</td>
     </tr>
     <tr>
-      <td class="no">30</td>
+      <td class="no">31</td>
       <td class="nm">ホームの参加者情報と、タイムラインの予約の詳細で主催者名の解決方式が違うことをどう扱うか</td>
       <td>⑨ ⑧</td>
       <td><span class="pill p-done">⑨（取得・再試行ありの振る舞いをそのままルール化。⑨では赤カードにしない）</span></td>
@@ -872,11 +880,38 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr><td class="nm">④ 管理者が予約認証の設定を変更できる</td><td>ReservationAuthSettings</td><td>15本</td><td>73件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">⑥ 設定値の読み込みが行える</td><td>SettingLoader</td><td>10本</td><td>33件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">⑤ 管理メニューを開いて端末を管理できる</td><td>AdminMenu</td><td>8本</td><td>43件</td><td><span class="pill p-done">成果物あり</span></td></tr>
-    <tr><td class="nm">① タブレットにログインして組織を選択できる</td><td>Login</td><td>2本</td><td>23件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">① タブレットにログインして組織を選択できる</td><td>Login</td><td>2本</td><td>24件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">③ 起動時に予約データを準備してホームを表示できる</td><td>PrepareHome</td><td>5本</td><td>18件</td><td><span class="pill p-done">成果物あり</span></td></tr>
-    <tr><td class="nm">⑦ 部屋の予約状況をホーム画面に表示できる</td><td>Home</td><td>9本</td><td>32件</td><td><span class="pill p-done">成果物あり</span></td></tr>
-    <tr><td class="nm">⑧ 当日の予約タイムラインを表示できる</td><td>ReservationTimeline</td><td>10本</td><td>24件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">⑦ 部屋の予約状況をホーム画面に表示できる</td><td>Home</td><td>7本</td><td>25件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">⑧ 当日の予約タイムラインを表示できる</td><td>ReservationTimeline</td><td>10本</td><td>25件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">残り24チケット</td><td>—</td><td>—</td><td>—</td><td><span class="pill p-todo">未着手</span></td></tr>
+  </table>
+  </div>
+</section>
+<section>
+  <h2>品質判定基準の担保先</h2>
+  <p class="hint">品質判定基準（正本は Notion、参照用の写しは <code>docs/quality_criteria/workhub_roomsupport/criteria.md</code>）の各指標を、どのチケットで担保するかを割り付けた表です。<strong>チケットに着手するときは、自分が担保先になっている指標を確認してください。</strong>チケットを選ぶと、その担保分だけが残ります（「横断」の指標は常に表示されます）。</p>
+  <div class="tbl-wrap">
+  <table id="quality">
+    <tr><th>指標ID</th><th>指標名</th><th>担保先</th><th>品質特性</th><th>成果物での扱い</th></tr>
+    <tr><td class="no">FS-01 / FS-02</td><td class="nm">未対応重大不具合件数</td><td>横断</td><td>機能適合性</td><td>設計対象外（テスト実行の結果を集計）</td></tr>
+    <tr><td class="no">FS-12</td><td class="nm">未対応中程度不具合件数</td><td>横断</td><td>機能適合性</td><td>設計対象外（テスト実行の結果を集計）</td></tr>
+    <tr><td class="no">FS-03</td><td class="nm">業務シナリオテスト通過率</td><td>横断</td><td>機能適合性</td><td>各チケットの E2E シナリオが母数</td></tr>
+    <tr><td class="no">CO-01</td><td class="nm">サポートOS×端末の動作保証</td><td>横断</td><td>互換性</td><td>設計対象外（端末マトリクスで担保）</td></tr>
+    <tr><td class="no">RE-01</td><td class="nm">クラッシュフリー率</td><td>横断</td><td>信頼性</td><td>設計対象外（監視ツールで測定）</td></tr>
+    <tr><td class="no">MA-01</td><td class="nm">分析可能性（エラーログの記録）</td><td>横断</td><td>保守性</td><td>設計対象外（ログ基盤で確認）</td></tr>
+    <tr><td class="no">MA-02</td><td class="nm">分析可能性（クラッシュログのトレース）</td><td>横断</td><td>保守性</td><td>設計対象外（監視ツールで確認）</td></tr>
+    <tr><td class="no">RE-02</td><td class="nm">ANR発生率</td><td>⑦ ⑪ ⑫ ⑬ ⑲</td><td>信頼性</td><td>観点なし（測定で判定）。メインスレッド処理が集中するのは⑦の常駐ループ</td></tr>
+    <tr><td class="no">RE-03</td><td class="nm">ロングラン検証（ソークテスト）</td><td>⑦</td><td>信頼性</td><td>観点なし（測定で判定）</td></tr>
+    <tr><td class="no">RE-04</td><td class="nm">クラッシュ復帰時間</td><td>⑥ ③ ⑦</td><td>信頼性</td><td>復帰の経路は⑥③の成果物で担保済み。時間の基準は観点に無い</td></tr>
+    <tr><td class="no">PE-01</td><td class="nm">E2E応答時間（認証→解錠完了）</td><td>⑪ ⑫ ⑬ ⑲ ⑳ ㉕</td><td>性能効率性</td><td>未着手。着手時に渡す</td></tr>
+    <tr><td class="no">PE-02</td><td class="nm">E2E応答時間（予約作成）</td><td>㉒</td><td>性能効率性</td><td>未着手。着手時に渡す</td></tr>
+    <tr><td class="no">PE-03</td><td class="nm">メモリ使用量</td><td>⑦ ⑪ ⑫</td><td>性能効率性</td><td>設計対象外（プロファイラで測定）</td></tr>
+    <tr><td class="no">PE-04</td><td class="nm">長時間稼働時のメモリ増加量</td><td>⑦</td><td>性能効率性</td><td>設計対象外（プロファイラで測定）</td></tr>
+    <tr><td class="no">PE-05</td><td class="nm">発熱（Thermal Status）</td><td>㉚ ⑦</td><td>性能効率性</td><td>未着手</td></tr>
+    <tr><td class="no">PE-12</td><td class="nm">バッテリー消費</td><td>㉚</td><td>性能効率性</td><td>未着手。<span class="pill p-open">基準値が TBD</span></td></tr>
+    <tr><td class="no">PE-06</td><td class="nm">CPU使用率</td><td>⑦ ⑪ ⑫</td><td>性能効率性</td><td>⑦は観点「経過時間のカウントダウン表示」の要素『連続稼働後の更新の継続』で担保。⑪⑫は未着手</td></tr>
+    <tr><td class="no">PE-07</td><td class="nm">大量データ時の容量耐性</td><td>⑦ ⑧</td><td>性能効率性</td><td>⑦は観点「取得対象データの範囲」の『想定最大件数』と「状態更新の確定と整合」の『通知の同時受信』で担保。⑧は観点「時間軸上の位置と長さの描画」の『帯が密集する件数』で担保。<span class="pill p-open">件数の単位が TBD</span></td></tr>
   </table>
   </div>
 </section>
@@ -904,6 +939,9 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
   var ledgerRows = Array.prototype.slice.call(document.querySelectorAll("#ledger tr")).filter(function (r) {
     return !r.querySelector("th");
   });
+  var qualityRows = Array.prototype.slice.call(document.querySelectorAll("#quality tr")).filter(function (r) {
+    return !r.querySelector("th");
+  });
   var groups = Array.prototype.slice.call(document.querySelectorAll("#tickets tr.grp"));
   var statusEl = document.getElementById("status");
   var screenKey = null, ticketKey = null;
@@ -926,6 +964,11 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     var tds = r.querySelectorAll("td");
     r._tk = tds.length > 2 ? tk(tds[2].textContent) : [];
     r._open = r.textContent.indexOf("赤カード") !== -1;
+  });
+  qualityRows.forEach(function (r) {
+    var tds = r.querySelectorAll("td");
+    r._tk = tds.length > 2 ? tk(tds[2].textContent) : [];
+    r._all = tds.length > 2 && tds[2].textContent.indexOf("横断") !== -1;
   });
 
   function apply() {
@@ -980,6 +1023,13 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       r.classList.toggle("dim", !hit);
       r.classList.toggle("flag", (!!t || !!k) && hit && r._open);
       if (hit) { shownLedger++; }
+    });
+
+    qualityRows.forEach(function (r) {
+      var hit = r._all || (t
+        ? has(r._tk, t)
+        : (!k || r._tk.some(function (x) { return has(screenTickets, x); })));
+      r.classList.toggle("dim", !hit);
     });
 
     if (t) {
