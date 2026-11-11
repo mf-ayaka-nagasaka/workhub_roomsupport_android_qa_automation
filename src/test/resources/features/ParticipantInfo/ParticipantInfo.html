@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>予約の参加者情報を表示できる</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #F4F6F9;
+  --lane: #EAEEF3;
+  --surface: #FFFFFF;
+  --ink: #1B2430;
+  --muted: #5E6B7A;
+  --line: #D3DAE3;
+  --flow: #0F7C7B;
+  --flow-soft: #DCF0EE;
+  --save: #3B57C4;
+  --save-soft: #E4E9FA;
+  --err: #C43C3C;
+  --err-soft: #FBE5E5;
+  --hot: #D98E04;
+  --hot-ink: #7E5300;
+  --hot-soft: #FCEFD3;
+  --ok: #2E8B57;
+  --font-display: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-body: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #11161D; --lane: #181F28; --surface: #1F2732; --ink: #E7ECF2; --muted: #9DA9B7; --line: #2E3843;
+    --flow: #4FC3C0; --flow-soft: #163A39; --save: #93A6F5; --save-soft: #232D52;
+    --err: #F08080; --err-soft: #4A2424; --hot: #F2B441; --hot-ink: #F2B441; --hot-soft: #4A3A14; --ok: #6CCB8C;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #11161D; --lane: #181F28; --surface: #1F2732; --ink: #E7ECF2; --muted: #9DA9B7; --line: #2E3843;
+  --flow: #4FC3C0; --flow-soft: #163A39; --save: #93A6F5; --save-soft: #232D52;
+  --err: #F08080; --err-soft: #4A2424; --hot: #F2B441; --hot-ink: #F2B441; --hot-soft: #4A3A14; --ok: #6CCB8C;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  padding-inline: 16px;
+  padding-block: 24px 48px;
+}
+.wrap { max-width: 1400px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.3; }
+h1 { font-size: 26px; font-weight: 700; }
+h2 { font-size: 18px; font-weight: 700; }
+h3 { font-size: 14px; font-weight: 700; }
+p { margin: 0; }
+.eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.lead { color: var(--muted); max-width: 60ch; }
+
+header { display: grid; gap: 8px; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 6px; }
+.controls label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; }
+.controls input { accent-color: var(--flow); width: 16px; height: 16px; }
+#status { font-size: 13px; color: var(--muted); }
+button.link {
+  font: inherit; font-size: 13px; color: var(--flow); background: none; border: 1px solid var(--flow);
+  border-radius: 999px; padding: 3px 12px; cursor: pointer;
+}
+button.link:hover { background: var(--flow-soft); }
+button.link:focus-visible, .hit:focus-visible, .card:focus-visible { outline: 2px solid var(--hot); outline-offset: 2px; }
+
+/* ---- map ---- */
+figure { margin: 0; display: grid; gap: 10px; }
+.scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+svg.map { display: block; min-width: 1100px; width: 100%; height: auto; }
+figcaption { color: var(--muted); font-size: 13px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 12px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 26px; height: 0; border-top: 3px solid; border-radius: 2px; }
+.sw.flow { border-color: var(--flow); }
+.sw.save { border-color: var(--save); border-top-style: dashed; }
+.sw.err { border-color: var(--err); }
+
+.lane { fill: var(--lane); stroke: var(--line); }
+.lane-label { font: 700 12px var(--font-display); fill: var(--muted); }
+.screen { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
+.screen-bar { fill: var(--ink); opacity: .85; }
+.step { fill: var(--surface); stroke: var(--flow); stroke-width: 1.6; }
+.step-diamond { fill: var(--flow-soft); stroke: var(--flow); stroke-width: 1.6; }
+.t-name { font: 700 13px var(--font-body); fill: var(--ink); }
+.t-sub { font: 400 11px var(--font-body); fill: var(--muted); }
+.t-screen { font: 700 13px var(--font-display); fill: var(--ink); }
+.flow { fill: none; stroke: var(--flow); stroke-width: 2; }
+.lbl { font: 500 11px var(--font-body); fill: var(--flow); }
+.save { fill: none; stroke: var(--save); stroke-width: 1.6; stroke-dasharray: 5 4; }
+.save-box { fill: var(--save-soft); stroke: var(--save); stroke-width: 1.5; }
+.t-save { font: 700 12px var(--font-body); fill: var(--ink); }
+.t-save-note { font: 500 11px var(--font-body); fill: var(--save); }
+.err { font: 500 11px var(--font-body); fill: var(--err); }
+.err-line { fill: none; stroke: var(--err); stroke-width: 1.6; }
+.arw-flow { fill: var(--flow); }
+.arw-save { fill: var(--save); }
+.arw-err { fill: var(--err); }
+
+.hit { cursor: pointer; transition: opacity .15s; }
+.hit:hover .step, .hit:hover .screen, .hit:hover .step-diamond, .hit:hover .save-box { stroke-width: 2.5; }
+.hit.active .step, .hit.active .screen, .hit.active .step-diamond, .hit.active .save-box { stroke: var(--hot); stroke-width: 3.5; }
+.has-sel .hit:not(.active) { opacity: .38; }
+@media (prefers-reduced-motion: reduce) { .hit, .card { transition: none; } }
+
+/* ---- test index ---- */
+.index { display: grid; gap: 14px; }
+.hint { font-size: 13px; color: var(--muted); }
+.group { display: grid; gap: 8px; }
+.group h3 { color: var(--muted); font-size: 12px; letter-spacing: .06em; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  display: grid; gap: 6px; cursor: pointer; transition: opacity .15s, border-color .15s;
+}
+.card:hover { border-color: var(--flow); }
+.card .ttl { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; font-weight: 500; line-height: 1.4; }
+.dot { flex: 0 0 auto; width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; }
+.dot.ok { background: var(--ok); }
+.dot.ng { background: var(--err); }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-start; align-content: flex-start; }
+.card { align-content: start; }
+.chip { font-size: 11px; padding: 1px 8px; border-radius: 999px; background: var(--flow-soft); color: var(--flow); font-weight: 500; white-space: nowrap; }
+.chip[data-k="A"], .chip[data-k="B"] { background: var(--save-soft); color: var(--save); }
+.chip[data-k="H"], .chip[data-k="N"], .chip[data-k="P"] { background: var(--lane); color: var(--ink); border: 1px solid var(--line); }
+.has-sel .card:not(.match) { opacity: .3; }
+.has-sel .card.match { border-color: var(--hot); box-shadow: 0 0 0 2px var(--hot-soft); }
+
+/* ---- message table ---- */
+table { border-collapse: collapse; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: 13px; }
+th, td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+th { background: var(--lane); color: var(--muted); font-size: 12px; font-weight: 700; }
+tr:first-child th { border-top: 0; }
+td.msg { font-weight: 500; }
+.tbl-wrap { overflow-x: auto; }
+
+</style>
+</head><body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">ParticipantInfo ／ 全体マップ</p>
+  <h1>予約の参加者情報を表示できる</h1>
+  <p class="lead">会議室の前のタブレットが、いま出ている予約の主催者と参加メンバーを、予約ごとの公開範囲に従って画面に出すまでを1枚にしたもの。図の箱やテストケースをクリックすると、対応する場所が光ります。</p>
+  <div class="controls">
+    <button class="link" id="clearBtn" type="button">選択を解除</button>
+    <span id="status">箱をクリックすると、その場所に関係するテストだけが残ります</span>
+  </div>
+</header>
+
+<section>
+<figure>
+  <div class="scroll">
+  <svg class="map" viewBox="0 0 1440 560" role="img" aria-label="参加者情報の流れ。上段は利用者が見る画面、中段は裏側で起きる処理、下段は画面を離れても残るもの。処理は出すかどうかの判定、人の情報を集める、主催者の顔写真を取る、主催者の行を作る、名前を並べる、残りの人数を数える、公開範囲の判定の順に進む。">
+    <defs>
+      <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-flow"/></marker>
+      <marker id="arwS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-save"/></marker>
+      <marker id="arwE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-err"/></marker>
+    </defs>
+
+    <!-- lanes -->
+    <rect class="lane" x="0" y="16" width="1440" height="128" rx="12"/>
+    <rect class="lane" x="0" y="156" width="1440" height="250" rx="12"/>
+    <rect class="lane" x="0" y="418" width="1440" height="126" rx="12"/>
+    <text class="lane-label" x="16" y="38">画面（利用者が見るもの）</text>
+    <text class="lane-label" x="16" y="178">裏側で起きていること</text>
+    <text class="lane-label" x="16" y="440">画面を離れても残るもの</text>
+    <text class="lane-label" x="16" y="456">（戻ったときの出どころ）</text>
+
+    <!-- flow arrows -->
+    <path class="flow" marker-end="url(#arw)" d="M150 116 V194"/>
+    <text class="lbl" x="158" y="162">予約が出ている</text>
+    <path class="flow" marker-end="url(#arw)" d="M240 74 H293"/>
+    <text class="lbl" x="266" y="64" text-anchor="middle">進む</text>
+    <path class="flow" marker-end="url(#arw)" d="M300 98 H247"/>
+    <text class="lbl" x="272" y="112" text-anchor="middle">戻る</text>
+    <path class="flow" marker-end="url(#arw)" d="M210 232 H250"/>
+    <path class="flow" marker-end="url(#arw)" d="M400 232 H440"/>
+    <path class="flow" marker-end="url(#arw)" d="M590 232 H630"/>
+    <path class="flow" marker-end="url(#arw)" d="M780 232 H820"/>
+    <path class="flow" marker-end="url(#arw)" d="M970 232 H1010"/>
+    <path class="flow" marker-end="url(#arw)" d="M1160 232 H1200"/>
+    <path class="flow" marker-end="url(#arw)" d="M1275 190 V122"/>
+    <text class="lbl" x="1283" y="160">出せる分だけ出す</text>
+
+    <!-- error exits -->
+    <path class="err-line" marker-end="url(#arwE)" d="M135 268 V294"/>
+    <path class="err-line" marker-end="url(#arwE)" d="M1275 274 V294"/>
+
+    <!-- save links -->
+    <path class="save" d="M390 264 V445"/>
+    <path class="save" d="M1140 264 V445"/>
+
+    <!-- lane A: screens -->
+    <g class="hit" data-key="H" tabindex="0" role="button" aria-label="ホーム画面">
+      <rect class="screen" x="60" y="52" width="180" height="64" rx="10"/>
+      <rect class="screen-bar" x="135" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="150" y="82" text-anchor="middle">ホーム画面</text>
+      <text class="t-sub" x="150" y="102" text-anchor="middle">中央サークルと主ボタン</text>
+    </g>
+    <g class="hit" data-key="N" tabindex="0" role="button" aria-label="認証画面">
+      <rect class="screen" x="300" y="52" width="150" height="64" rx="10"/>
+      <rect class="screen-bar" x="360" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="375" y="82" text-anchor="middle">認証画面</text>
+      <text class="t-sub" x="375" y="102" text-anchor="middle">操作せずに戻る</text>
+    </g>
+    <g class="hit" data-key="P" tabindex="0" role="button" aria-label="参加者情報エリア">
+      <rect class="screen" x="1180" y="52" width="200" height="64" rx="10"/>
+      <rect class="screen-bar" x="1265" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="1280" y="82" text-anchor="middle">参加者情報エリア</text>
+      <text class="t-sub" x="1280" y="102" text-anchor="middle">主催者・名前・他N名</text>
+      <text class="err" x="1180" y="136">✕ 出せる分が無いときは何も出ない</text>
+    </g>
+
+    <!-- lane B: steps -->
+    <g class="hit" data-key="1" tabindex="0" role="button" aria-label="出すかどうかを決める">
+      <polygon class="step-diamond" points="135,196 210,232 135,268 60,232"/>
+      <text class="t-name" x="135" y="229" text-anchor="middle">① 出すか</text>
+      <text class="t-name" x="135" y="245" text-anchor="middle">決める</text>
+      <text class="err" x="60" y="312">✕ 設定が無効</text>
+      <text class="err" x="60" y="328">✕ 空室</text>
+      <text class="err" x="60" y="344">✕ 参加者が0人</text>
+    </g>
+    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="人の情報を集める">
+      <rect class="step" x="250" y="200" width="150" height="64" rx="8"/>
+      <text class="t-name" x="325" y="224" text-anchor="middle">② 人の情報を集める</text>
+      <text class="t-sub" x="325" y="242" text-anchor="middle">先頭10人と主催者</text>
+      <text class="err" x="250" y="292">✕ 11人目からは</text>
+      <text class="err" x="250" y="308">　そもそも取らない</text>
+      <text class="err" x="250" y="324">✕ 10秒おきに5回まで</text>
+    </g>
+    <g class="hit" data-key="3" tabindex="0" role="button" aria-label="主催者の顔写真を取る">
+      <rect class="step" x="440" y="200" width="150" height="64" rx="8"/>
+      <text class="t-name" x="515" y="224" text-anchor="middle">③ 顔写真を取る</text>
+      <text class="t-sub" x="515" y="242" text-anchor="middle">主催者のぶんだけ</text>
+      <text class="err" x="440" y="292">✕ 写真の登録が無い</text>
+      <text class="err" x="440" y="308">　ときは既定の人型</text>
+    </g>
+    <g class="hit" data-key="4" tabindex="0" role="button" aria-label="主催者の行を作る">
+      <rect class="step" x="630" y="200" width="150" height="64" rx="8"/>
+      <text class="t-name" x="705" y="224" text-anchor="middle">④ 主催者の行を作る</text>
+      <text class="t-sub" x="705" y="242" text-anchor="middle">写真・名前・ラベル</text>
+      <text class="err" x="630" y="292">✕ 氏名がどこにも</text>
+      <text class="err" x="630" y="308">　無いと、エリア</text>
+      <text class="err" x="630" y="324">　ごと出ない</text>
+    </g>
+    <g class="hit" data-key="5" tabindex="0" role="button" aria-label="名前を並べる">
+      <rect class="step" x="820" y="200" width="150" height="64" rx="8"/>
+      <text class="t-name" x="895" y="224" text-anchor="middle">⑤ 名前を並べる</text>
+      <text class="t-sub" x="895" y="242" text-anchor="middle">従業員だけ 3人まで</text>
+      <text class="err" x="820" y="292">✕ ゲスト・他の会社</text>
+      <text class="err" x="820" y="308">　の人は並ばない</text>
+      <text class="err" x="820" y="324">✕ 4人目からも並ばない</text>
+    </g>
+    <g class="hit" data-key="6" tabindex="0" role="button" aria-label="残りの人数を数える">
+      <rect class="step" x="1010" y="200" width="150" height="64" rx="8"/>
+      <text class="t-name" x="1085" y="224" text-anchor="middle">⑥ 残りを数える</text>
+      <text class="t-sub" x="1085" y="242" text-anchor="middle">参加者全員から引く</text>
+      <text class="err" x="1010" y="292">✕ 残りが0人なら</text>
+      <text class="err" x="1010" y="308">　「他N名」の行は</text>
+      <text class="err" x="1010" y="324">　出ない</text>
+    </g>
+    <g class="hit" data-key="7" tabindex="0" role="button" aria-label="公開の範囲を見る">
+      <polygon class="step-diamond" points="1275,190 1350,232 1275,274 1200,232"/>
+      <text class="t-name" x="1275" y="229" text-anchor="middle">⑦ 公開の</text>
+      <text class="t-name" x="1275" y="245" text-anchor="middle">範囲は？</text>
+      <text class="err" x="1200" y="312">✕ 非公開 → 出ない</text>
+      <text class="err" x="1200" y="328">✕ 主催者のみ公開 →</text>
+      <text class="err" x="1200" y="344">　主催者の行だけ</text>
+    </g>
+
+    <!-- lane C: things that stay -->
+    <g class="hit" data-key="B" tabindex="0" role="button" aria-label="いまの予約と顔ぶれ">
+      <rect class="save-box" x="250" y="445" width="150" height="40" rx="8"/>
+      <text class="t-save" x="325" y="469" text-anchor="middle">いまの予約と顔ぶれ</text>
+      <text class="t-save-note" x="325" y="506" text-anchor="middle">替わったら ① から作り直す</text>
+      <text class="t-sub" x="325" y="522" text-anchor="middle">終了・自動キャンセル・参加者の増減</text>
+    </g>
+    <g class="hit" data-key="A" tabindex="0" role="button" aria-label="組み立てた表示の中身">
+      <rect class="save-box" x="1010" y="445" width="150" height="40" rx="8"/>
+      <text class="t-save" x="1085" y="469" text-anchor="middle">組み立てた表示の中身</text>
+      <text class="t-save-note" x="1085" y="506" text-anchor="middle">認証画面へ離れて戻る → そのまま出る</text>
+      <text class="t-sub" x="1085" y="522" text-anchor="middle">作り直すまで持ち続ける</text>
+    </g>
+  </svg>
+  </div>
+  <figcaption>緑の線が「うまくいく道」。赤の ✕ は「そこで出さない・減らす理由」。青の点線は「画面を離れても残るもの」。参加者情報は ① で出すと決まったときだけ作られ、予約や顔ぶれが替わると ① から作り直されます。</figcaption>
+  <div class="legend">
+    <span><i class="sw flow"></i>うまくいく道</span>
+    <span><i class="sw err"></i>出さない・減らす理由</span>
+    <span><i class="sw save"></i>画面を離れても残るもの</span>
+  </div>
+</figure>
+</section>
+
+
+<section class="index">
+  <h2>テストケースは、図のどこの話？</h2>
+  <p class="hint">カードをクリックすると図の該当箇所が光ります。図の箱をクリックすると、その箱に関係するカードだけが残ります。● 緑＝そのとおり出る確認、● 赤＝出ない・減る方の確認。</p>
+
+  <div class="group">
+    <h3>ルール① 出るとき・出ないとき</h3>
+    <div class="cards">
+      <div class="card" data-keys="H,1,2,3,4,5,6,7,P"><div class="ttl"><i class="dot ok"></i>入室待ち・全公開・参加者3人 → 主催者と参加メンバーが出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="H,1,P"><div class="ttl"><i class="dot ok"></i>同じ予約に入室して利用中 → 出たまま変わらない</div><div class="chips"></div></div>
+      <div class="card" data-keys="1"><div class="ttl"><i class="dot ng"></i>「予約情報の表示」が無効 → 出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="1"><div class="ttl"><i class="dot ng"></i>当日の予約が無く空室 → 出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="1"><div class="ttl"><i class="dot ng"></i>参加者が1人も登録されていない → 出ない</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール② 公開範囲で出る中身が変わる</h3>
+    <div class="cards">
+      <div class="card" data-keys="7,P"><div class="ttl"><i class="dot ok"></i>全公開 → 主催者の行＋名前＋「他1名」</div><div class="chips"></div></div>
+      <div class="card" data-keys="7,P"><div class="ttl"><i class="dot ok"></i>主催者のみ公開 → 主催者の行だけ</div><div class="chips"></div></div>
+      <div class="card" data-keys="7"><div class="ttl"><i class="dot ng"></i>非公開 → 1行も出ない</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール③ 主催者の行（名前の決まり方）</h3>
+    <div class="cards">
+      <div class="card" data-keys="4,P"><div class="ttl"><i class="dot ok"></i>予約を作った人が1行目に出る（所属の会社名は出ない）</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,P"><div class="ttl"><i class="dot ok"></i>日本語で「主催者」／英語で「Host」</div><div class="chips"></div></div>
+      <div class="card" data-keys="4"><div class="ttl"><i class="dot ng"></i>作った人が参加者にいない → 先頭の人が主催者</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,4"><div class="ttl"><i class="dot ng"></i>人物の情報が5回とも取れない → 予約に入っている名前で出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="4"><div class="ttl"><i class="dot ng"></i>名前がどこにも無い → エリアごと出ない（赤カード①）</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール④ 名前が並ぶ人数と対象</h3>
+    <div class="cards">
+      <div class="card" data-keys="5,P"><div class="ttl"><i class="dot ok"></i>主催者だけ → 参加メンバーの行が出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="5"><div class="ttl"><i class="dot ok"></i>従業員2人（上限の手前） → 2人が並ぶ</div><div class="chips"></div></div>
+      <div class="card" data-keys="5"><div class="ttl"><i class="dot ok"></i>従業員3人（上限ちょうど） → 3人が並ぶ</div><div class="chips"></div></div>
+      <div class="card" data-keys="5"><div class="ttl"><i class="dot ok"></i>従業員4人（上限の直後） → 3人までで止まる</div><div class="chips"></div></div>
+      <div class="card" data-keys="5"><div class="ttl"><i class="dot ok"></i>ゲストが混ざる → 従業員の名前だけ並ぶ</div><div class="chips"></div></div>
+      <div class="card" data-keys="5"><div class="ttl"><i class="dot ok"></i>ゲストだけ → 1人も並ばない</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,5,6"><div class="ttl"><i class="dot ng"></i>11人目にいる従業員 → 名前は出ないが「他N名」には数えられる（赤カード③）</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑤ 「他N名」の人数</h3>
+    <div class="cards">
+      <div class="card" data-keys="6"><div class="ttl"><i class="dot ok"></i>計4人・超過なし → 「他N名」の行が出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="6,P"><div class="ttl"><i class="dot ok"></i>計5人・超過1人 → 「他1名」</div><div class="chips"></div></div>
+      <div class="card" data-keys="5,6"><div class="ttl"><i class="dot ok"></i>従業員1人＋ゲスト2人 → 「他2名」</div><div class="chips"></div></div>
+      <div class="card" data-keys="5,6"><div class="ttl"><i class="dot ok"></i>ゲスト3人 → 名前なしで「他3名」</div><div class="chips"></div></div>
+      <div class="card" data-keys="6,P"><div class="ttl"><i class="dot ok"></i>英語表示 → 「+1 others」</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,5,6"><div class="ttl"><i class="dot ng"></i>参加メンバーの情報が5回とも取れない → 名前が出ず「他N名」に入る</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑥ 氏名の言語</h3>
+    <div class="cards">
+      <div class="card" data-keys="4,5,P"><div class="ttl"><i class="dot ok"></i>日本語表示 → 日本語の名前</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,5,P"><div class="ttl"><i class="dot ok"></i>英語表示 → 英語の名前</div><div class="chips"></div></div>
+      <div class="card" data-keys="5"><div class="ttl"><i class="dot ng"></i>英語の名前が空 → その人だけ日本語の名前</div><div class="chips"></div></div>
+      <div class="card" data-keys="5"><div class="ttl"><i class="dot ng"></i>英語の名前が「-」 → その人だけ日本語の名前</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑦ 主催者の顔写真</h3>
+    <div class="cards">
+      <div class="card" data-keys="3,P"><div class="ttl"><i class="dot ok"></i>写真の登録あり → 丸く切り抜かれて出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="3,P"><div class="ttl"><i class="dot ok"></i>写真の登録なし → 既定の人型</div><div class="chips"></div></div>
+      <div class="card" data-keys="5,P"><div class="ttl"><i class="dot ok"></i>参加メンバーの名前には写真が付かない</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑧ 他の会社（テナント組織）の予約</h3>
+    <div class="cards">
+      <div class="card" data-keys="4,5,6,P"><div class="ttl"><i class="dot ok"></i>他の会社の予約 → 主催者は個人名でなく会社名、名前は1人も並ばず全員「他N名」</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑨ 予約が切り替わる（終了・自動キャンセル）・画面を離れる</h3>
+    <div class="cards">
+      <div class="card" data-keys="B,1,2,4,P"><div class="ttl"><i class="dot ok"></i>利用中に終了時刻を過ぎ、次の予約が続く → 主催者も名前も次の予約のもの</div><div class="chips"></div></div>
+      <div class="card" data-keys="B,1,2,4,P"><div class="ttl"><i class="dot ok"></i>入室待ちが自動キャンセルされ、次の予約が続く → 次の予約のものに入れ替わる</div><div class="chips"></div></div>
+      <div class="card" data-keys="B,1"><div class="ttl"><i class="dot ok"></i>利用中に終了時刻を過ぎ、次の予約が無い → 空室になって出なくなる</div><div class="chips"></div></div>
+      <div class="card" data-keys="B,1"><div class="ttl"><i class="dot ok"></i>入室待ちが自動キャンセルされ、次の予約が無い → 出なくなる</div><div class="chips"></div></div>
+      <div class="card" data-keys="B,1"><div class="ttl"><i class="dot ok"></i>自動キャンセルが無効のまま終了時刻を過ぎる → 出なくなる</div><div class="chips"></div></div>
+      <div class="card" data-keys="B,7"><div class="ttl"><i class="dot ok"></i>次が非公開の予約 → 出なくなる</div><div class="chips"></div></div>
+      <div class="card" data-keys="B,1"><div class="ttl"><i class="dot ok"></i>次が参加者のいない予約 → 出なくなる</div><div class="chips"></div></div>
+      <div class="card" data-keys="B,1,7,P"><div class="ttl"><i class="dot ok"></i>非公開の予約（出ていない）→ 次が全公開 → 出るようになる</div><div class="chips"></div></div>
+      <div class="card" data-keys="N,A,P"><div class="ttl"><i class="dot ok"></i>認証画面へ進んで操作せずに戻る → 離れる前と同じ表示</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑩ 同じ予約のまま顔ぶれが変わる</h3>
+    <div class="cards">
+      <div class="card" data-keys="B,2,5"><div class="ttl"><i class="dot ok"></i>従業員を1人追加 → 名前が並びに加わる</div><div class="chips"></div></div>
+      <div class="card" data-keys="B,2,5"><div class="ttl"><i class="dot ok"></i>参加メンバーを1人削除 → 名前が並びから消える</div><div class="chips"></div></div>
+      <div class="card" data-keys="B,2,6"><div class="ttl"><i class="dot ok"></i>ゲストを1人追加 → 並びは変わらず「他1名」が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="B,2,6"><div class="ttl"><i class="dot ok"></i>ゲストを削除 → 並びは変わらず「他1名」が消える</div><div class="chips"></div></div>
+      <div class="card" data-keys="B,2,5"><div class="ttl"><i class="dot ok"></i>人数が変わらない差し替え → 名前が入れ替わる（赤カード②）</div><div class="chips"></div></div>
+      <div class="card" data-keys="B,4"><div class="ttl"><i class="dot ng"></i>作った人が参加者から外れる → 先頭の人が主催者</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>通し（実機で最後まで）</h3>
+    <div class="cards">
+      <div class="card" data-keys="H,1,2,3,4,5,6,7,P"><div class="ttl"><i class="dot ok"></i>空室の部屋に予約が作られ、操作なしで主催者と参加メンバーが出る</div><div class="chips"></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div style="display:grid;gap:10px">
+  <h2>「出ない」「思ったのと違う」の理由は、どこの話？</h2>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>画面での見え方</th><th>そうなっている場所</th></tr>
+    <tr><td class="msg">参加者情報が1行も出ない</td><td>① 「予約情報の表示」が無効 ／ ① 空室（予約が終わった・自動キャンセルされた後で次の予約が無い） ／ ① 参加者が0人 ／ ④ 主催者の名前がどこにも無い ／ ⑦ 非公開</td></tr>
+    <tr><td class="msg">主催者の行だけが出て、名前も「他N名」も出ない</td><td>⑦ 主催者のみ公開</td></tr>
+    <tr><td class="msg">参加メンバーの名前が1人も並ばない</td><td>⑤ 並べる従業員が0人（主催者だけ／ゲストだけ／他の会社の予約）</td></tr>
+    <tr><td class="msg">名前が3人までで止まる</td><td>⑤ 並ぶのは3人までと決まっている</td></tr>
+    <tr><td class="msg">ある従業員の名前だけ出ない</td><td>② 11人目以降にいる ／ ② その人の情報が取れなかった ／ ⑤ 4人目以降にあたる</td></tr>
+    <tr><td class="msg">「他N名」の行が出ない</td><td>⑥ 名前が出なかった人が0人</td></tr>
+    <tr><td class="msg">「他N名」の人数が、名前が出ていない人の数と合っている</td><td>⑥ 参加者全員の数から、名前が並んだ人と主催者を引いている。② で取らなかった11人目以降もここに数えられる</td></tr>
+    <tr><td class="msg">顔写真が人型のまま</td><td>③ 写真が未登録（取得に失敗したときの表示は画像表示ライブラリの責務のため対象外）</td></tr>
+    <tr><td class="msg">主催者の行に個人名ではなく会社名が出る</td><td>④ 他の会社（テナント組織）の予約では、個人名ではなく会社名が出る</td></tr>
+    <tr><td class="msg">主催者の名前が、登録しているのと違う名前で出る</td><td>② 情報を5回とも取れず、予約に入っている名前で出ている</td></tr>
+    <tr><td class="msg">英語表示なのに日本語の名前で出る</td><td>④⑤ その人の英語の名前が未登録（空・「-」）</td></tr>
+    <tr><td class="msg">主催者の行に会社名が出ない</td><td>④ 主催者の行には会社名を出さない（タイムラインの予約の詳細とは別）</td></tr>
+  </table>
+  </div>
+  </div>
+</section>
+
+
+</div>
+
+<script>
+(function () {
+  var LABEL = {
+    H: "ホーム画面", N: "認証画面", P: "参加者情報エリア",
+    1: "① 出すか決める", 2: "② 人の情報を集める", 3: "③ 顔写真を取る", 4: "④ 主催者の行を作る",
+    5: "⑤ 名前を並べる", 6: "⑥ 残りを数える", 7: "⑦ 公開の範囲は？",
+    A: "組み立てた中身", B: "いまの予約と顔ぶれ"
+  };
+  var root = document.documentElement;
+  var hits = Array.prototype.slice.call(document.querySelectorAll(".hit"));
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card"));
+  var status = document.getElementById("status");
+
+  cards.forEach(function (c) {
+    var keys = c.getAttribute("data-keys").split(",");
+    var box = c.querySelector(".chips");
+    keys.forEach(function (k) {
+      var s = document.createElement("span");
+      s.className = "chip"; s.setAttribute("data-k", k); s.textContent = LABEL[k] || k;
+      box.appendChild(s);
+    });
+    c.setAttribute("tabindex", "0");
+    c.addEventListener("click", function () { selectCard(c, keys); });
+    c.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectCard(c, keys); } });
+  });
+
+  hits.forEach(function (h) {
+    var k = h.getAttribute("data-key");
+    h.addEventListener("click", function () { selectKey(k); });
+    h.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectKey(k); } });
+  });
+
+  function clear() {
+    root.classList.remove("has-sel");
+    hits.forEach(function (h) { h.classList.remove("active"); });
+    cards.forEach(function (c) { c.classList.remove("match"); });
+    status.textContent = "箱をクリックすると、その場所に関係するテストだけが残ります";
+  }
+  var lastKey = null, lastCard = null;
+  function selectKey(k) {
+    if (lastKey === k && !lastCard) { clear(); lastKey = null; return; }
+    clear(); lastKey = k; lastCard = null;
+    root.classList.add("has-sel");
+    var n = 0;
+    hits.forEach(function (h) { if (h.getAttribute("data-key") === k) h.classList.add("active"); });
+    cards.forEach(function (c) {
+      if (c.getAttribute("data-keys").split(",").indexOf(k) >= 0) { c.classList.add("match"); n++; }
+    });
+    status.textContent = "「" + (LABEL[k] || k) + "」に関係するテスト：" + n + " 件";
+  }
+  function selectCard(c, keys) {
+    if (lastCard === c) { clear(); lastCard = null; lastKey = null; return; }
+    clear(); lastCard = c; lastKey = null;
+    root.classList.add("has-sel");
+    c.classList.add("match");
+    hits.forEach(function (h) { if (keys.indexOf(h.getAttribute("data-key")) >= 0) h.classList.add("active"); });
+    status.textContent = "このテストが通る場所：" + keys.map(function (k) { return LABEL[k] || k; }).join(" → ");
+    var fig = document.querySelector("figure");
+    if (fig && fig.getBoundingClientRect().top < 0) fig.scrollIntoView({ block: "start" });
+  }
+  document.getElementById("clearBtn").addEventListener("click", function () { clear(); lastKey = null; lastCard = null; });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { clear(); lastKey = null; lastCard = null; } });
+
+})();
+</script>
+</body>
+</html>

@@ -466,7 +466,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr class="grp"><td colspan="5">B. ホーム画面の表示</td></tr>
     <tr data-keys="HOME,BG1"><td class="no">⑦</td><td class="nm">部屋の予約状況をホーム画面に表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-done">成果物あり</span></td><td>Home</td></tr>
     <tr data-keys="HOME"><td class="no">⑧</td><td class="nm">当日の予約タイムラインを表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-done">成果物あり</span></td><td>ReservationTimeline</td></tr>
-    <tr data-keys="HOME"><td class="no">⑨</td><td class="nm">予約の参加者情報を表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="HOME"><td class="no">⑨</td><td class="nm">予約の参加者情報を表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-wip">作成中</span></td><td>—</td></tr>
     <tr data-keys="HOME,OUT"><td class="no">⑩</td><td class="nm">利用不可・利用時間外を表示できる</td><td><span class="scr">ホーム</span><span class="scr">利用時間外</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
 
     <tr class="grp"><td colspan="5">C. 本人の特定（認証）</td></tr>
@@ -573,6 +573,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr data-keys="PREP"><td class="nm">並列データ取得が揃うまでの待機表示・30秒間隔の再試行・ログアウト動線</td><td>並列データ取得が揃わない間</td><td class="path"><code>（Android版の新規実装。参照元のiOSは withTimeout(Minute(1)) → router.moveToTop() で先へ進む）</code></td><td>③（台帳 #12）</td></tr>
     <tr class="grp"><td colspan="4">ホーム画面</td></tr>
     <tr data-keys="HOME"><td class="nm">予約と予約状態の更新</td><td>常駐（リスナー通知のつど）</td><td class="path"><code>updateReservationAndStatus()</code></td><td>⑦</td></tr>
+    <tr data-keys="HOME"><td class="nm">参加者情報の取得と表示（予約情報の表示が有効、かつ入室待ち・利用中のとき）</td><td>常駐（メインループ）</td><td class="path"><code>updateParticipantInfo() / GetReservationParticipantInfoUseCase.execute() / ReservationParticipantInfoContent</code></td><td>⑨</td></tr>
     <tr data-keys="HOME"><td class="nm">利用時間外の判定と表示切替（画面遷移ではない）</td><td>常駐</td><td class="path"><code>checkUnavailableTime() / isOutOfUsableTime()</code></td><td>⑩</td></tr>
     <tr data-keys="HOME"><td class="nm">入室可能時間の判定</td><td>常駐</td><td class="path"><code>makeReservationAvailableTimerHelper().isRoomAvailableForMembers() / isRoomAvailableForCustomer()</code></td><td>⑦</td></tr>
     <tr data-keys="HOME"><td class="nm">入室（チェックイン）</td><td>ボタン操作時</td><td class="path"><code>enterReservationUseCase.execute() / enterRoom()</code></td><td>⑳</td></tr>
@@ -816,6 +817,46 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td><span class="pill p-done">表示の有無＝⑧ ／ 可否判定と削除の実行＝㉔</span></td>
       <td>ボタンが出るか出ないかは予約の詳細の表示仕様であり、可否判定の中身は㉔のキャンセル可能条件そのものであるため。</td>
       <td class="no">2026-11-04</td>
+    </tr>
+    <tr>
+      <td class="no">26</td>
+      <td class="nm">ホームに着いてから参加者情報が出るまでの待ち時間はどこで見るか</td>
+      <td>⑨ ③ ⑦</td>
+      <td><span class="pill p-done">⑨（ホーム表示の時点で参加者情報が揃っている前提でルール化）</span></td>
+      <td>Android版は予約データが揃ってからホームへ遷移する方針（台帳 #8・#12）であるため、参照元（iOS）のメインループの7秒の待機（<code>MainMenuViewModel.swift:671-674, 649-651</code>）は採らない。⑦も主ボタンについて同じ待機を不採用としている（Home/rules.md ルール⑤の注記）。</td>
+      <td class="no">2026-11-10</td>
+    </tr>
+    <tr>
+      <td class="no">27</td>
+      <td class="nm">同じ予約のまま参加者の顔ぶれが入れ替わったときの表示の更新はどこで見るか</td>
+      <td>⑨</td>
+      <td><span class="pill p-done">⑨（更新されることを正しい振る舞いとしてルール化／参照元との差分は赤カード）</span></td>
+      <td>参照元（iOS）の再取得の判定は参加者の人数の比較のみ（<code>MainMenuViewModel.swift:912-918</code>）で、人数が同じ差し替えでは更新されない。Android版は更新する振る舞いを正とする判断。</td>
+      <td class="no">2026-11-10</td>
+    </tr>
+    <tr>
+      <td class="no">28</td>
+      <td class="nm">入室・退室などの操作のアニメーション表示中に参加者情報エリアが出ないことはどこで見るか</td>
+      <td>⑨ ⑳ ㉑ ㉓ ㉔ ㉕</td>
+      <td><span class="pill p-done">各操作チケット（⑨では見ない）</span></td>
+      <td>操作中は主ボタンを含むまとまりごと描画されない（<code>MainMenuView.swift:280-300, 324-345</code>）ため、各操作のシナリオと重複するため。台帳 #15 と同じ構図。</td>
+      <td class="no">2026-11-10</td>
+    </tr>
+    <tr>
+      <td class="no">29</td>
+      <td class="nm">サードプレイスの顧客が関わる予約のホーム表示（参加者アイコンを含む）はどこで見るか</td>
+      <td>⑨ ㉙</td>
+      <td><span class="pill p-done">㉙ サードプレイス(有料)予約を作成できる（⑨では見ない）</span></td>
+      <td>㉙の受け入れ条件が選択時間に対する表示までを含み、サードプレイスではホームの表示内容自体が変わるため。アイコンの取得経路も分岐する（<code>GetPeopleImageUseCase.swift:23-28</code>）。</td>
+      <td class="no">2026-11-10</td>
+    </tr>
+    <tr>
+      <td class="no">30</td>
+      <td class="nm">ホームの参加者情報と、タイムラインの予約の詳細で主催者名の解決方式が違うことをどう扱うか</td>
+      <td>⑨ ⑧</td>
+      <td><span class="pill p-done">⑨（取得・再試行ありの振る舞いをそのままルール化。⑨では赤カードにしない）</span></td>
+      <td>⑨は人物情報を取得し失敗時に再試行する（<code>GetReservationParticipantInfoUseCase.swift:58-93</code>）一方、⑧は予約データ内の名前をそのまま表示する（<code>MeetingIndicator.swift:243</code>）。参照元で裏取りできているため。⑧の赤カード①は継続。</td>
+      <td class="no">2026-11-10</td>
     </tr>
   </table>
   </div>
