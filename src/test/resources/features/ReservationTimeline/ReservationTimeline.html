@@ -214,10 +214,10 @@ td.msg { font-weight: 500; }
       <text class="err" x="60" y="292">✕ 利用不可のときは</text>
       <text class="err" x="60" y="308">　画面ごと入れ替わる</text>
     </g>
-    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="当日に重なる予約を選ぶ">
+    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="表示する範囲に重なる予約を選ぶ">
       <rect class="step" x="250" y="200" width="150" height="64" rx="8"/>
-      <text class="t-name" x="325" y="224" text-anchor="middle">② 当日の予約を選ぶ</text>
-      <text class="t-sub" x="325" y="242" text-anchor="middle">当日に重なるものだけ</text>
+      <text class="t-name" x="325" y="224" text-anchor="middle">② 出す予約を選ぶ</text>
+      <text class="t-sub" x="325" y="242" text-anchor="middle">0時〜25時に重なるものだけ</text>
       <text class="err" x="250" y="292">✕ 前日だけ・翌日だけの</text>
       <text class="err" x="250" y="308">　予約は出ない</text>
     </g>
@@ -274,7 +274,7 @@ td.msg { font-weight: 500; }
   <div class="group">
     <h3>ルール① どの予約が帯になるか</h3>
     <div class="cards">
-      <div class="card" data-keys="H,2,3"><div class="ttl"><i class="dot ok"></i>当日の予約 → その時間の位置に帯が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="H,2,3"><div class="ttl"><i class="dot ok"></i>その時間に入る予約 → その時間の位置に帯が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="H,2,3"><div class="ttl"><i class="dot ok"></i>前の日から続く予約 → 0時の手前から出る</div><div class="chips"></div></div>
       <div class="card" data-keys="H,2,3"><div class="ttl"><i class="dot ok"></i>次の日まで続く予約 → 右のはし（25時）まで出る</div><div class="chips"></div></div>
       <div class="card" data-keys="H,2,3"><div class="ttl"><i class="dot ok"></i>前の日から次の日まで続く → まる1日ぶん出る</div><div class="chips"></div></div>
@@ -283,8 +283,8 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="3"><div class="ttl"><i class="dot ok"></i>遅れて入っても、帯の始まりは変わらない</div><div class="chips"></div></div>
       <div class="card" data-keys="3"><div class="ttl"><i class="dot ok"></i>早く出ていくと、帯の終わりがそこまで縮む</div><div class="chips"></div></div>
       <div class="card" data-keys="H,3"><div class="ttl"><i class="dot ok"></i>横にスクロールして帯の左はしが画面の外に出ても、時刻は画面の左はしに残る</div><div class="chips"></div></div>
-      <div class="card" data-keys="H,2"><div class="ttl"><i class="dot ok"></i>当日の予約が無い → 目盛りと今の時刻だけ</div><div class="chips"></div></div>
-      <div class="card" data-keys="H,2,3"><div class="ttl"><i class="dot ok"></i>当日の予約がたくさんあっても、どの帯も時間どおりの位置に出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="H,2"><div class="ttl"><i class="dot ok"></i>出す予約が1件も無い → 目盛りと今の時刻だけ</div><div class="chips"></div></div>
+      <div class="card" data-keys="H,2,3"><div class="ttl"><i class="dot ok"></i>予約がたくさんあっても、どの帯も時間どおりの位置に出る</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -302,9 +302,12 @@ td.msg { font-weight: 500; }
     <h3>ルール③ 帯の中の時刻</h3>
     <div class="cards">
       <div class="card" data-keys="4"><div class="ttl"><i class="dot ok"></i>30分の予約 → 始まりと終わりの時刻が出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="4"><div class="ttl"><i class="dot ok"></i>25分30秒ちょうど → 時刻が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="4"><div class="ttl"><i class="dot ok"></i>26分（途中退出で短くなった帯） → 時刻が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="4"><div class="ttl"><i class="dot ng"></i>25分 → 帯は出るが時刻は出ない</div><div class="chips"></div></div>
-      <div class="card" data-keys="4"><div class="ttl"><i class="dot ok"></i>日をまたぐ予約 → 日付つきの時刻が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="4"><div class="ttl"><i class="dot ok"></i>前の日から続く予約 → 始まりの時刻に日付がつく</div><div class="chips"></div></div>
+      <div class="card" data-keys="4"><div class="ttl"><i class="dot ok"></i>次の日まで続く予約 → 終わりの時刻に日付がつく</div><div class="chips"></div></div>
+      <div class="card" data-keys="4"><div class="ttl"><i class="dot ok"></i>その日のうちに終わる（23:55） → 日付はつかない</div><div class="chips"></div></div>
+      <div class="card" data-keys="4"><div class="ttl"><i class="dot ok"></i>次の日の0時ちょうどに終わる → 日付がつく</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -314,6 +317,7 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="H,5"><div class="ttl"><i class="dot ok"></i>10秒たつと、1時間前が左のはしに来る</div><div class="chips"></div></div>
       <div class="card" data-keys="H,5"><div class="ttl"><i class="dot ng"></i>遅い時間帯は右のはしで止まり、それ以上動かない</div><div class="chips"></div></div>
       <div class="card" data-keys="H,5"><div class="ttl"><i class="dot ok"></i>手で動かすと、10秒たってから戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="H,5"><div class="ttl"><i class="dot ok"></i>10秒たつ前にもう一度動かすと、待ち時間が数え直される</div><div class="chips"></div></div>
       <div class="card" data-keys="H,5"><div class="ttl"><i class="dot ok"></i>日付を押すと、その場で今の時刻へ戻る</div><div class="chips"></div></div>
     </div>
   </div>
@@ -375,6 +379,7 @@ td.msg { font-weight: 500; }
     <tr><td class="msg">予約削除</td><td>⑦ 消せるか見る（消せる予約のとき）</td></tr>
     <tr><td class="msg">閉じる</td><td>予約の詳細（いつでも出る）</td></tr>
     <tr><td class="msg">（日付）(曜日)</td><td>ホーム画面のタイムライン（押すと今の時刻へ戻る）</td></tr>
+    <tr><td class="msg">帯の中の時刻に日付がついている</td><td>④ 時刻を出すか決める（その時刻がその日のものでないとき）</td></tr>
   </table>
   </div>
   </div>
@@ -386,7 +391,7 @@ td.msg { font-weight: 500; }
 (function () {
   var LABEL = {
     H: "ホーム画面", D: "予約の詳細",
-    1: "① 部屋の状態", 2: "② 当日の予約を選ぶ", 3: "③ 位置と長さ", 4: "④ 時刻を出すか",
+    1: "① 部屋の状態", 2: "② 出す予約を選ぶ", 3: "③ 位置と長さ", 4: "④ 時刻を出すか",
     5: "⑤ 今の時刻へ寄せる", 6: "⑥ 見せる内容", 7: "⑦ 消せるか"
   };
   var root = document.documentElement;
