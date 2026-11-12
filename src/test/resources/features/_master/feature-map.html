@@ -879,7 +879,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">管理画面の一時停止スケジュール中のホームの表示はどこで見るか</td>
       <td>⑩ ⑦ ㉒ ㉙</td>
       <td><span class="pill p-done">⑦ 部屋の予約状況をホーム画面に表示できる（⑩では見ない）</span></td>
-      <td>利用不可の表示にはならず、空室の表示のまま主ボタンだけが消えるため。利用不可かどうかの判定（<code>ReservationAvailableTimeHelper.swift:58-70</code>）は当該設定を参照しておらず、参照されるのは空室のときの主ボタンの表示可否（<code>MainMenuViewModel.swift:114</code>）と、予約作成の認証成功後のチェック（同 <code>:451</code> <code>:497</code>）のみ。⑦の成果物への追記が必要。</td>
+      <td>利用不可の表示にはならず、空室の表示のまま主ボタンだけが消えるため。利用不可かどうかの判定（<code>ReservationAvailableTimeHelper.swift:58-70</code>）は当該設定を参照しておらず、参照されるのは空室のときの主ボタンの表示可否（<code>MainMenuViewModel.swift:114</code>）と、予約作成の認証成功後のチェック（同 <code>:451</code> <code>:497</code>）のみ。2026-11-12 追記：⑦のルール⑧として反映済み。影響を受けるのは<b>空室のときの主ボタン「今すぐ入室」だけ</b>で、入室待ち・利用中は判定の対象外（主ボタン・サブボタンともそのまま表示される）。対象者の種別（従業員／会員）を限定した一時停止は⑩の責務とし、⑦ではボタンの表示可否のみを見る。また、ホームを表示したまま管理画面で登録・削除された場合、参照元の実機では再起動しないと反映されなかったが、<b>Android版では再起動なしで反映される作りとする</b>（新規要件）。</td>
       <td class="no">2026-11-11</td>
     </tr>
     <tr>

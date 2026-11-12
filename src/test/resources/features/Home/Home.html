@@ -244,6 +244,9 @@ td.msg { font-weight: 500; }
       <text class="t-sub" x="1215" y="242" text-anchor="middle">色・残り時間・ボタン</text>
       <text class="err" x="1140" y="292">✕ 設定で切ってある操作</text>
       <text class="err" x="1140" y="308">　はボタンが出ない</text>
+      <text class="err" x="1140" y="324">✕ 管理画面で止めている</text>
+      <text class="err" x="1140" y="340">　時間帯は空室の</text>
+      <text class="err" x="1140" y="356">　「今すぐ入室」が出ない</text>
     </g>
   </svg>
   </div>
@@ -339,6 +342,16 @@ td.msg { font-weight: 500; }
   </div>
 
   <div class="group">
+    <h3>ルール⑧ 管理画面で止めている時間帯</h3>
+    <div class="cards">
+      <div class="card" data-keys="6,H"><div class="ttl"><i class="dot ok"></i>止めている時間帯は空室の「今すぐ入室」だけが出ない（入室待ち・利用中はそのまま）</div><div class="chips"></div></div>
+      <div class="card" data-keys="6,H"><div class="ttl"><i class="dot ok"></i>止めている時間帯の始まり・終わりでボタンの出方が切り替わる</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,6,H"><div class="ttl"><i class="dot ok"></i>止めている時間帯の途中で空室になっても「今すぐ入室」は出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="6,H"><div class="ttl"><i class="dot ok"></i>表示したまま管理画面で止めたり戻したりしても再起動なしで反映される</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
     <h3>通し（実機で最後まで）</h3>
     <div class="cards">
       <div class="card" data-keys="prep,1,2,3,4,5,6,H"><div class="ttl"><i class="dot ok"></i>空室から入室待ちへ変わるまでを操作なしで見る</div><div class="chips"></div></div>
@@ -360,6 +373,7 @@ td.msg { font-weight: 500; }
     <tr><td class="msg">今すぐ入室 ／ 入室 ／ 退室</td><td>⑥ 状態と、設定で出す操作が決まる（中央のボタン）</td></tr>
     <tr><td class="msg">予約削除 ／ 予約延長 ／ 再入室</td><td>⑥ 状態と、設定で出す操作が決まる（下に並ぶボタン）</td></tr>
     <tr><td class="msg">（ボタンが出ない）</td><td>⑥ その操作を設定で切っているとき</td></tr>
+    <tr><td class="msg">（「今すぐ入室」だけが出ない）</td><td>⑥ 管理画面で止めている時間帯のとき（空室のみ。入室待ち・利用中のボタンは出たまま）</td></tr>
   </table>
   </div>
   </div>
