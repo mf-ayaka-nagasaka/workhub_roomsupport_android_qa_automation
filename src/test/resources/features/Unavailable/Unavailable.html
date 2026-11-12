@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>利用不可・利用時間外を表示できる</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #F4F6F9;
+  --lane: #EAEEF3;
+  --surface: #FFFFFF;
+  --ink: #1B2430;
+  --muted: #5E6B7A;
+  --line: #D3DAE3;
+  --flow: #0F7C7B;
+  --flow-soft: #DCF0EE;
+  --save: #3B57C4;
+  --save-soft: #E4E9FA;
+  --err: #C43C3C;
+  --err-soft: #FBE5E5;
+  --hot: #D98E04;
+  --hot-ink: #7E5300;
+  --hot-soft: #FCEFD3;
+  --ok: #2E8B57;
+  --font-display: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-body: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #11161D; --lane: #181F28; --surface: #1F2732; --ink: #E7ECF2; --muted: #9DA9B7; --line: #2E3843;
+    --flow: #4FC3C0; --flow-soft: #163A39; --save: #93A6F5; --save-soft: #232D52;
+    --err: #F08080; --err-soft: #4A2424; --hot: #F2B441; --hot-ink: #F2B441; --hot-soft: #4A3A14; --ok: #6CCB8C;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #11161D; --lane: #181F28; --surface: #1F2732; --ink: #E7ECF2; --muted: #9DA9B7; --line: #2E3843;
+  --flow: #4FC3C0; --flow-soft: #163A39; --save: #93A6F5; --save-soft: #232D52;
+  --err: #F08080; --err-soft: #4A2424; --hot: #F2B441; --hot-ink: #F2B441; --hot-soft: #4A3A14; --ok: #6CCB8C;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  padding-inline: 16px;
+  padding-block: 24px 48px;
+}
+.wrap { max-width: 1400px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.3; }
+h1 { font-size: 26px; font-weight: 700; }
+h2 { font-size: 18px; font-weight: 700; }
+h3 { font-size: 14px; font-weight: 700; }
+p { margin: 0; }
+.eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.lead { color: var(--muted); max-width: 60ch; }
+
+header { display: grid; gap: 8px; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 6px; }
+.controls label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; }
+.controls input { accent-color: var(--flow); width: 16px; height: 16px; }
+#status { font-size: 13px; color: var(--muted); }
+button.link {
+  font: inherit; font-size: 13px; color: var(--flow); background: none; border: 1px solid var(--flow);
+  border-radius: 999px; padding: 3px 12px; cursor: pointer;
+}
+button.link:hover { background: var(--flow-soft); }
+button.link:focus-visible, .hit:focus-visible, .card:focus-visible { outline: 2px solid var(--hot); outline-offset: 2px; }
+
+/* ---- map ---- */
+figure { margin: 0; display: grid; gap: 10px; }
+.scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+svg.map { display: block; min-width: 1100px; width: 100%; height: auto; }
+figcaption { color: var(--muted); font-size: 13px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 12px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 26px; height: 0; border-top: 3px solid; border-radius: 2px; }
+.sw.flow { border-color: var(--flow); }
+.sw.save { border-color: var(--save); border-top-style: dashed; }
+.sw.err { border-color: var(--err); }
+
+.lane { fill: var(--lane); stroke: var(--line); }
+.lane-label { font: 700 12px var(--font-display); fill: var(--muted); }
+.screen { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
+.screen-bar { fill: var(--ink); opacity: .85; }
+.step { fill: var(--surface); stroke: var(--flow); stroke-width: 1.6; }
+.step-diamond { fill: var(--flow-soft); stroke: var(--flow); stroke-width: 1.6; }
+.t-name { font: 700 13px var(--font-body); fill: var(--ink); }
+.t-sub { font: 400 11px var(--font-body); fill: var(--muted); }
+.t-screen { font: 700 13px var(--font-display); fill: var(--ink); }
+.flow { fill: none; stroke: var(--flow); stroke-width: 2; }
+.lbl { font: 500 11px var(--font-body); fill: var(--flow); }
+.save { fill: none; stroke: var(--save); stroke-width: 1.6; stroke-dasharray: 5 4; }
+.save-box { fill: var(--save-soft); stroke: var(--save); stroke-width: 1.5; }
+.t-save { font: 700 12px var(--font-body); fill: var(--ink); }
+.t-save-note { font: 500 11px var(--font-body); fill: var(--save); }
+.err { font: 500 11px var(--font-body); fill: var(--err); }
+.err-line { fill: none; stroke: var(--err); stroke-width: 1.6; }
+.arw-flow { fill: var(--flow); }
+.arw-save { fill: var(--save); }
+.arw-err { fill: var(--err); }
+
+.hit { cursor: pointer; transition: opacity .15s; }
+.hit:hover .step, .hit:hover .screen, .hit:hover .step-diamond, .hit:hover .save-box { stroke-width: 2.5; }
+.hit.active .step, .hit.active .screen, .hit.active .step-diamond, .hit.active .save-box { stroke: var(--hot); stroke-width: 3.5; }
+.has-sel .hit:not(.active) { opacity: .38; }
+@media (prefers-reduced-motion: reduce) { .hit, .card { transition: none; } }
+
+/* ---- test index ---- */
+.index { display: grid; gap: 14px; }
+.hint { font-size: 13px; color: var(--muted); }
+.group { display: grid; gap: 8px; }
+.group h3 { color: var(--muted); font-size: 12px; letter-spacing: .06em; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  display: grid; gap: 6px; cursor: pointer; transition: opacity .15s, border-color .15s;
+}
+.card:hover { border-color: var(--flow); }
+.card .ttl { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; font-weight: 500; line-height: 1.4; }
+.dot { flex: 0 0 auto; width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; }
+.dot.ok { background: var(--ok); }
+.dot.ng { background: var(--err); }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-start; align-content: flex-start; }
+.card { align-content: start; }
+.chip { font-size: 11px; padding: 1px 8px; border-radius: 999px; background: var(--flow-soft); color: var(--flow); font-weight: 500; white-space: nowrap; }
+.chip[data-k="home"], .chip[data-k="out"] { background: var(--lane); color: var(--ink); border: 1px solid var(--line); }
+.has-sel .card:not(.match) { opacity: .3; }
+.has-sel .card.match { border-color: var(--hot); box-shadow: 0 0 0 2px var(--hot-soft); }
+
+/* ---- message table ---- */
+table { border-collapse: collapse; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: 13px; }
+th, td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+th { background: var(--lane); color: var(--muted); font-size: 12px; font-weight: 700; }
+tr:first-child th { border-top: 0; }
+td.msg { font-weight: 500; }
+.tbl-wrap { overflow-x: auto; }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Unavailable ／ 全体マップ</p>
+  <h1>利用不可・利用時間外を表示できる</h1>
+  <p class="lead">会議室の前のタブレットが、1秒ごとに「いまこの部屋は使える時間か」を見直して、使えない時間になったらホームの中身をまるごと「利用不可の画面」に入れ替えるまでを1枚にしたもの。図の箱やテストケースをクリックすると、対応する場所が光ります。</p>
+  <div class="controls">
+    <button class="link" id="clearBtn" type="button">選択を解除</button>
+    <span id="status">箱をクリックすると、その場所に関係するテストだけが残ります</span>
+  </div>
+</header>
+
+<section>
+<figure>
+  <div class="scroll">
+  <svg class="map" viewBox="0 0 1440 400" role="img" aria-label="利用不可の表示の流れ。上段は利用者が見る画面、下段は1秒ごとにくり返される裏側の処理。処理は、使えない時間帯の中かの判定、予約に使える時間帯の中かの判定、出す言葉を決める、画面の中身を入れ替える、の順に進む。どちらの判定も通れば通常のホームのままになる。">
+    <defs>
+      <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-flow"/></marker>
+      <marker id="arwS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-save"/></marker>
+      <marker id="arwE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-err"/></marker>
+    </defs>
+
+    <!-- lanes -->
+    <rect class="lane" x="0" y="16" width="1440" height="128" rx="12"/>
+    <rect class="lane" x="0" y="156" width="1440" height="230" rx="12"/>
+    <text class="lane-label" x="16" y="38">画面（利用者が見るもの）</text>
+    <text class="lane-label" x="16" y="178">裏側で起きていること（1秒ごとにくり返す）</text>
+
+    <!-- flow arrows -->
+    <path class="flow" marker-end="url(#arw)" d="M210 116 V196"/>
+    <text class="lbl" x="218" y="162">ホームを見る</text>
+    <path class="flow" marker-end="url(#arw)" d="M270 232 H326"/>
+    <path class="flow" marker-end="url(#arw)" d="M510 232 H596"/>
+    <text class="lbl" x="553" y="222" text-anchor="middle">時間帯の外</text>
+    <path class="flow" marker-end="url(#arw)" d="M700 190 V140 H260 V120"/>
+    <text class="lbl" x="480" y="132" text-anchor="middle">使える時間 → 通常のホームのまま</text>
+    <path class="flow" marker-end="url(#arw)" d="M420 274 V348 H990 V268"/>
+    <text class="lbl" x="430" y="342">使えない時間帯に入った</text>
+    <path class="flow" marker-end="url(#arw)" d="M700 274 V312 H900 V268"/>
+    <text class="lbl" x="710" y="306">予約に使える時間帯の外</text>
+    <path class="flow" marker-end="url(#arw)" d="M1020 232 H1066"/>
+    <path class="flow" marker-end="url(#arw)" d="M1155 200 V120"/>
+    <text class="lbl" x="1163" y="162">中身が入れ替わる</text>
+
+    <!-- screens -->
+    <g class="hit" data-key="home" tabindex="0" role="button" aria-label="通常のホーム 空室 入室待ち 利用中">
+      <rect class="screen" x="120" y="52" width="180" height="64" rx="10"/>
+      <rect class="screen-bar" x="195" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="210" y="82" text-anchor="middle">通常のホーム</text>
+      <text class="t-sub" x="210" y="102" text-anchor="middle">空室／入室待ち／利用中</text>
+    </g>
+    <g class="hit" data-key="out" tabindex="0" role="button" aria-label="利用不可の画面 ヘッダーと利用不可のメッセージだけ">
+      <rect class="screen" x="1055" y="52" width="200" height="64" rx="10"/>
+      <rect class="screen-bar" x="1140" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="1155" y="82" text-anchor="middle">利用不可の画面</text>
+      <text class="t-sub" x="1155" y="102" text-anchor="middle">ヘッダーとメッセージだけ</text>
+      <text class="err" x="1280" y="74">✕ 入室・退室ができない</text>
+      <text class="err" x="1280" y="90">✕ 予約の一覧が見えない</text>
+      <text class="err" x="1280" y="106">✕ 参加者が見えない</text>
+    </g>
+
+    <!-- steps -->
+    <g class="hit" data-key="1" tabindex="0" role="button" aria-label="1秒ごとに見直す">
+      <rect class="step" x="120" y="200" width="150" height="64" rx="8"/>
+      <text class="t-name" x="195" y="224" text-anchor="middle">① 1秒ごとに見直す</text>
+      <text class="t-sub" x="195" y="242" text-anchor="middle">利用者の操作は要らない</text>
+    </g>
+    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="使えない時間帯の中か">
+      <polygon class="step-diamond" points="420,190 510,232 420,274 330,232"/>
+      <text class="t-name" x="420" y="229" text-anchor="middle">② 使えない</text>
+      <text class="t-name" x="420" y="245" text-anchor="middle">時間帯の中？</text>
+      <text class="t-sub" x="420" y="178" text-anchor="middle">一時停止スケジュール</text>
+    </g>
+    <g class="hit" data-key="3" tabindex="0" role="button" aria-label="予約に使える時間帯の中か">
+      <polygon class="step-diamond" points="700,190 800,232 700,274 600,232"/>
+      <text class="t-name" x="700" y="229" text-anchor="middle">③ 予約に使える</text>
+      <text class="t-name" x="700" y="245" text-anchor="middle">時間帯の中？</text>
+      <text class="t-sub" x="700" y="178" text-anchor="middle">従業員向け／会員向け</text>
+    </g>
+    <g class="hit" data-key="4" tabindex="0" role="button" aria-label="出す言葉を決める">
+      <rect class="step" x="850" y="200" width="170" height="64" rx="8"/>
+      <text class="t-name" x="935" y="224" text-anchor="middle">④ 出す言葉を決める</text>
+      <text class="t-sub" x="935" y="242" text-anchor="middle">いま選ばれている言語に合わせて</text>
+      <text class="err" x="850" y="292">✕ 言葉が入っていないと</text>
+      <text class="err" x="850" y="308">　決まった言葉になる</text>
+    </g>
+    <g class="hit" data-key="5" tabindex="0" role="button" aria-label="画面の中身を入れ替える">
+      <rect class="step" x="1070" y="200" width="170" height="64" rx="8"/>
+      <text class="t-name" x="1155" y="224" text-anchor="middle">⑤ 中身を入れ替える</text>
+      <text class="t-sub" x="1155" y="242" text-anchor="middle">ヘッダーはそのまま残す</text>
+      <text class="err" x="1070" y="292">✕ 使っている最中でも</text>
+      <text class="err" x="1070" y="308">　入れ替わる</text>
+    </g>
+  </svg>
+  </div>
+  <figcaption>緑の線が「うまくいく道」。赤の ✕ は「そこでできなくなること・決まった言葉になる理由」。②③ のどちらかで「使えない」と分かると、④⑤ を通って画面の中身がまるごと入れ替わります。時間帯が終わると、次の1秒で ③ を通り抜けて通常のホームに戻ります。</figcaption>
+  <div class="legend">
+    <span><i class="sw flow"></i>うまくいく道</span>
+    <span><i class="sw err"></i>できなくなること・決まった言葉になる理由</span>
+  </div>
+</figure>
+</section>
+
+
+<section class="index">
+  <h2>テストケースは、図のどこの話？</h2>
+  <p class="hint">カードをクリックすると図の該当箇所が光ります。図の箱をクリックすると、その箱に関係するカードだけが残ります。● 緑＝うまくいく確認、● 赤＝できない・決まった言葉になるときの確認。</p>
+
+  <div class="group">
+    <h3>ルール① 使えない時間帯（一時停止スケジュール）</h3>
+    <div class="cards">
+      <div class="card" data-keys="home,1,2"><div class="ttl"><i class="dot ok"></i>始まりの1分前 → まだ通常のホーム</div><div class="chips"></div></div>
+      <div class="card" data-keys="home,1,2,4,5,out"><div class="ttl"><i class="dot ok"></i>始まりの時刻ちょうど → 操作なしで利用不可の画面になる</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,2,out"><div class="ttl"><i class="dot ok"></i>終わりの1分前 → まだ利用不可の画面</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,2,3,home"><div class="ttl"><i class="dot ok"></i>終わりの時刻ちょうど → 操作なしで通常のホームに戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,2,3,home"><div class="ttl"><i class="dot ok"></i>時間帯が2つあるとき → 間は通常のホーム、次の始まりでまた入れ替わる</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,2,5,out"><div class="ttl"><i class="dot ok"></i>日付をまたぐ時間帯 → 0時を過ぎても利用不可の画面のまま</div><div class="chips"></div></div>
+      <div class="card" data-keys="home,1,2,5,out"><div class="ttl"><i class="dot ok"></i>入室待ちの予約があっても → 利用不可の画面になり、入室できない</div><div class="chips"></div></div>
+      <div class="card" data-keys="home,1,2,5,out"><div class="ttl"><i class="dot ok"></i>使っている最中でも → 利用不可の画面になり、退室できない（終了時刻に予約は自動で終わる）</div><div class="chips"></div></div>
+      <div class="card" data-keys="home,1,2,5,out"><div class="ttl"><i class="dot ok"></i>見ている最中に時間帯が登録される → 再起動しなくても利用不可の画面になる</div><div class="chips"></div></div>
+      <div class="card" data-keys="home,1,2,5,out"><div class="ttl"><i class="dot ok"></i>同じ部屋に2台、片方だけ登録 → 登録した端末だけが利用不可の画面になる</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール② 予約に使える時間帯</h3>
+    <div class="cards">
+      <div class="card" data-keys="1,2,3,4,5,out"><div class="ttl"><i class="dot ok"></i>始まりの1分前 → 利用不可の画面</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,2,3,home"><div class="ttl"><i class="dot ok"></i>始まりの時刻ちょうど → 通常のホームに戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,2,3,home"><div class="ttl"><i class="dot ok"></i>終わりの時刻ちょうど → まだ通常のホーム</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,2,3,4,5,out"><div class="ttl"><i class="dot ok"></i>終わりの1分後 → 利用不可の画面になる</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,3,home"><div class="ttl"><i class="dot ok"></i>従業員向けは時間外でも、会員向けが時間内 → 通常のホーム</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,3,4,5,out"><div class="ttl"><i class="dot ok"></i>従業員向けも会員向けも時間外 → 利用不可の画面</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,3,home"><div class="ttl"><i class="dot ok"></i>会員向けだけ設定された部屋 → 時間内は通常のホーム、時間外は利用不可の画面</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,3,home"><div class="ttl"><i class="dot ok"></i>管理画面で時間帯を今の時刻を含むように変更 → 操作なしで通常のホームに戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,3,4,5,out"><div class="ttl"><i class="dot ng"></i>予約を受け付けない部屋 → 時刻に関わらず終日 利用不可の画面</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール③ 利用不可の画面に出るもの・出ないもの</h3>
+    <div class="cards">
+      <div class="card" data-keys="5,out"><div class="ttl"><i class="dot ok"></i>空室から入れ替わる → ボタンも中央の輪も下の一覧も出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="5,out"><div class="ttl"><i class="dot ok"></i>入室待ちから入れ替わる → 残り時間も参加者も出ない</div><div class="chips"></div></div>
+      <div class="card" data-keys="5,out"><div class="ttl"><i class="dot ok"></i>入れ替わっても、上の部屋の名前と JP／EN の切替は残る</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール④ 画面の真ん中に出る言葉</h3>
+    <div class="cards">
+      <div class="card" data-keys="4,out"><div class="ttl"><i class="dot ok"></i>JP を選んでいる → 登録した日本語の言葉が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,out"><div class="ttl"><i class="dot ok"></i>EN を選んでいる → 登録した英語の言葉が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,out"><div class="ttl"><i class="dot ng"></i>日本語の言葉を空にした → 「利用時間外」が出る（空にはならない）</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,out"><div class="ttl"><i class="dot ng"></i>英語の言葉を空にした → 「Service is currently unavailable」が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,out"><div class="ttl"><i class="dot ok"></i>利用不可の画面のまま JP → EN に切り替える → その場で言葉が変わる</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,out"><div class="ttl"><i class="dot ok"></i>入れられる上限いっぱいの長さ（100文字） → 欠けずに読める</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,out"><div class="ttl"><i class="dot ok"></i>端末の言語設定が英語でも、画面で JP を選んでいれば日本語の言葉が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="4,out"><div class="ttl"><i class="dot ok"></i>画面を縦にしても横にしても → 100文字の言葉が欠けずに読める</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑤ 2つの設定が重なるとき</h3>
+    <div class="cards">
+      <div class="card" data-keys="1,2,4,5,out"><div class="ttl"><i class="dot ok"></i>使えない時間帯だけ当てはまる → 利用不可の画面</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,3,4,5,out"><div class="ttl"><i class="dot ok"></i>予約に使える時間帯の外だけ当てはまる → 利用不可の画面</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,2,3,4,5,out"><div class="ttl"><i class="dot ok"></i>両方とも当てはまる → 利用不可の画面</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,2,3,4,5,out"><div class="ttl"><i class="dot ok"></i>片方だけ終わっても → もう片方が残っていれば利用不可の画面のまま</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,2,3,home"><div class="ttl"><i class="dot ok"></i>両方とも使える状態に戻る → 通常のホームに戻る</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>通し（実機で最後まで）</h3>
+    <div class="cards">
+      <div class="card" data-keys="home,1,2,4,5,out"><div class="ttl"><i class="dot ok"></i>使えない時間帯に入ると、操作しなくても利用不可の画面と理由の言葉が出る</div><div class="chips"></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div style="display:grid;gap:10px">
+  <h2>画面に出る言葉で、どこの話かわかる</h2>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>画面に出る言葉</th><th>出てくる場所</th></tr>
+    <tr><td class="msg">登録した日本語の言葉（例：清掃中のため利用できません）</td><td>④ 出す言葉を決める（JP を選んでいて、日本語の言葉が入っているとき）</td></tr>
+    <tr><td class="msg">登録した英語の言葉</td><td>④ 出す言葉を決める（EN を選んでいて、英語の言葉が入っているとき）</td></tr>
+    <tr><td class="msg">利用時間外</td><td>④ 出す言葉を決める（JP を選んでいて、日本語の言葉が空のとき）</td></tr>
+    <tr><td class="msg">Service is currently unavailable</td><td>④ 出す言葉を決める（EN を選んでいて、英語の言葉が空のとき）</td></tr>
+    <tr><td class="msg">部屋の名前／JP・EN の切替</td><td>⑤ 中身を入れ替える（入れ替えても上に残り続ける）</td></tr>
+  </table>
+  </div>
+  </div>
+</section>
+
+
+</div>
+<script>
+(function () {
+  var LABEL = {
+    home: "通常のホーム", out: "利用不可の画面",
+    1: "① 1秒ごとに見直す", 2: "② 使えない時間帯？", 3: "③ 予約に使える時間帯？",
+    4: "④ 出す言葉を決める", 5: "⑤ 中身を入れ替える"
+  };
+  var root = document.documentElement;
+  var hits = Array.prototype.slice.call(document.querySelectorAll(".hit"));
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card"));
+  var status = document.getElementById("status");
+
+  cards.forEach(function (c) {
+    var keys = c.getAttribute("data-keys").split(",");
+    var box = c.querySelector(".chips");
+    keys.forEach(function (k) {
+      var s = document.createElement("span");
+      s.className = "chip"; s.setAttribute("data-k", k); s.textContent = LABEL[k] || k;
+      box.appendChild(s);
+    });
+    c.setAttribute("tabindex", "0");
+    c.addEventListener("click", function () { selectCard(c, keys); });
+    c.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectCard(c, keys); } });
+  });
+
+  hits.forEach(function (h) {
+    var k = h.getAttribute("data-key");
+    h.addEventListener("click", function () { selectKey(k); });
+    h.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectKey(k); } });
+  });
+
+  function clear() {
+    root.classList.remove("has-sel");
+    hits.forEach(function (h) { h.classList.remove("active"); });
+    cards.forEach(function (c) { c.classList.remove("match"); });
+    status.textContent = "箱をクリックすると、その場所に関係するテストだけが残ります";
+  }
+  var lastKey = null, lastCard = null;
+  function selectKey(k) {
+    if (lastKey === k && !lastCard) { clear(); lastKey = null; return; }
+    clear(); lastKey = k; lastCard = null;
+    root.classList.add("has-sel");
+    var n = 0;
+    hits.forEach(function (h) { if (h.getAttribute("data-key") === k) h.classList.add("active"); });
+    cards.forEach(function (c) {
+      if (c.getAttribute("data-keys").split(",").indexOf(k) >= 0) { c.classList.add("match"); n++; }
+    });
+    status.textContent = "「" + (LABEL[k] || k) + "」に関係するテスト：" + n + " 件";
+  }
+  function selectCard(c, keys) {
+    if (lastCard === c) { clear(); lastCard = null; lastKey = null; return; }
+    clear(); lastCard = c; lastKey = null;
+    root.classList.add("has-sel");
+    c.classList.add("match");
+    hits.forEach(function (h) { if (keys.indexOf(h.getAttribute("data-key")) >= 0) h.classList.add("active"); });
+    status.textContent = "このテストが通る場所：" + keys.map(function (k) { return LABEL[k] || k; }).join(" → ");
+    var fig = document.querySelector("figure");
+    if (fig && fig.getBoundingClientRect().top < 0) fig.scrollIntoView({ block: "start" });
+  }
+  document.getElementById("clearBtn").addEventListener("click", function () { clear(); lastKey = null; lastCard = null; });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { clear(); lastKey = null; lastCard = null; } });
+
+})();
+</script>
+</body>
+</html>
