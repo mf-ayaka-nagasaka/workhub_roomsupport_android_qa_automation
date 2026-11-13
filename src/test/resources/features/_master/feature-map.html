@@ -466,11 +466,11 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr class="grp"><td colspan="5">B. ホーム画面の表示</td></tr>
     <tr data-keys="HOME,BG1"><td class="no">⑦</td><td class="nm">部屋の予約状況をホーム画面に表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-done">成果物あり</span></td><td>Home</td></tr>
     <tr data-keys="HOME"><td class="no">⑧</td><td class="nm">当日の予約タイムラインを表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-done">成果物あり</span></td><td>ReservationTimeline</td></tr>
-    <tr data-keys="HOME"><td class="no">⑨</td><td class="nm">予約の参加者情報を表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-wip">作成中</span></td><td>—</td></tr>
-    <tr data-keys="HOME,OUT"><td class="no">⑩</td><td class="nm">利用不可・利用時間外を表示できる</td><td><span class="scr">ホーム</span><span class="scr">利用時間外</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="HOME"><td class="no">⑨</td><td class="nm">予約の参加者情報を表示できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-done">成果物あり</span></td><td>ParticipantInfo</td></tr>
+    <tr data-keys="HOME,OUT"><td class="no">⑩</td><td class="nm">利用不可・利用時間外を表示できる</td><td><span class="scr">ホーム</span><span class="scr">利用時間外</span></td><td><span class="pill p-done">成果物あり</span></td><td>Unavailable</td></tr>
 
     <tr class="grp"><td colspan="5">C. 本人の特定（認証）</td></tr>
-    <tr data-keys="CAM"><td class="no">⑪</td><td class="nm">顔認証で利用者を特定できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="CAM"><td class="no">⑪</td><td class="nm">顔認証で利用者を特定できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-done">成果物あり</span></td><td>FaceAuth</td></tr>
     <tr data-keys="CAM"><td class="no">⑫</td><td class="nm">QR コードで利用者を特定できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
     <tr data-keys="CAM"><td class="no">⑬</td><td class="nm">個人コードで本人確認できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
     <tr data-keys="CAM"><td class="no">⑲</td><td class="nm">カード認証で利用者を特定できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
@@ -520,7 +520,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr data-keys="IS"><td class="nm">初期設定画面</td><td><span class="scr">IS</span></td><td><code>InitialSettingRoute</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/View/InitialSetting/InitialSettingView.swift</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/ViewModel/InitialSettingViewModel.swift</code></td><td class="path"><code>legacy_initial-setting.md</code></td><td><span class="unk">要確認</span></td></tr>
     <tr data-keys="RI"><td class="nm">再インストール画面</td><td><span class="scr">RI</span></td><td><code>ReInstallRoute</code></td><td class="path"><code>SharedLocalPackages/Sources/SharedFeature/Feature/Reinstall/ReInstallView.swift</code></td><td class="path"><span class="unk">（未検出）</span></td><td class="path"><span class="unk">—</span></td><td><span class="unk">要確認</span></td></tr>
     <tr data-keys="SET"><td class="nm">設定画面</td><td><span class="scr">SET</span></td><td><code>SettingRoute</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/View/Setting/SettingView.swift</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/ViewModel/Setting/SettingViewModel.swift</code></td><td class="path"><span class="unk">—</span></td><td><span class="unk">要確認</span></td></tr>
-    <tr data-keys="CAM"><td class="nm">カメラ認証画面<br><span class="hint">※予約認証モード用</span></td><td><span class="scr">CAM</span></td><td><code>ReservationCameraAuthenticationRoute</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/View/CameraAuthenticationView/ReservationCameraAuthenticationView.swift</code></td><td class="path"><span class="unk">（未検出）</span></td><td class="path"><code>legacy_camera-auth.md</code></td><td><span class="unk">要確認</span></td></tr>
+    <tr data-keys="CAM"><td class="nm">カメラ認証画面<br><span class="hint">※予約認証モード用</span></td><td><span class="scr">CAM</span></td><td><code>ReservationCameraAuthenticationRoute</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/View/CameraAuthenticationView/ReservationCameraAuthenticationView.swift</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/ViewModel/CameraAuthentication/ReservationCameraAuthenticationViewModel.swift</code></td><td class="path"><code>legacy_camera-auth.md</code></td><td><span class="unk">要確認</span></td></tr>
     <tr data-keys="ADMIN"><td class="nm">管理者メニュー</td><td><span class="scr">ADMIN</span></td><td><code>AdminMenuRoute</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/View/AdminMenu/AdminMenuView.swift</code></td><td class="path"><code>Apps/RoomSupport/RoomSupportSources/ViewModel/AdminMenuViewModel.swift</code></td><td class="path"><code>legacy_admin-menu.md</code></td><td><span class="unk">要確認</span></td></tr>
     <tr data-keys="OUT"><td class="nm">利用時間外画面</td><td><span class="scr">OUT</span></td><td><code>OutOfUsableTimeRoute</code></td><td class="path"><code>SharedLocalPackages/Sources/SharedFeature/Feature/OutOfUsableTime/OutOfUsableTimeView.swift</code></td><td class="path"><span class="unk">（未検出）</span></td><td class="path"><code>legacy_out-of-usable-time.md</code></td><td><span class="unk">要確認</span></td></tr>
   </table>
@@ -593,7 +593,17 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr class="grp"><td colspan="4">カメラ認証画面</td></tr>
     <tr data-keys="CAM"><td class="nm">利用時間外の判定と利用時間外画面への遷移</td><td>画面表示時</td><td class="path"><code>checkOutOfUsableTime() → OutOfUsableTimeRoute</code></td><td>⑩</td></tr>
     <tr data-keys="CAM"><td class="nm">無操作時のホーム画面への復帰</td><td>タイムアウト時</td><td class="path"><code>router.moveToTop()</code></td><td>⑮</td></tr>
-    <tr data-keys="CAM"><td class="nm">認証処理（顔／QR／個人コード／カード）</td><td>認証時</td><td class="path"><code>未調査</code></td><td>⑪ ⑫ ⑬ ⑲</td></tr>
+    <tr data-keys="CAM"><td class="nm">カメラの起動と認証待ちの表示</td><td>画面表示時</td><td class="path"><code>startCamera(useQrReader:)</code></td><td>⑪</td></tr>
+    <tr data-keys="CAM"><td class="nm">顔の検出と人物の特定</td><td>顔を検出したとき</td><td class="path"><code>extractFace() → handleFaceDetectionResult() → executeFaceAuthentication() → searchPeople()</code></td><td>⑪</td></tr>
+    <tr data-keys="CAM"><td class="nm">無効な顔SDK特徴の削除</td><td>端末内の顔情報に対応する行が無いとき</td><td class="path"><code>deleteAllInvalidFaceFeature()</code></td><td>⑪</td></tr>
+    <tr data-keys="CAM"><td class="nm">QRコードの読み取りと人物の特定</td><td>QRコードを検出したとき</td><td class="path"><code>onExtractQr() → executeQrAuthentication()</code></td><td>⑫</td></tr>
+    <tr data-keys="CAM"><td class="nm">個人コードの確認</td><td>認証成功後（個人コードが必須のとき）</td><td class="path"><code>searchPeople() → isShowingPersonalCodeDialog</code></td><td>⑬</td></tr>
+    <tr data-keys="CAM"><td class="nm">カード認証</td><td>認証時</td><td class="path"><code>未調査</code></td><td>⑲</td></tr>
+    <tr data-keys="CAM"><td class="nm">認証失敗時の表示と認証待ちへの復帰</td><td>認証に失敗したとき</td><td class="path"><code>onFailed() → waitForChangeToProcessing() → .failed</code></td><td>⑭</td></tr>
+    <tr data-keys="CAM"><td class="nm">解錠デバイスの接続状態の監視</td><td>画面表示時</td><td class="path"><code>setUpdateExsgAdapterStatusHandler()</code></td><td>⑭</td></tr>
+    <tr data-keys="CAM"><td class="nm">なりすまし防止の方式の判定と自動切り替え</td><td>顔を検出したとき</td><td class="path"><code>extractFaceWithTwoDAntiSpoofing… / handleSwitchToTwoDinteraction()</code></td><td>⑰</td></tr>
+    <tr data-keys="CAM"><td class="nm">オペレーター呼び出しボタンの表示</td><td>顔の検出エラーが5秒続いたとき</td><td class="path"><code>willHandleFaceDetectionResult()</code></td><td>⑯</td></tr>
+    <tr data-keys="CAM"><td class="nm">「ステータスのみ変更」</td><td>ボタン操作時</td><td class="path"><code>onClickOnlyChangeStatus()</code></td><td>⑳</td></tr>
     <tr class="grp"><td colspan="4">管理者メニュー</td></tr>
     <tr data-keys="ADMIN"><td class="nm">管理パスワードの照合</td><td>パスワード入力時</td><td class="path"><code>DebugService.shared.verifyPassword() / adminPassword</code></td><td>⑤</td></tr>
     <tr data-keys="ADMIN"><td class="nm">顔認証による管理者確認</td><td>画面表示時（顔認証有効時）</td><td class="path"><code>FaceRecognitionDialogState.show() / FaceRecognitionServiceImpl.shared</code></td><td>⑤</td></tr>
@@ -694,9 +704,9 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="no">10</td>
       <td class="nm">利用時間外画面には、予約認証モードでどの経路から到達するのか</td>
       <td>⑩ ③ ⑮</td>
-      <td><span class="pill p-open">赤カード（開発チームへ）</span></td>
-      <td>予約認証モードで <code>OutOfUsableTimeRoute</code> へ遷移するのはカメラ認証画面の再判定のみで、ホーム画面からの遷移経路が実在するか未確認であるため。</td>
-      <td class="no">—</td>
+      <td><span class="pill p-done">スコープ外（常時認証モード専用の画面）／ホームの表示が切り替わることは⑩で見る</span></td>
+      <td><code>OutOfUsableTimeView</code> は共通モジュール（<code>SharedLocalPackages</code>）配下の常時認証モード側の画面で、Android版では実装しないため。予約認証モードで利用者が観測できるのは、時間になるとホームが自動で利用不可の表示（ヘッダーは残る）に切り替わることのみ。</td>
+      <td class="no">2026-11-11</td>
     </tr>
     <tr>
       <td class="no">11</td>
@@ -788,7 +798,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     </tr>
     <tr>
       <td class="no">22</td>
-      <td class="nm">設置空間が組織側で削除されたとき／予約設定が無い部屋のホーム表示はどこで見るか</td>
+      <td class="nm">設置空間が組織側で削除されたとき／予約設定が未設定の部屋のホーム表示はどこで見るか</td>
       <td>⑦ ④ ㉒</td>
       <td><span class="pill p-open">赤カード（未割り当て）</span></td>
       <td>台帳 #9 の判定基準では⑦だが、設置空間そのものの不備は #4・#13 と同系統で担当が未確定であるため。</td>
@@ -863,8 +873,144 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">ホームの参加者情報と、タイムラインの予約の詳細で主催者名の解決方式が違うことをどう扱うか</td>
       <td>⑨ ⑧</td>
       <td><span class="pill p-done">⑨（取得・再試行ありの振る舞いをそのままルール化。⑨では赤カードにしない）</span></td>
-      <td>⑨は人物情報を取得し失敗時に再試行する（<code>GetReservationParticipantInfoUseCase.swift:58-93</code>）一方、⑧は予約データ内の名前をそのまま表示する（<code>MeetingIndicator.swift:243</code>）。参照元で裏取りできているため。⑧の赤カード①は継続。</td>
+      <td>⑨は人物情報を取得し失敗時に再試行する（<code>GetReservationParticipantInfoUseCase.swift:58-93</code>）一方、⑧は予約データ内の名前をそのまま表示する（<code>MeetingIndicator.swift:243</code>）。参照元で裏取りできているため。⑧の主催者名はサーバ側が決めていることを 2026-11-11 に確認し、⑧の赤カード①は解決済み。</td>
       <td class="no">2026-11-10</td>
+    </tr>
+    <tr>
+      <td class="no">32</td>
+      <td class="nm">主催者のアイコン画像の取得に失敗したときのフォールバック表示はどこで見るか</td>
+      <td>⑨</td>
+      <td><span class="pill p-done">検証対象外（⑨では見ない）</span></td>
+      <td>アプリの責務は「画像のURLが無ければ既定の人型を出す／あれば渡す」までで、渡した先の取得失敗時のフォールバックは画像表示ライブラリ（参照元は <code>WebImage(url:).placeholder(DefaultPeopleIcon)</code>、Android は Coil の同等の仕組み）の責務であり、CLAUDE.md の「外部SDKの内部ロジック検証は対象外」に当たるため。</td>
+      <td class="no">2026-11-11</td>
+    </tr>
+    <tr>
+      <td class="no">33</td>
+      <td class="nm">管理画面の一時停止スケジュール中のホームの表示はどこで見るか</td>
+      <td>⑩ ⑦ ㉒ ㉙</td>
+      <td><span class="pill p-done">⑦ 部屋の予約状況をホーム画面に表示できる（⑩では見ない）</span></td>
+      <td>利用不可の表示にはならず、空室の表示のまま主ボタンだけが消えるため。利用不可かどうかの判定（<code>ReservationAvailableTimeHelper.swift:58-70</code>）は当該設定を参照しておらず、参照されるのは空室のときの主ボタンの表示可否（<code>MainMenuViewModel.swift:114</code>）と、予約作成の認証成功後のチェック（同 <code>:451</code> <code>:497</code>）のみ。2026-11-12 追記：⑦のルール⑧として反映済み。影響を受けるのは<b>空室のときの主ボタン「今すぐ入室」だけ</b>で、入室待ち・利用中は判定の対象外（主ボタン・サブボタンともそのまま表示される）。対象者の種別（従業員／会員）を限定した一時停止は⑩の責務とし、⑦ではボタンの表示可否のみを見る。また、ホームを表示したまま管理画面で登録・削除された場合、参照元の実機では再起動しないと反映されなかったが、<b>Android版では再起動なしで反映される作りとする</b>（新規要件）。</td>
+      <td class="no">2026-11-11</td>
+    </tr>
+    <tr>
+      <td class="no">34</td>
+      <td class="nm">利用時間外メッセージの言語は何で決まるか</td>
+      <td>⑩</td>
+      <td><span class="pill p-done">⑩（ヘッダーの言語切替で選ばれている表示言語に追従する）</span></td>
+      <td>参照元（iOS）では端末のロケールを参照しておらず、ヘッダー右上の言語切替で選ばれている言語で決まる（<code>LocalizeText.getLocale()</code>、初期値は日本語）。チケットの受け入れ条件の「端末言語」はこの振る舞いに読み替える。</td>
+      <td class="no">2026-11-11</td>
+    </tr>
+    <tr>
+      <td class="no">35</td>
+      <td class="nm">利用不可のとき中央サークル・サブボタン・タイムライン・参加者情報が出ないことはどこで見るか</td>
+      <td>⑩ ⑦ ⑧ ⑨</td>
+      <td><span class="pill p-done">⑩（台帳 #15 と同じ扱いで1本のルールにまとめる）</span></td>
+      <td>画面全体が利用不可の表示に差し替わり、通常のホームの中身がまとめて描画されないため。⑧のタイムライン側から見たルール（ホームが表示されている間は出る／利用不可では出ない）は視点が逆なので残す。</td>
+      <td class="no">2026-11-11</td>
+    </tr>
+    <tr>
+      <td class="no">36</td>
+      <td class="nm">時刻による表示の切り替わりは何の時計で判定するか</td>
+      <td>⑩ ⑦ ⑧</td>
+      <td><span class="pill p-done">⑩（端末の時計のみで判定し、サーバ時刻とは同期しない）</span></td>
+      <td>参照元に時刻同期の処理が無く、判定はすべて端末の時計（<code>Date()</code>）で行われるため。</td>
+      <td class="no">2026-11-12</td>
+    </tr>
+    <tr>
+      <td class="no">37</td>
+      <td class="nm">管理者が意図して「予約を受け付けない」設定にした部屋のホーム表示はどこで見るか</td>
+      <td>⑩ ⑦ ㉒</td>
+      <td><span class="pill p-done">⑩（時刻にかかわらず終日 利用不可の画面になる）／予約設定が未設定の部屋は #22 の論点で別</span></td>
+      <td>管理画面の予約設定で登録された内容による表示であり、ルール②の判定でどの時刻も条件を満たさず利用不可の画面になるため。</td>
+      <td class="no">2026-11-12</td>
+    </tr>
+    <tr>
+      <td class="no">38</td>
+      <td class="nm">カメラ認証画面で「映像が出て認証待ちになること」と待機中の案内文言の出し分けはどこで見るか</td>
+      <td>⑪ ⑫ ⑬ ⑲</td>
+      <td><span class="pill p-done">⑪ 顔認証で利用者を特定できる（⑫⑬⑲は各認証手段の判定のみ）</span></td>
+      <td>画面が成立すること（映像が出て認証待ちになる）は4チケット共通の前提であり、最初に着手する⑪で持たないと4回重複するため。<code>CameraAuthenticationable.swift:125-152</code>、仕様書 <code>legacy_camera-auth.md</code> 3-1。</td>
+      <td class="no">2026-11-13</td>
+    </tr>
+    <tr>
+      <td class="no">39</td>
+      <td class="nm">カメラ・Bluetoothの権限が無いときの振る舞いはどこで見るか</td>
+      <td>⑪ ⑥</td>
+      <td><span class="pill p-done">⑥ 設定値の読み込みが行える（カメラ認証画面側の確認は到達しない二重のガード）</span></td>
+      <td>ブート画面が権限の揃うまで5秒間隔で確認を続け先へ進まないため（<code>BootViewModel.swift:61-78</code>。確認する権限はカメラ認証画面と同一の2種）。ソースにも「基本的にはここは通らないはず」と注記がある（<code>CameraAuthenticationable.swift:135-137</code>）。台帳 #10 と同じ構図。</td>
+      <td class="no">2026-11-13</td>
+    </tr>
+    <tr>
+      <td class="no">40</td>
+      <td class="nm">顔が特定できなかったときの扱いは⑪と⑭のどちらで見るか</td>
+      <td>⑪ ⑭</td>
+      <td><span class="pill p-done">認証待ちのまま人物特定に進まないこと＝⑪ ／ 失敗表示への遷移・認証待ちへの復帰・解錠デバイス未連携＝⑭ ／ 端末内の顔情報に対応する行が無いときの無効な顔SDK特徴の削除＝⑪</span></td>
+      <td>画面の見え方が2通りに割れており、前者（位置・角度・しきい値未達。照会中にならず認証待ちが続く）は⑪のAC①④、後者（照会中を経て失敗表示へ遷移する）は⑭のAC①②④⑤にあたるため。無効な顔SDK特徴の削除は⑪のAC⑤に明記があるため⑪で見て、⑭の記述には重複して入れない（⑭への申し送り）。<code>CameraAuthenticationable.swift:551-558</code>／<code>ReservationCameraAuthenticationViewModel.swift:845-860</code>。</td>
+      <td class="no">2026-11-13</td>
+    </tr>
+    <tr>
+      <td class="no">41</td>
+      <td class="nm">顔SDKのエラーでカメラが再起動することはどこで見るか</td>
+      <td>⑪ ⑭</td>
+      <td><span class="pill p-done">⑭ 認証失敗・顔未登録をハンドリングできる（深度データ由来の分岐はAndroid版では発生しないものとして扱う）</span></td>
+      <td>認証が進まなかったときの復帰の仕方であり、⑭のAC①（汎用エラー）・AC④（認証待ちへ戻って再試行）に当たるため。<code>ReservationCameraAuthenticationViewModel.swift:793-807</code>。深度判定は⑤で確定済みの「Android版は3Dの深度判定が利用できない」方針を適用（<code>AdminMenu/rules.md</code> ルール②注記）。</td>
+      <td class="no">2026-11-13</td>
+    </tr>
+    <tr>
+      <td class="no">42</td>
+      <td class="nm">マスク着用時の認証可否の設定の反映はどこで見るか</td>
+      <td>⑪ ④</td>
+      <td><span class="pill p-done">⑪ 顔認証で利用者を特定できる（設定項目の保存は④）</span></td>
+      <td>人物を特定できるかどうかに直接効く設定であり、他に担保する場所が無いため。<code>ReservationCameraAuthenticationViewModel.swift:382-390</code>。</td>
+      <td class="no">2026-11-13</td>
+    </tr>
+    <tr>
+      <td class="no">43</td>
+      <td class="nm">カメラ認証画面から出る導線はどこで見るか</td>
+      <td>⑪ ⑮</td>
+      <td><span class="pill p-done">戻るボタン（認証待ちのときだけ表示）＝⑪ ／ 無操作による自動復帰＝⑮</span></td>
+      <td>⑮は「無操作でカメラ画面から自動復帰できる」が対象であり、利用者が自分で戻る導線とは別であるため。<code>ReservationCameraAuthenticationViewModel.swift:521-523</code>／<code>:525-553</code>。</td>
+      <td class="no">2026-11-13</td>
+    </tr>
+    <tr>
+      <td class="no">44</td>
+      <td class="nm">照会中にQRコードを受け付けないことはどこで見るか</td>
+      <td>⑪ ⑫</td>
+      <td><span class="pill p-done">⑪では見ない（⑫ QRコードで利用者を特定できる への申し送り）</span></td>
+      <td>⑪のAC④は位置・角度・しきい値未達のときに認証待ちを維持する話であり、顔が通った直後の挙動は別であるため。<code>CameraAuthenticationable.swift:450</code>。</td>
+      <td class="no">2026-11-13</td>
+    </tr>
+    <tr>
+      <td class="no">45</td>
+      <td class="nm">カメラ認証画面に乗る他チケットの処理はどこで見るか</td>
+      <td>⑪ ⑬ ⑯ ⑰ ⑳ ㉚</td>
+      <td><span class="pill p-done">各チケット（⑪では見ない）：個人コードの確認＝⑬ ／ オペレーター呼び出し＝⑯ ／ なりすまし防止の指示の内容・検知したときの扱い・方式の自動切り替え＝⑰（ただし<b>有効か無効かで照会中に進むまでの流れが変わること</b>は⑪で見る。2026-11-13 追記） ／「ステータスのみ変更」＝⑳ ／ 省電力時のカメラのフレームレート＝㉚</span></td>
+      <td>いずれも⑪のACに無く、各チケットの受け入れ条件に対応するため。<code>ReservationCameraAuthenticationViewModel.swift:893-925</code>／<code>:261-274</code>／<code>CameraAuthenticationable.swift:524-533</code>／<code>:448-456</code>／<code>:625-641</code>。</td>
+      <td class="no">2026-11-13</td>
+    </tr>
+    <tr>
+      <td class="no">46</td>
+      <td class="nm">⑪で検証しないものは何か</td>
+      <td>⑪ ⑦ ④ ⑤</td>
+      <td><span class="pill p-done">検証対象外：顔検出時のフォーカス枠の色 ／ デバッグモードの顔の枠・数値の表示 ／ 画面のレイアウト変更での読み込み直し ／ 管理者メニューの導線</span></td>
+      <td>色は⑦で「状態の合否は背景色ではなく見出し文言と主ボタンのラベルで判定する」と決定済みの方針を適用。デバッグモードの表示は開発者向けで利用者向けの振る舞いではない。レイアウト変更はドア前に固定設置される端末で向きが変わる前提が無い（<code>:741-747</code>）。管理者メニューの導線は予約認証モードのカメラ認証画面では View に配線されていない（<code>AdminMenuTriggerModifier</code> は常時認証モード用・ホーム・利用時間外・メンテナンスのみ）。</td>
+      <td class="no">2026-11-13</td>
+    </tr>
+    <tr>
+      <td class="no">47</td>
+      <td class="nm">認証の応答時間（PE-01）はどの区間を誰が見るか</td>
+      <td>⑪ ⑫ ⑬ ⑲ ⑳ ㉕</td>
+      <td><span class="pill p-done">⑪は「利用者のボタン押下から、特定結果を持って操作ごとの画面（ホーム画面／予約作成の画面／延長時間を設定する画面）に到達するまで」の前半区間のみ ／ 解錠完了までの後半は⑳㉕ ／ 計測の起点は利用者のボタン押下とする</span></td>
+      <td>⑪は解錠・入退室ステータス更新を行わない（AC③）ため、区間が⑪だけでは閉じないため。起点は利用者が体感する待ち時間と一致させる判断（<code>criteria.md</code> の未解決事項を解消。正本への反映が必要）。</td>
+      <td class="no">2026-11-13</td>
+    </tr>
+    <tr>
+      <td class="no">48</td>
+      <td class="nm">顔情報の同期の進捗・件数はどこで観測するか</td>
+      <td>⑱ ⑤</td>
+      <td><span class="pill p-open">赤カード（未確定）</span></td>
+      <td>管理メニューの「顔認識機能のデバッグ」から開くのは <code>FaceRecognitionDebugView</code> で、映した顔の検出結果・類似度・該当メンバーを表示する画面。端末内の顔情報の件数・ダウンロードの進捗・削除の操作を持つ <code>FacePropertiesDebugView</code> は開発用デバッグメニュー（<code>DebugView</code>）配下であり、QAが通常の運用で到達できるかが未確認のため。⑱の着手時に観測手段を決める。</td>
+      <td class="no">—</td>
     </tr>
   </table>
   </div>
@@ -872,19 +1018,22 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
 
 <section>
   <h2>カバレッジ</h2>
-  <div class="cov"><b>8 / 31</b><span class="hint">チケット（26%）に成果物あり。</span></div>
+  <div class="cov"><b>11 / 31</b><span class="hint">チケット（35%）に成果物あり。</span></div>
   <div class="tbl-wrap">
   <table>
     <tr><th>チケット</th><th>成果物</th><th>ルール</th><th>シナリオ</th><th>状態</th></tr>
-    <tr><td class="nm">② 予約認証モードで初期設定できる</td><td>InitialSetup</td><td>14本</td><td>85件</td><td><span class="pill p-done">成果物あり</span></td></tr>
-    <tr><td class="nm">④ 管理者が予約認証の設定を変更できる</td><td>ReservationAuthSettings</td><td>15本</td><td>73件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">② 予約認証モードで初期設定できる</td><td>InitialSetup</td><td>14本</td><td>89件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">④ 管理者が予約認証の設定を変更できる</td><td>ReservationAuthSettings</td><td>15本</td><td>78件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">⑥ 設定値の読み込みが行える</td><td>SettingLoader</td><td>10本</td><td>33件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">⑤ 管理メニューを開いて端末を管理できる</td><td>AdminMenu</td><td>8本</td><td>43件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">① タブレットにログインして組織を選択できる</td><td>Login</td><td>2本</td><td>24件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">③ 起動時に予約データを準備してホームを表示できる</td><td>PrepareHome</td><td>5本</td><td>18件</td><td><span class="pill p-done">成果物あり</span></td></tr>
-    <tr><td class="nm">⑦ 部屋の予約状況をホーム画面に表示できる</td><td>Home</td><td>7本</td><td>25件</td><td><span class="pill p-done">成果物あり</span></td></tr>
-    <tr><td class="nm">⑧ 当日の予約タイムラインを表示できる</td><td>ReservationTimeline</td><td>10本</td><td>25件</td><td><span class="pill p-done">成果物あり</span></td></tr>
-    <tr><td class="nm">残り24チケット</td><td>—</td><td>—</td><td>—</td><td><span class="pill p-todo">未着手</span></td></tr>
+    <tr><td class="nm">⑦ 部屋の予約状況をホーム画面に表示できる</td><td>Home</td><td>8本</td><td>29件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">⑧ 当日の予約タイムラインを表示できる</td><td>ReservationTimeline</td><td>10本</td><td>28件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">⑨ 予約の参加者情報を表示できる</td><td>ParticipantInfo</td><td>10本</td><td>27件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">⑩ 利用不可・利用時間外を表示できる</td><td>Unavailable</td><td>5本</td><td>14件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">⑪ 顔認証で利用者を特定できる</td><td>FaceAuth</td><td>8本</td><td>19件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">残り20チケット</td><td>—</td><td>—</td><td>—</td><td><span class="pill p-todo">未着手</span></td></tr>
   </table>
   </div>
 </section>
@@ -904,14 +1053,14 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr><td class="no">RE-02</td><td class="nm">ANR発生率</td><td>⑦ ⑪ ⑫ ⑬ ⑲</td><td>信頼性</td><td>観点なし（測定で判定）。メインスレッド処理が集中するのは⑦の常駐ループ</td></tr>
     <tr><td class="no">RE-03</td><td class="nm">ロングラン検証（ソークテスト）</td><td>⑦</td><td>信頼性</td><td>観点なし（測定で判定）</td></tr>
     <tr><td class="no">RE-04</td><td class="nm">クラッシュ復帰時間</td><td>⑥ ③ ⑦</td><td>信頼性</td><td>復帰の経路は⑥③の成果物で担保済み。時間の基準は観点に無い</td></tr>
-    <tr><td class="no">PE-01</td><td class="nm">E2E応答時間（認証→解錠完了）</td><td>⑪ ⑫ ⑬ ⑲ ⑳ ㉕</td><td>性能効率性</td><td>未着手。着手時に渡す</td></tr>
+    <tr><td class="no">PE-01</td><td class="nm">E2E応答時間（認証→解錠完了）</td><td>⑪ ⑫ ⑬ ⑲ ⑳ ㉕</td><td>性能効率性</td><td>⑪は観点の要素に留める（統計値のためシナリオ化しない）。区間は「利用者のボタン押下→操作ごとの画面への到達」までで、解錠完了までの後半は⑳㉕（台帳 #47）。⑫⑬⑲⑳㉕は未着手</td></tr>
     <tr><td class="no">PE-02</td><td class="nm">E2E応答時間（予約作成）</td><td>㉒</td><td>性能効率性</td><td>未着手。着手時に渡す</td></tr>
     <tr><td class="no">PE-03</td><td class="nm">メモリ使用量</td><td>⑦ ⑪ ⑫</td><td>性能効率性</td><td>設計対象外（プロファイラで測定）</td></tr>
     <tr><td class="no">PE-04</td><td class="nm">長時間稼働時のメモリ増加量</td><td>⑦</td><td>性能効率性</td><td>設計対象外（プロファイラで測定）</td></tr>
     <tr><td class="no">PE-05</td><td class="nm">発熱（Thermal Status）</td><td>㉚ ⑦</td><td>性能効率性</td><td>未着手</td></tr>
     <tr><td class="no">PE-12</td><td class="nm">バッテリー消費</td><td>㉚</td><td>性能効率性</td><td>未着手。<span class="pill p-open">基準値が TBD</span></td></tr>
-    <tr><td class="no">PE-06</td><td class="nm">CPU使用率</td><td>⑦ ⑪ ⑫</td><td>性能効率性</td><td>⑦は観点「経過時間のカウントダウン表示」の要素『連続稼働後の更新の継続』で担保。⑪⑫は未着手</td></tr>
-    <tr><td class="no">PE-07</td><td class="nm">大量データ時の容量耐性</td><td>⑦ ⑧</td><td>性能効率性</td><td>⑦は観点「取得対象データの範囲」の『想定最大件数』と「状態更新の確定と整合」の『通知の同時受信』で担保。⑧は観点「時間軸上の位置と長さの描画」の『帯が密集する件数』で担保。<span class="pill p-open">件数の単位が TBD</span></td></tr>
+    <tr><td class="no">PE-06</td><td class="nm">CPU使用率</td><td>⑦ ⑪ ⑫</td><td>性能効率性</td><td>⑦は観点「経過時間のカウントダウン表示」の要素『連続稼働後の更新の継続』で担保。⑪は観点「顔の検出処理の稼働」の要素に留める（計測値のためシナリオ化しない）。⑫は未着手</td></tr>
+    <tr><td class="no">PE-07</td><td class="nm">大量データ時の容量耐性</td><td>⑦ ⑧ ⑪</td><td>性能効率性</td><td>⑦は観点「取得対象データの範囲」の『想定最大件数』と「状態更新の確定と整合」の『通知の同時受信』で担保。⑧は観点「時間軸上の位置と長さの描画」の『帯が密集する件数』で担保。⑪は観点「照合対象の件数」の要素『想定最大件数』で担保（数千件が登録された状態でも登録済みの顔が特定できることをシナリオ化。照合速度そのものは計測で判定）。<span class="pill p-open">件数の単位が TBD</span></td></tr>
   </table>
   </div>
 </section>
