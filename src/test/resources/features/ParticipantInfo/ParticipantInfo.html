@@ -236,9 +236,9 @@ td.msg { font-weight: 500; }
     <g class="hit" data-key="2" tabindex="0" role="button" aria-label="人の情報を集める">
       <rect class="step" x="250" y="200" width="150" height="64" rx="8"/>
       <text class="t-name" x="325" y="224" text-anchor="middle">② 人の情報を集める</text>
-      <text class="t-sub" x="325" y="242" text-anchor="middle">先頭10人と主催者</text>
-      <text class="err" x="250" y="292">✕ 11人目からは</text>
-      <text class="err" x="250" y="308">　そもそも取らない</text>
+      <text class="t-sub" x="325" y="242" text-anchor="middle">参加者は一括・主催者は別</text>
+      <text class="err" x="250" y="292">✕ 一括で取れないと</text>
+      <text class="err" x="250" y="308">　参加メンバーは全員出ない</text>
       <text class="err" x="250" y="324">✕ 10秒おきに5回まで</text>
     </g>
     <g class="hit" data-key="3" tabindex="0" role="button" aria-label="主催者の顔写真を取る">
@@ -263,6 +263,8 @@ td.msg { font-weight: 500; }
       <text class="err" x="820" y="292">✕ ゲスト・他の会社</text>
       <text class="err" x="820" y="308">　の人は並ばない</text>
       <text class="err" x="820" y="324">✕ 4人目からも並ばない</text>
+      <text class="err" x="820" y="340">✕ 長い名前は日本語6文字</text>
+      <text class="err" x="820" y="356">　英語13文字で切り詰める</text>
     </g>
     <g class="hit" data-key="6" tabindex="0" role="button" aria-label="残りの人数を数える">
       <rect class="step" x="1010" y="200" width="150" height="64" rx="8"/>
@@ -349,7 +351,8 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="5"><div class="ttl"><i class="dot ok"></i>従業員4人（上限の直後） → 3人までで止まる</div><div class="chips"></div></div>
       <div class="card" data-keys="5"><div class="ttl"><i class="dot ok"></i>ゲストが混ざる → 従業員の名前だけ並ぶ</div><div class="chips"></div></div>
       <div class="card" data-keys="5"><div class="ttl"><i class="dot ok"></i>ゲストだけ → 1人も並ばない</div><div class="chips"></div></div>
-      <div class="card" data-keys="2,5,6"><div class="ttl"><i class="dot ng"></i>11人目にいる従業員 → 名前は出ないが「他N名」には数えられる（赤カード③）</div><div class="chips"></div></div>
+      <div class="card" data-keys="5"><div class="ttl"><i class="dot ok"></i>名前が長い → 1人ずつ切り詰めて、並ぶ人数は減らない</div><div class="chips"></div></div>
+      <div class="card" data-keys="5,6"><div class="ttl"><i class="dot ok"></i>ゲストを先に追加 → 追加順に関わらず従業員3人が並ぶ</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -361,7 +364,7 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="5,6"><div class="ttl"><i class="dot ok"></i>従業員1人＋ゲスト2人 → 「他2名」</div><div class="chips"></div></div>
       <div class="card" data-keys="5,6"><div class="ttl"><i class="dot ok"></i>ゲスト3人 → 名前なしで「他3名」</div><div class="chips"></div></div>
       <div class="card" data-keys="6,P"><div class="ttl"><i class="dot ok"></i>英語表示 → 「+1 others」</div><div class="chips"></div></div>
-      <div class="card" data-keys="2,5,6"><div class="ttl"><i class="dot ng"></i>参加メンバーの情報が5回とも取れない → 名前が出ず「他N名」に入る</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,5,6"><div class="ttl"><i class="dot ng"></i>参加メンバーの情報を一括で5回とも取れない → 全員の名前が出ず「他N名」に入る</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -434,11 +437,12 @@ td.msg { font-weight: 500; }
     <tr><th>画面での見え方</th><th>そうなっている場所</th></tr>
     <tr><td class="msg">参加者情報が1行も出ない</td><td>① 「予約情報の表示」が無効 ／ ① 空室（予約が終わった・自動キャンセルされた後で次の予約が無い） ／ ① 参加者が0人 ／ ④ 主催者の名前がどこにも無い ／ ⑦ 非公開</td></tr>
     <tr><td class="msg">主催者の行だけが出て、名前も「他N名」も出ない</td><td>⑦ 主催者のみ公開</td></tr>
-    <tr><td class="msg">参加メンバーの名前が1人も並ばない</td><td>⑤ 並べる従業員が0人（主催者だけ／ゲストだけ／他の会社の予約）</td></tr>
+    <tr><td class="msg">参加メンバーの名前が1人も並ばない</td><td>⑤ 並べる従業員が0人（主催者だけ／ゲストだけ／他の会社の予約） ／ ② 情報の一括取得が5回とも失敗した</td></tr>
     <tr><td class="msg">名前が3人までで止まる</td><td>⑤ 並ぶのは3人までと決まっている</td></tr>
-    <tr><td class="msg">ある従業員の名前だけ出ない</td><td>② 11人目以降にいる ／ ② その人の情報が取れなかった ／ ⑤ 4人目以降にあたる</td></tr>
+    <tr><td class="msg">従業員の名前の末尾が「…」になる</td><td>⑤ 1人あたりの上限（日本語6文字／英語13文字）を超えたので切り詰めている</td></tr>
+    <tr><td class="msg">ある従業員の名前だけ出ない</td><td>⑤ 4人目以降にあたる</td></tr>
     <tr><td class="msg">「他N名」の行が出ない</td><td>⑥ 名前が出なかった人が0人</td></tr>
-    <tr><td class="msg">「他N名」の人数が、名前が出ていない人の数と合っている</td><td>⑥ 参加者全員の数から、名前が並んだ人と主催者を引いている。② で取らなかった11人目以降もここに数えられる</td></tr>
+    <tr><td class="msg">「他N名」の人数が、名前が出ていない人の数と合っている</td><td>⑥ 参加者全員の数から、名前が並んだ人と主催者を引いている</td></tr>
     <tr><td class="msg">顔写真が人型のまま</td><td>③ 写真が未登録（取得に失敗したときの表示は画像表示ライブラリの責務のため対象外）</td></tr>
     <tr><td class="msg">主催者の行に個人名ではなく会社名が出る</td><td>④ 他の会社（テナント組織）の予約では、個人名ではなく会社名が出る</td></tr>
     <tr><td class="msg">主催者の名前が、登録しているのと違う名前で出る</td><td>② 情報を5回とも取れず、予約に入っている名前で出ている</td></tr>
