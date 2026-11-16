@@ -471,7 +471,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
 
     <tr class="grp"><td colspan="5">C. 本人の特定（認証）</td></tr>
     <tr data-keys="CAM"><td class="no">⑪</td><td class="nm">顔認証で利用者を特定できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-done">成果物あり</span></td><td>FaceAuth</td></tr>
-    <tr data-keys="CAM"><td class="no">⑫</td><td class="nm">QR コードで利用者を特定できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="CAM"><td class="no">⑫</td><td class="nm">QR コードで利用者を特定できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-done">成果物あり</span></td><td>QrAuth</td></tr>
     <tr data-keys="CAM"><td class="no">⑬</td><td class="nm">個人コードで本人確認できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
     <tr data-keys="CAM"><td class="no">⑲</td><td class="nm">カード認証で利用者を特定できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
     <tr data-keys="CAM"><td class="no">⑭</td><td class="nm">認証失敗・顔未登録をハンドリングできる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
@@ -1012,13 +1012,53 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td>管理メニューの「顔認識機能のデバッグ」から開くのは <code>FaceRecognitionDebugView</code> で、映した顔の検出結果・類似度・該当メンバーを表示する画面。端末内の顔情報の件数・ダウンロードの進捗・削除の操作を持つ <code>FacePropertiesDebugView</code> は開発用デバッグメニュー（<code>DebugView</code>）配下であり、QAが通常の運用で到達できるかが未確認のため。⑱の着手時に観測手段を決める。</td>
       <td class="no">—</td>
     </tr>
+    <tr>
+      <td class="no">49</td>
+      <td class="nm">受付の自動チェックイン／ゲスト通過時の通知はどこで見るか</td>
+      <td>⑫ ④</td>
+      <td><span class="pill p-done">⑫では見ない（常時認証モード専用のため対象外） ／ 受け入れ条件②はチケット本文の修正候補として提示する</span></td>
+      <td>どちらの設定項目も設定画面の <code>if isAlwaysAuthMode</code> の内側にしかなく（<code>SettingView.swift:609</code>・<code>:1732</code>）、予約認証モードの設定画面には現れないため。既定値はいずれも無効（<code>Thing.swift:253-254</code>）。発火自体はQRのパスにあるが（<code>ReservationCameraAuthenticationViewModel.swift:242</code> → <code>:982-1018</code>）、予約認証モードでは有効にできない。</td>
+      <td class="no">2026-11-16</td>
+    </tr>
+    <tr>
+      <td class="no">50</td>
+      <td class="nm">同一のQRコードを続けて読んだときの抑止（一定時間は同じコードを受け付けない）はどこで見るか</td>
+      <td>⑫</td>
+      <td><span class="pill p-open">⑫では見ない（常時認証モード専用の「連続認証モード」が有効なときだけ効くため対象外）／二重処理の防止は「照会中は読み取らない・認証待ちで再開する」で担保する ／ 開発チームへ確認中</span></td>
+      <td>抑止の判定は連続認証モードが有効なときだけ成立し、無効なら素通りする（<code>CameraAuthenticationable.swift:217-231</code>・<code>:233-246</code>）。設定は常時認証モード専用で既定は無効（<code>SettingView.swift:1330-1331</code>・<code>Thing.swift:283</code>）。一方、照会中にQRを読み取らないこと・認証待ちに戻ると読み取りを再開することは設定によらず常に成立する（<code>CameraAuthenticationable.swift:189</code>・<code>:210</code>・<code>:704</code>）ため、受け入れ条件③はこちらで満たす。</td>
+      <td class="no">—</td>
+    </tr>
+    <tr>
+      <td class="no">51</td>
+      <td class="nm">QRコードに起因する認証失敗を、どの失敗の種類に振り分けるかはどこで見るか</td>
+      <td>⑫ ⑭</td>
+      <td><span class="pill p-done">読み取ったQRの中身と失敗の種類の対応は⑫ ／ 各失敗の表示そのものの見え方・処理中の演出の完了後に切り替わること・認証待ちへの復帰は⑭（台帳 #40）</span></td>
+      <td>振り分けは読み取ったQRの中身で決まり、QRの読み取りと不可分なため（権限の無いQR＝<code>ReservationCameraAuthenticationViewModel.swift:686-690</code>、受付用のQR＝<code>:741-770</code>、不正なQR＝<code>:780-785</code>、通信エラー＝<code>:787-788</code>）。一方、⑭の受け入れ条件①は失敗の種類ごとの表示への遷移を宣言しており、種類を決める入力までは含まないため、表示側は⑭に残す。</td>
+      <td class="no">2026-11-16</td>
+    </tr>
+    <tr>
+      <td class="no">52</td>
+      <td class="nm">認証方法が「顔のみ」のとき、QRコードをかざしても照会中に進まないことはどこで見るか</td>
+      <td>⑫ ⑪</td>
+      <td><span class="pill p-done">⑫</span></td>
+      <td>⑪のルール①が持つ「QRのみ運用の端末で顔を映しても照会中にならない」の裏返しにあたるため、QR側は⑫で見る。顔のみ運用ではQRリーダー自体を組み込まず（<code>ReservationCameraAuthenticationViewModel.swift:347</code>・<code>Thing.swift:720-725</code>）、仮に読み取っても認証方法の判定で弾かれる（<code>CameraAuthenticationable.swift:209</code>）。</td>
+      <td class="no">2026-11-16</td>
+    </tr>
+    <tr>
+      <td class="no">53</td>
+      <td class="nm">ネットワークに接続できないとき、QRコードでの利用者の特定はどう振る舞うのが正か</td>
+      <td>⑫ ㉛</td>
+      <td><span class="pill p-open">赤カード（未確定）／ ⑫ではルールの枠だけ確保し、期待結果は保留である旨を成果物に明記する</span></td>
+      <td>チケット本文のシナリオ「オフライン時のQR認証」の Then が「&lt;リファインメントで確定&gt;」のままのため。実装はQRのオフラインモードが有効ならネットワークの確認を行わず進み（<code>CameraAuthenticationable.swift:249-251</code>）、同設定は予約認証モードの設定画面に無く既定で有効（<code>Thing.swift:262</code>・<code>:668</code>）。照合先は端末内のキャッシュに切り替わる（<code>AccessControlV1Service.swift:147-164</code>）。</td>
+      <td class="no">—</td>
+    </tr>
   </table>
   </div>
 </section>
 
 <section>
   <h2>カバレッジ</h2>
-  <div class="cov"><b>11 / 31</b><span class="hint">チケット（35%）に成果物あり。</span></div>
+  <div class="cov"><b>12 / 31</b><span class="hint">チケット（39%）に成果物あり。</span></div>
   <div class="tbl-wrap">
   <table>
     <tr><th>チケット</th><th>成果物</th><th>ルール</th><th>シナリオ</th><th>状態</th></tr>
@@ -1033,7 +1073,8 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr><td class="nm">⑨ 予約の参加者情報を表示できる</td><td>ParticipantInfo</td><td>10本</td><td>28件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">⑩ 利用不可・利用時間外を表示できる</td><td>Unavailable</td><td>5本</td><td>14件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">⑪ 顔認証で利用者を特定できる</td><td>FaceAuth</td><td>8本</td><td>19件</td><td><span class="pill p-done">成果物あり</span></td></tr>
-    <tr><td class="nm">残り20チケット</td><td>—</td><td>—</td><td>—</td><td><span class="pill p-todo">未着手</span></td></tr>
+    <tr><td class="nm">⑫ QR コードで利用者を特定できる</td><td>QrAuth</td><td>4本</td><td>9件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">残り19チケット</td><td>—</td><td>—</td><td>—</td><td><span class="pill p-todo">未着手</span></td></tr>
   </table>
   </div>
 </section>
@@ -1053,13 +1094,13 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr><td class="no">RE-02</td><td class="nm">ANR発生率</td><td>⑦ ⑪ ⑫ ⑬ ⑲</td><td>信頼性</td><td>観点なし（測定で判定）。メインスレッド処理が集中するのは⑦の常駐ループ</td></tr>
     <tr><td class="no">RE-03</td><td class="nm">ロングラン検証（ソークテスト）</td><td>⑦</td><td>信頼性</td><td>観点なし（測定で判定）</td></tr>
     <tr><td class="no">RE-04</td><td class="nm">クラッシュ復帰時間</td><td>⑥ ③ ⑦</td><td>信頼性</td><td>復帰の経路は⑥③の成果物で担保済み。時間の基準は観点に無い</td></tr>
-    <tr><td class="no">PE-01</td><td class="nm">E2E応答時間（認証→解錠完了）</td><td>⑪ ⑫ ⑬ ⑲ ⑳ ㉕</td><td>性能効率性</td><td>⑪は観点の要素に留める（統計値のためシナリオ化しない）。区間は「利用者のボタン押下→操作ごとの画面への到達」までで、解錠完了までの後半は⑳㉕（台帳 #47）。⑫⑬⑲⑳㉕は未着手</td></tr>
+    <tr><td class="no">PE-01</td><td class="nm">E2E応答時間（認証→解錠完了）</td><td>⑪ ⑫ ⑬ ⑲ ⑳ ㉕</td><td>性能効率性</td><td>⑪⑫は観点「認証成功」の要素『ボタン押下から次の画面に到達するまでの応答時間』に留める（統計値のためシナリオ化しない）。区間は「利用者のボタン押下→操作ごとの画面への到達」までで、解錠完了までの後半は⑳㉕（台帳 #47）。⑬⑲⑳㉕は未着手</td></tr>
     <tr><td class="no">PE-02</td><td class="nm">E2E応答時間（予約作成）</td><td>㉒</td><td>性能効率性</td><td>未着手。着手時に渡す</td></tr>
     <tr><td class="no">PE-03</td><td class="nm">メモリ使用量</td><td>⑦ ⑪ ⑫</td><td>性能効率性</td><td>設計対象外（プロファイラで測定）</td></tr>
     <tr><td class="no">PE-04</td><td class="nm">長時間稼働時のメモリ増加量</td><td>⑦</td><td>性能効率性</td><td>設計対象外（プロファイラで測定）</td></tr>
     <tr><td class="no">PE-05</td><td class="nm">発熱（Thermal Status）</td><td>㉚ ⑦</td><td>性能効率性</td><td>未着手</td></tr>
     <tr><td class="no">PE-12</td><td class="nm">バッテリー消費</td><td>㉚</td><td>性能効率性</td><td>未着手。<span class="pill p-open">基準値が TBD</span></td></tr>
-    <tr><td class="no">PE-06</td><td class="nm">CPU使用率</td><td>⑦ ⑪ ⑫</td><td>性能効率性</td><td>⑦は観点「経過時間のカウントダウン表示」の要素『連続稼働後の更新の継続』で担保。⑪は観点「顔の検出処理の稼働」の要素に留める（計測値のためシナリオ化しない）。⑫は未着手</td></tr>
+    <tr><td class="no">PE-06</td><td class="nm">CPU使用率</td><td>⑦ ⑪ ⑫</td><td>性能効率性</td><td>⑦は観点「経過時間のカウントダウン表示」の要素『連続稼働後の更新の継続』で担保。⑪⑫は観点「映像からの継続的な検出と提示」の要素（⑪は『連続稼働後の検出の継続』、⑫は『読み取り処理の稼働中の端末の負荷』）に留める（計測値のためシナリオ化しない）</td></tr>
     <tr><td class="no">PE-07</td><td class="nm">大量データ時の容量耐性</td><td>⑦ ⑧ ⑪</td><td>性能効率性</td><td>⑦は観点「取得対象データの範囲」の『想定最大件数』と「状態更新の確定と整合」の『通知の同時受信』で担保。⑧は観点「時間軸上の位置と長さの描画」の『帯が密集する件数』で担保。⑪は観点「照合対象の件数」の要素『想定最大件数』で担保（数千件が登録された状態でも登録済みの顔が特定できることをシナリオ化。照合速度そのものは計測で判定）。<span class="pill p-open">件数の単位が TBD</span></td></tr>
   </table>
   </div>
