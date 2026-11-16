@@ -217,6 +217,7 @@ td.msg { font-weight: 500; }
       <rect class="step" x="420" y="200" width="160" height="64" rx="8"/>
       <text class="t-name" x="500" y="224" text-anchor="middle">① QRを読み取る</text>
       <text class="t-sub" x="500" y="242" text-anchor="middle">読み取ったら他は受け付けない</text>
+      <text class="lbl" x="420" y="276">読み取ると演出 → その後「照会中です...」</text>
       <text class="err" x="420" y="292">✕ 照会している間は読み取らない</text>
       <text class="err" x="420" y="308">→ 待ちに戻ると読み取りを再開する</text>
       <text class="lbl" x="420" y="330">？ ネットワーク無しは確定待ち</text>
@@ -304,7 +305,7 @@ td.msg { font-weight: 500; }
   <div class="tbl-wrap">
   <table>
     <tr><th>画面に出る言葉</th><th>止まった場所</th></tr>
-    <tr><td class="msg">照会中です...</td><td>② 使えるQRか調べる 〜 ③ 誰かを特定する（読み取れた後、結果が出るまで）</td></tr>
+    <tr><td class="msg">照会中です...</td><td>読み取りの演出が終わった後（失敗するときは必ず一度出る。成功が早いと出ないまま次の画面へ進む）</td></tr>
     <tr><td class="msg">解錠権限がありません</td><td>③ 誰かを特定する（QRは使えたが、その人に解錠の権限がないとき）</td></tr>
     <tr><td class="msg">受付が未完了です</td><td>受付用のQRか調べる（受付がまだのゲストのQRだったとき）</td></tr>
     <tr><td class="msg">QRコードが不正です</td><td>受付用のQRか調べる（この部屋で使えない・期限が切れていて、受付用でもないとき）</td></tr>
