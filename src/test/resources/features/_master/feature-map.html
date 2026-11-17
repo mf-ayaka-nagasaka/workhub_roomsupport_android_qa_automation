@@ -1048,9 +1048,9 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="no">53</td>
       <td class="nm">ネットワークに接続できないとき、QRコードでの利用者の特定はどう振る舞うのが正か</td>
       <td>⑫ ㉛</td>
-      <td><span class="pill p-open">赤カード（未確定）／ ⑫ではルールの枠だけ確保し、期待結果は保留である旨を成果物に明記する</span></td>
-      <td>チケット本文のシナリオ「オフライン時のQR認証」の Then が「&lt;リファインメントで確定&gt;」のままのため。実装はQRのオフラインモードが有効ならネットワークの確認を行わず進み（<code>CameraAuthenticationable.swift:249-251</code>）、同設定は予約認証モードの設定画面に無く既定で有効（<code>Thing.swift:262</code>・<code>:668</code>）。照合先は端末内のキャッシュに切り替わる（<code>AccessControlV1Service.swift:147-164</code>）。</td>
-      <td class="no">—</td>
+      <td>⑫では<strong>カメラ認証画面に入った後に回線が切れた場合</strong>に限り、端末内の控えにアクセス権があれば特定が成立する振る舞いを<strong>理想の提案</strong>としてルール化する ／ <strong>オフラインの状態から操作を始められるかどうかと、オフライン全般の方針は㉛</strong>（参照元との差分は⑫の赤カードで議題化）</td>
+      <td>チケット本文のシナリオ「オフライン時のQR認証」の Then が「&lt;リファインメントで確定&gt;」のままだが、空欄のまま残すとリファインメントの題材にならないため、⑫で理想の振る舞いの叩き台を持つ。予約認証モードではオフライン時にホーム画面が全画面のスピナーで操作を受け付けなくなり（<code>MainMenuViewModel.swift:766-772</code>）、オフラインから新たにカメラ認証画面へ入ることはできないため、⑫が扱えるのは到達後の切断に限られる。オフライン関連の設定は4項目とも常時認証モードでしか表示されず（<code>SettingViewModel.swift:1091-1101</code>）、控えを作るジョブの開始も常時認証モードのカメラ画面からのみ（<code>AlwaysCameraAuthenticationViewModel.swift:776</code>／予約認証モードは<code>stopJob()</code>のみ・<code>ReservationCameraAuthenticationViewModel.swift:385</code>）であるため、⑫の提案は参照元の実装の延長ではない。</td>
+      <td class="no">2026-11-17</td>
     </tr>
   </table>
   </div>
