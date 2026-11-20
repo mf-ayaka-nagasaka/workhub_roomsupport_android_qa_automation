@@ -267,7 +267,7 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="1,2,5,out"><div class="ttl"><i class="dot ok"></i>日付をまたぐ時間帯 → 0時を過ぎても利用不可の画面のまま</div><div class="chips"></div></div>
       <div class="card" data-keys="home,1,2,5,out"><div class="ttl"><i class="dot ok"></i>入室待ちの予約があっても → 利用不可の画面になり、入室できない</div><div class="chips"></div></div>
       <div class="card" data-keys="home,1,2,5,out"><div class="ttl"><i class="dot ok"></i>使っている最中でも → 利用不可の画面になり、退室できない（終了時刻に予約は自動で終わる）</div><div class="chips"></div></div>
-      <div class="card" data-keys="home,1,2,5,out"><div class="ttl"><i class="dot ok"></i>見ている最中に時間帯が登録される → 再起動しなくても利用不可の画面になる</div><div class="chips"></div></div>
+      <div class="card" data-keys="home,1,2,5,out"><div class="ttl"><i class="dot ok"></i>設定画面で時間帯を保存してホームに戻る → 再起動しなくても利用不可の画面になる</div><div class="chips"></div></div>
       <div class="card" data-keys="home,1,2,5,out"><div class="ttl"><i class="dot ok"></i>同じ部屋に2台、片方だけ登録 → 登録した端末だけが利用不可の画面になる</div><div class="chips"></div></div>
     </div>
   </div>
@@ -282,6 +282,7 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="1,3,home"><div class="ttl"><i class="dot ok"></i>従業員向けは時間外でも、会員向けが時間内 → 通常のホーム</div><div class="chips"></div></div>
       <div class="card" data-keys="1,3,4,5,out"><div class="ttl"><i class="dot ok"></i>従業員向けも会員向けも時間外 → 利用不可の画面</div><div class="chips"></div></div>
       <div class="card" data-keys="1,3,home"><div class="ttl"><i class="dot ok"></i>会員向けだけ設定された部屋 → 時間内は通常のホーム、時間外は利用不可の画面</div><div class="chips"></div></div>
+      <div class="card" data-keys="home,1,3,4,5,out"><div class="ttl"><i class="dot ok"></i>管理画面で時間帯を今の時刻を含まないように変更 → 操作なしで利用不可の画面になる</div><div class="chips"></div></div>
       <div class="card" data-keys="1,3,home"><div class="ttl"><i class="dot ok"></i>管理画面で時間帯を今の時刻を含むように変更 → 操作なしで通常のホームに戻る</div><div class="chips"></div></div>
       <div class="card" data-keys="1,3,4,5,out"><div class="ttl"><i class="dot ng"></i>予約を受け付けない部屋 → 時刻に関わらず終日 利用不可の画面</div><div class="chips"></div></div>
     </div>

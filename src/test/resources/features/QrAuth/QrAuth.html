@@ -217,6 +217,7 @@ td.msg { font-weight: 500; }
       <rect class="step" x="420" y="200" width="160" height="64" rx="8"/>
       <text class="t-name" x="500" y="224" text-anchor="middle">① QRを読み取る</text>
       <text class="t-sub" x="500" y="242" text-anchor="middle">読み取ったら他は受け付けない</text>
+      <text class="lbl" x="420" y="276">読み取ると演出 → その後「照会中です...」</text>
       <text class="err" x="420" y="292">✕ 照会している間は読み取らない</text>
       <text class="err" x="420" y="308">→ 待ちに戻ると読み取りを再開する</text>
       <text class="lbl" x="420" y="330">？ ネットワーク無しは確定待ち</text>
@@ -238,7 +239,9 @@ td.msg { font-weight: 500; }
       <text class="t-name" x="730" y="350" text-anchor="middle">受付用のQRか調べる</text>
       <text class="err" x="860" y="332">✕ 受付用だった → 受付が未完了です</text>
       <text class="err" x="860" y="348">✕ どれでもない → QRコードが不正です</text>
-      <text class="err" x="860" y="364">✕ 調べられない → インターネットに接続されていません</text>
+      <text class="err" x="860" y="364">✕ 通信できない → インターネットに接続されていません</text>
+      <text class="err" x="860" y="380">✕ 時間切れ → もう一度かざしてください</text>
+      <text class="err" x="860" y="396">✕ カギの有効時間の外 → 前なら「まだ使えない」／後なら「時間が終わった」と出し分ける</text>
     </g>
   </svg>
   </div>
@@ -269,8 +272,9 @@ td.msg { font-weight: 500; }
     <div class="cards">
       <div class="card" data-keys="2,3"><div class="ttl"><i class="dot ng"></i>解錠の権限がない人のQR → 解錠権限がありません</div><div class="chips"></div></div>
       <div class="card" data-keys="2,R"><div class="ttl"><i class="dot ng"></i>受付がまだのゲストのQR → 受付が未完了です</div><div class="chips"></div></div>
-      <div class="card" data-keys="2,R"><div class="ttl"><i class="dot ng"></i>この部屋で使えない／期限が切れたQR → QRコードが不正です</div><div class="chips"></div></div>
-      <div class="card" data-keys="2,R"><div class="ttl"><i class="dot ng"></i>受付用か調べられない（通信できない・時間切れ） → インターネットに接続されていません</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,R"><div class="ttl"><i class="dot ng"></i>この部屋で使えないQR（受付用でもない） → QRコードが不正です</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,R"><div class="ttl"><i class="dot ng"></i>受付用か調べられない（通信できない） → インターネットに接続されていません</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,R"><div class="ttl"><i class="dot ng"></i>受付用か調べるのが時間切れ → もう一度かざしてください（通信できないときとは別の言葉。文言は確定待ち）</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -283,9 +287,21 @@ td.msg { font-weight: 500; }
   </div>
 
   <div class="group">
-    <h3>ルール④ ネットワークが無いとき</h3>
+    <h3>ルール④ 画面に入った後でネットワークが切れたとき（理想の案）</h3>
     <div class="cards">
-      <div class="card" data-keys="1,2"><div class="ttl"><i class="dot ok"></i>ネットワークが無いときにどうなるか（確定待ちのため、期待する結果は未記入）</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,2"><div class="ttl"><i class="dot ok"></i>端末に控えがあるQR → 誰かを特定して、操作の画面へ進む</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,2"><div class="ttl"><i class="dot ng"></i>端末に控えがないQR → ネットワークが無いことが分かる言葉が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,2"><div class="ttl"><i class="dot ng"></i>※ 理想の案。いまのiOSには予約認証モード向けの控えの仕組みが無い（議題）</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑤ カギの有効時間の内側でだけ使える</h3>
+    <div class="cards">
+      <div class="card" data-keys="2,R"><div class="ttl"><i class="dot ng"></i>有効時間の開始前（入室の導線は出ているが、カギはまだ有効でない） → まだ使えないことが分かる言葉が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,3,D"><div class="ttl"><i class="dot ok"></i>予約の開始前でも、有効時間に入っていれば操作の画面へ進む</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,R"><div class="ttl"><i class="dot ng"></i>有効時間の終了後（予約の後） → 使える時間が終わったことが分かる言葉が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="2,R"><div class="ttl"><i class="dot ng"></i>※ いまのiOSはどちらも「QRコードが不正です」。Android版で出し分ける方針（言葉そのものは⑭）</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -304,11 +320,14 @@ td.msg { font-weight: 500; }
   <div class="tbl-wrap">
   <table>
     <tr><th>画面に出る言葉</th><th>止まった場所</th></tr>
-    <tr><td class="msg">照会中です...</td><td>② 使えるQRか調べる 〜 ③ 誰かを特定する（読み取れた後、結果が出るまで）</td></tr>
+    <tr><td class="msg">照会中です...</td><td>読み取りの演出が終わった後（失敗するときは必ず一度出る。成功が早いと出ないまま次の画面へ進む）</td></tr>
     <tr><td class="msg">解錠権限がありません</td><td>③ 誰かを特定する（QRは使えたが、その人に解錠の権限がないとき）</td></tr>
     <tr><td class="msg">受付が未完了です</td><td>受付用のQRか調べる（受付がまだのゲストのQRだったとき）</td></tr>
-    <tr><td class="msg">QRコードが不正です</td><td>受付用のQRか調べる（この部屋で使えない・期限が切れていて、受付用でもないとき）</td></tr>
-    <tr><td class="msg">インターネットに接続されていません。(CODE: ◯◯)</td><td>受付用のQRか調べる（調べられないとき・時間切れのとき）</td></tr>
+    <tr><td class="msg">QRコードが不正です</td><td>受付用のQRか調べる（この部屋で使えないQRで、受付用でもないとき）</td></tr>
+    <tr><td class="msg">インターネットに接続されていません。(CODE: ◯◯)</td><td>受付用のQRか調べる（通信できないとき）／画面に入った後にネットワークが切れ、端末に控えが無いとき</td></tr>
+    <tr><td class="msg">もう一度かざすよう促す言葉（文言は確定待ち）</td><td>受付用のQRか調べるのが時間切れになったとき（通信できないときとは分ける）</td></tr>
+    <tr><td class="msg">まだ使えないことが分かる言葉（文言は確定待ち）</td><td>② 使えるQRか（カギの有効時間の開始前。いまのiOSは「QRコードが不正です」）</td></tr>
+    <tr><td class="msg">使える時間が終わったことが分かる言葉（文言は確定待ち）</td><td>② 使えるQRか（カギの有効時間の終了後。いまのiOSは「QRコードが不正です」）</td></tr>
   </table>
   </div>
   </div>
