@@ -9,7 +9,7 @@ Gherkinシナリオ（scenarios.md）を入力として、他機能にも展開�
 
 ## Context / Scope
 - **入力（参照元）**: `src/test/resources/features/{機能名}/scenarios.md`（`/gherkin-scenario-generator` の成果物）
-- **照合用仕様書**: `C:\Users\mforce0087\workhubRoomSupport` 配下の対象機能仕様書（現状はiOS版。将来的にAndroid版の対象プロダクト仕様書に切替予定）
+- **照合用仕様書**: `../workhubRoomSupport` 配下の対象機能仕様書（現状はiOS版。将来的にAndroid版の対象プロダクト仕様書に切替予定）
 - **関連メモリー**: `.claude/memories/viewpoint-extractor.md`、`.claude/memories/global.md`
 - **スキル一覧**: `.claude/commands/README.md`
 - **成果物出力先**:
@@ -25,7 +25,7 @@ Gherkinシナリオ（scenarios.md）を入力として、他機能にも展開�
 
 > **【必読】このStepを開始する前に、以下のファイルを必ず読み込んでから作業を開始すること：**
 > - `src/test/resources/features/{機能名}/scenarios.md`（`/gherkin-scenario-generator` の成果物）
-> - `C:\Users\mforce0087\workhubRoomSupport` 内の対象機能仕様書 (.md)
+> - `../workhubRoomSupport` 内の対象機能仕様書 (.md)
 > - `src/test/resources/features/_master/viewpoints.tsv`（観点マスター総合版。存在する場合、既存観点を参照用に読み込む）
 > - `src/test/resources/features/_master/feature-map.html` の「品質判定基準の担保先」（対象機能が担保先になっている指標を特定する）
 > - `docs/quality_criteria/{プロダクト名}/criteria.md`（担保先になっている指標の基準値を確認する。存在しない場合はスキップ）
@@ -34,7 +34,7 @@ Gherkinシナリオ（scenarios.md）を入力として、他機能にも展開�
 
 1. 引数で指定された機能名から `src/test/resources/features/{機能名}/scenarios.md` を読み込む。
 2. scenarios.md が存在しない場合は、先に `/gherkin-scenario-generator` を実行するようユーザーに案内して終了する。
-3. 対応する機能仕様書（.md）を `C:\Users\mforce0087\workhubRoomSupport` から読み込む。
+3. 対応する機能仕様書（.md）を `../workhubRoomSupport` から読み込む。
 4. scenarios.md から以下の要素を把握する：
    - 機能名・機能概要
    - 各ルールとその配下のシナリオ（正常系・異常系・例外系）

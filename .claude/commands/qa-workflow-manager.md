@@ -7,7 +7,7 @@
 
 ## Context / Scope
 - **対象ファイル**: `v[ver]_[ticket_no].md`（修正内容）、`[プロジェクト名]_qa_automation/data/*.csv`（テストケース本体）
-- **参照元ドキュメント**: `index.md`（機能一覧）、`docs/test_viewpoints/base/*.md`、`[Androidソースリポジトリ]/documents/qa_naming_definition.md`
+- **参照元ドキュメント**: `index.md`（機能一覧）、`docs/test_viewpoints/base/*.md`、`../gateaccess-android/documents/RoomSupport/qa_naming_definition.md`
 - **テンプレート**: `./data/デシジョンテーブル_テンプレート(長坂用).xlsx`、`CSVテンプレート_QASE_workhubMobile用 - template_確認テスト (1).csv`
 - **出力先（リリース差分）**: `docs/test_viewpoints/release/{ticket_no}/`
 - **事前準備マスター**: ./data/preconditions_master.md

@@ -8,8 +8,8 @@
 ## Context / Scope
 - **出力・更新ファイル**: `docs/features_list.md` （※出力先パス）
 - **参照用データ（粒度の把握）**: `data/機能一覧.csv`
-- **参照ドキュメント（命名規則）**: `C:\Users\mforce0087\[Androidソースリポジトリ]\documents\RoomSupport\qa_naming_definition.md`
-- **マッピング定義**: `C:\Users\mforce0087\[Androidソースリポジトリ]\documents\RoomSupport\screen-map.yml`
+- **参照ドキュメント（命名規則）**: `../gateaccess-android/documents/RoomSupport/qa_naming_definition.md`
+- **マッピング定義**: `../gateaccess-android/documents/RoomSupport/screen-map.yml`
 - **対象ファイル**: プロダクトのソースコード（ルーティング定義、ViewModel、Screen/Composableコンポーネント等）
 
 ## Instructions

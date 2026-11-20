@@ -18,7 +18,7 @@ Androidの全チケットと、アプリの画面・内部処理の対応を1枚
 ## Context / Scope
 - **成果物（唯一の正本）**: `src/test/resources/features/_master/feature-map.html`
 - **補助入力**:
-  - `C:\Users\mforce0087\workhubRoomSupport` 配下の仕様書（`documents/RoomSupport/legacy/*.md`）とソース（`Apps/`, `SharedLocalPackages/`）
+  - `../workhubRoomSupport` 配下の仕様書（`documents/RoomSupport/legacy/*.md`）とソース（`Apps/`, `SharedLocalPackages/`）
   - `src/test/resources/features/{機能名}/` 配下の既存のBDD成果物
 - **関連メモリー**: `.claude/memories/feature-map.md`、`.claude/memories/global.md`
 - **スキル一覧**: `.claude/commands/README.md`

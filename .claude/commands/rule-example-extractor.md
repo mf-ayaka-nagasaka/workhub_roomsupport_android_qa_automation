@@ -5,10 +5,10 @@
 `/rule-example-extractor [対象機能名または仕様書パス]`
 
 例: `/rule-example-extractor reservation`
-例: `/rule-example-extractor "C:\Users\mforce0087\workhubRoomSupport\docs\spec\reservation.md"`
+例: `/rule-example-extractor "../workhubRoomSupport/docs/spec/reservation.md"`
 
 ## Context / Scope
-- **参照元仕様書リポジトリ**: `C:\Users\mforce0087\workhubRoomSupport` 配下の Markdown (.md) ファイル（現状はiOS版仕様書。将来的にAndroid版の対象プロダクト仕様書に切替予定）
+- **参照元仕様書リポジトリ**: `../workhubRoomSupport` 配下の Markdown (.md) ファイル（現状はiOS版仕様書。将来的にAndroid版の対象プロダクト仕様書に切替予定）
 - **関連メモリー**: `.claude/memories/rule-example-extractor.md`、`.claude/memories/global.md`
 - **スキル一覧**: `.claude/commands/README.md`
 - **成果物出力先**: `src/test/resources/features/{機能名}/rules.md`
@@ -21,7 +21,7 @@
 ### Step 1: 仕様書の読み込みと分析 (Investigate)
 
 > **【必読】このStepを開始する前に、以下のファイルを必ず読み込んでから作業を開始すること：**
-> - `C:\Users\mforce0087\workhubRoomSupport` 内の対象となる機能仕様書 (.md)
+> - `../workhubRoomSupport` 内の対象となる機能仕様書 (.md)
 > - `.claude/memories/rule-example-extractor.md`（存在する場合、過去の指摘事項）
 > - `.claude/memories/global.md`
 

@@ -7,8 +7,8 @@
 
 ## Context / Scope
 - **修正内容ファイル**: `v[ver]_[ticket_no].md`
-- **影響機能の抽出**: `C:\Users\mforce0087\workhub_roomsupport_android_qa_automation\data\templates\機能一覧.csv`
-- **テストケースの抽出**: `C:\Users\mforce0087\workhub_roomsupport_android_qa_automation\data\testcases\ROOM_03_cleaned.csv`
+- **影響機能の抽出**: `data/templates/機能一覧.csv`
+- **テストケースの抽出**: `data/testcases/ROOM_03_cleaned.csv`
 
 ## Instructions
 あなたはシニアQAエンジニアとして、修正内容の影響範囲を特定してください。

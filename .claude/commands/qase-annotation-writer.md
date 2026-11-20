@@ -18,8 +18,8 @@
 - **Gherkinシナリオ（記載内容の唯一の正本）**: `src/test/resources/features/{feature_name}/scenarios_with_viewpoints.md`
 - **レビュー基準書（UT-6 の判定基準）**: `docs/unit_test_review_criteria.md`
 - **記述ルール**: `docs/qase_annotation_rules.md`
-- **対象リポジトリ**: `C:\Users\mforce0087\gateaccess-android`（GitHub: `bitkey-service/gateaccess-android`）
-- **コミット先**: 対象PRの head ブランチ。**カレントディレクトリはQAリポジトリのため、git 操作には必ず `-C C:/Users/mforce0087/gateaccess-android` を付与します**
+- **対象リポジトリ**: `../gateaccess-android`（GitHub: `bitkey-service/gateaccess-android`）
+- **コミット先**: 対象PRの head ブランチ。**カレントディレクトリはQAリポジトリのため、git 操作には必ず `-C ../gateaccess-android` を付与します**
 - **学習メモリー**: `.claude/memories/global.md` および `.claude/memories/qase-annotation-writer.md`
 
 ## Instructions
@@ -53,7 +53,7 @@ gh pr view {pr_number} -R bitkey-service/gateaccess-android --json state,headRef
 **2. 作業ツリーの確認**
 
 ```
-git -C C:/Users/mforce0087/gateaccess-android status --porcelain
+git -C ../gateaccess-android status --porcelain
 ```
 
 - 出力がある場合は **処理を中断** し、内容を提示してユーザーの指示を仰いでください
@@ -62,7 +62,7 @@ git -C C:/Users/mforce0087/gateaccess-android status --porcelain
 **3. 現在のブランチを記録する**（Step 7-4 の復帰用）
 
 ```
-git -C C:/Users/mforce0087/gateaccess-android branch --show-current
+git -C ../gateaccess-android branch --show-current
 ```
 
 **4. PRブランチへの切り替え（承認必須）**
@@ -328,7 +328,7 @@ Gherkinのバリエーションには名前が無く（`前提` の文がある�
 **1. ブランチの再確認**
 
 ```
-git -C C:/Users/mforce0087/gateaccess-android branch --show-current
+git -C ../gateaccess-android branch --show-current
 ```
 
 Step 1-0 で切り替えた `headRefName` と一致することを確認します。**一致しない場合は中断してください。**
@@ -336,7 +336,7 @@ Step 1-0 で切り替えた `headRefName` と一致することを確認しま�
 **2. 変更内容の提示**
 
 ```
-git -C C:/Users/mforce0087/gateaccess-android diff --stat
+git -C ../gateaccess-android diff --stat
 ```
 
 変更ファイルと行数を提示し、承認を求めます。
@@ -353,7 +353,7 @@ git -C C:/Users/mforce0087/gateaccess-android diff --stat
 **1. リモートの取り込み**
 
 ```
-git -C C:/Users/mforce0087/gateaccess-android pull --ff-only
+git -C ../gateaccess-android pull --ff-only
 ```
 
 - 失敗した場合（開発チームが後からコミットしている等）は **処理を中断** し、状況を報告してください
@@ -366,7 +366,7 @@ git -C C:/Users/mforce0087/gateaccess-android pull --ff-only
 **3. 実行と報告**
 
 ```
-git -C C:/Users/mforce0087/gateaccess-android push origin HEAD
+git -C ../gateaccess-android push origin HEAD
 ```
 
 push後、対象PRのURLを報告してください。

@@ -19,7 +19,7 @@
   - `src/test/resources/features/{機能名}/viewpoints.tsv`
   - `docs/quality_criteria/{プロダクト名}/criteria.md`（BR-A9 の突き合わせの片側。担保先になっている指標の基準値を確認する）
 - **責務の正本**: `src/test/resources/features/_master/feature-map.html` の「責務の境界線（決定台帳）」と「品質判定基準の担保先」。読むのは対象機能に関係する論点・赤カードの行と、対象機能が担保先になっている指標の行のみ。全文を読み込まない。
-- **補助入力（任意）**: `C:\Users\mforce0087\workhubRoomSupport` 配下の対象機能仕様書（.md）※裏取りに使用。不在の場合は裏取りを行わず、レポートの「確認できなかったこと」に「仕様書による裏取り未実施」と記載する。
+- **補助入力（任意）**: `../workhubRoomSupport` 配下の対象機能仕様書（.md）※裏取りに使用。不在の場合は裏取りを行わず、レポートの「確認できなかったこと」に「仕様書による裏取り未実施」と記載する。
 - **レビュー記録の置き場（書き込み可）**: `reviews/{機能名}/`。Step 4 の最終レポートと Step 5 の対応方針表をここへ保存する。
 - **関連メモリー**: `.claude/memories/review-bdd-artifacts.md`、`.claude/memories/global.md`、`.claude/memories/bdd-artifact-updater.md`
 - **スキル一覧**: `.claude/commands/README.md`

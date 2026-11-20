@@ -13,7 +13,7 @@
 
 ## Context / Scope
 - **QAリポジトリ（本リポジトリ）**: Gherkin等のQA成果物を管理。作業ブランチ `unit-test/qa-review` を作成・切り替えます
-- **レビュー対象リポジトリ**: `C:\Users\mforce0087\gateaccess-android`（GitHub: `bitkey-service/gateaccess-android`）
+- **レビュー対象リポジトリ**: `../gateaccess-android`（GitHub: `bitkey-service/gateaccess-android`）
 
 > **gateaccess-android への操作は工程ごとに異なります。**
 >

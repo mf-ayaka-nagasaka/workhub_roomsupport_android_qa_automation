@@ -11,7 +11,7 @@
 
 ## Context / Scope
 - **入力（起点）**: ユーザーから伝えられた修正内容（リファインメントでの決定事項・仕様変更・指摘）
-- **補助入力**: `C:\Users\mforce0087\workhubRoomSupport` 配下の対象機能仕様書（.md）※修正内容の裏取りに使用
+- **補助入力**: `../workhubRoomSupport` 配下の対象機能仕様書（.md）※修正内容の裏取りに使用
 - **責務の正本**: `src/test/resources/features/_master/feature-map.html`（全体マップ・責務の決定台帳・品質判定基準の担保先）
 - **品質判定基準**: `docs/quality_criteria/{プロダクト名}/criteria.md`（正本は Notion。担保先になっている指標の基準値を確認する）
 - **関連メモリー**: `.claude/memories/bdd-artifact-updater.md`、`.claude/memories/bdd-workflow-manager.md`、`.claude/memories/feature-map.md`、`.claude/memories/global.md`
