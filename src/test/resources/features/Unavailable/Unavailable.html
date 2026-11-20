@@ -284,7 +284,10 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="1,3,home"><div class="ttl"><i class="dot ok"></i>会員向けだけ設定された部屋 → 時間内は通常のホーム、時間外は利用不可の画面</div><div class="chips"></div></div>
       <div class="card" data-keys="home,1,3,4,5,out"><div class="ttl"><i class="dot ok"></i>管理画面で時間帯を今の時刻を含まないように変更 → 操作なしで利用不可の画面になる</div><div class="chips"></div></div>
       <div class="card" data-keys="1,3,home"><div class="ttl"><i class="dot ok"></i>管理画面で時間帯を今の時刻を含むように変更 → 操作なしで通常のホームに戻る</div><div class="chips"></div></div>
-      <div class="card" data-keys="1,3,4,5,out"><div class="ttl"><i class="dot ng"></i>予約を受け付けない部屋 → 時刻に関わらず終日 利用不可の画面</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,3,4,5,out"><div class="ttl"><i class="dot ng"></i>終日利用不可の部屋 → 時刻に関わらずその日はずっと 利用不可の画面</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,3,4,5,out"><div class="ttl"><i class="dot ok"></i>日付が変わって、その曜日が「終日利用不可」 → 利用不可の画面になる</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,3,home"><div class="ttl"><i class="dot ok"></i>終わりが 24:00 の曜日 → 日付が変わる直前まで通常のホーム</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,3,home"><div class="ttl"><i class="dot ok"></i>使えない曜日が終わっても → 次の曜日の始まりの時刻までは利用不可の画面のまま</div><div class="chips"></div></div>
     </div>
   </div>
 
