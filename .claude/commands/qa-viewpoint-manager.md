@@ -9,7 +9,7 @@
 ## Context / Scope
 
 - **参照元（インプットの3本柱）**:
-  1. **仕様書**: `C:\Users\mforce0087\[Androidソースリポジトリ]\documents\RoomSupport` 配下のファイル（画面単位の仕様・振る舞い。別リポジトリ、マルチルートワークスペース前提）
+  1. **仕様書**: `../gateaccess-android/documents/RoomSupport` 配下のファイル（画面単位の仕様・振る舞い。別リポジトリ、マルチルートワークスペース前提）
   2. **命名定義**: `docs/qa_naming_definition.md`（用語・命名ルール）
   3. **ドメイン観点**: `docs/test_viewpoints/base/domain/` 配下のファイル（OS, 端末, 権限などプロダクト特有の要素）
 - **出力先（リリース差分）**: `docs/test_viewpoints/release/{TicketNo}/`

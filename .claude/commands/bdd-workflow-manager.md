@@ -8,7 +8,7 @@
 例: `/bdd-workflow-manager reservation`
 
 ## Context / Scope
-- **入力（起点）**: 対象チケットの受け入れ条件（AC）と、`C:\Users\mforce0087\workhubRoomSupport` 配下の対象機能仕様書（.md）
+- **入力（起点）**: 対象チケットの受け入れ条件（AC）と、`../workhubRoomSupport` 配下の対象機能仕様書（.md）
 - **責務の正本**: `src/test/resources/features/_master/feature-map.html`（全体マップ・責務の決定台帳・品質判定基準の担保先）
 - **品質判定基準**: `docs/quality_criteria/workhub_roomsupport/criteria.md`（正本は Notion。本ファイルは参照用の写し）
 - **関連メモリー**: `.claude/memories/bdd-workflow-manager.md`、`.claude/memories/feature-map.md`、`.claude/memories/global.md`

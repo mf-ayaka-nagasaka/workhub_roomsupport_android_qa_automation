@@ -2,6 +2,24 @@
 
 このディレクトリには、Claude Code をQAワークフローに特化させるためのカスタマイズファイルが格納されています。
 
+## 前提：リポジトリの配置
+
+Skill 内のパスは、**QAリポジトリ（このリポジトリ）からの相対パス**で書いています。参照先の外部リポジトリは、QAリポジトリと**同じ親ディレクトリに並べて** clone してください。親ディレクトリの場所は問いません。
+
+```
+<任意の親ディレクトリ>/
+├── workhub_roomsupport_android_qa_automation/   # ← このリポジトリ
+├── workhubRoomSupport/                          # 仕様書・参照元（iOS版）
+└── gateaccess-android/                          # Androidソース
+```
+
+| Skill 内の表記 | 指すもの |
+|---|---|
+| `../workhubRoomSupport` | 仕様書・参照元リポジトリ（iOS版）。振る舞いの裏取りに使う |
+| `../gateaccess-android` | Androidソースリポジトリ。読み取り専用（`/qase-annotation-writer` のみ書き込み） |
+| `../gateaccess-android/documents/` | 仕様書の置き場所（**作成予定**）。ここを参照する Skill は、仕様書が作成されるまで実行しない |
+| プレフィックスなし（`docs/…`・`data/…`・`src/…`） | このリポジトリ内のファイル |
+
 ## ディレクトリ構成
 
 ```

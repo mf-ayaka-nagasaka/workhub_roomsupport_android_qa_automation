@@ -27,7 +27,7 @@
 ## Context / Scope
 - **レビュー基準書（最優先参照）**: `docs/unit_test_review_criteria.md`
 - **Gherkinシナリオ（網羅チェックの唯一の正本）**: `src/test/resources/features/{feature_name}/scenarios_with_viewpoints.md`
-- **レビュー対象リポジトリ（読み取り専用）**: `C:\Users\mforce0087\gateaccess-android`（GitHub: `bitkey-service/gateaccess-android`）
+- **レビュー対象リポジトリ（読み取り専用）**: `../gateaccess-android`（GitHub: `bitkey-service/gateaccess-android`）
 - **前回レポートの所在**: 対象PRのコメント（`gh pr view {pr_number} -R bitkey-service/gateaccess-android --json comments`）。**本スキルは進捗を保存しません。再レビューの起点は常にPRコメントです**
 
 > 同じディレクトリにある `viewpoints.tsv` / `rules.md` / `_master/viewpoints.tsv` は参照しないでください。観点もルール名も `scenarios_with_viewpoints.md` に内包されており、正本を2つ持つと判定がブレます。

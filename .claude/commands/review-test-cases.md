@@ -7,13 +7,13 @@
 
 ## Context / Scope
 - **対象CSV**: 引数 `csv_path` で指定されたテストケースCSV
-- **ガイドライン（最優先参照）**: `C:\Users\mforce0087\workhub_roomsupport_android_qa_automation\docs\qa_priority_guidelines.md`
-- **レビュー観点チェックリスト**: `C:\Users\mforce0087\workhub_roomsupport_android_qa_automation\docs\review_criteria.md`
-- **仕様書（正当性検証）**: `[Androidソースリポジトリ]\documents\` 配下の最新仕様書（読み取り専用）
-- **事前準備マスター（前提条件検証）**: `C:\Users\mforce0087\workhub_roomsupport_android_qa_automation\data\preconditions_master.md`
-- **機能一覧（範囲・過不足検証）**: `C:\Users\mforce0087\workhub_roomsupport_android_qa_automation\data\templates\機能一覧.csv`
-- **命名定義**: `C:\Users\mforce0087\workhub_roomsupport_android_qa_automation\docs\qa_naming_definition.md`
-- **削除ログ出力先**: `C:\Users\mforce0087\workhub_roomsupport_android_qa_automation\data\logs\ROOM_removed_cases_log.csv`
+- **ガイドライン（最優先参照）**: `docs/qa_priority_guidelines.md`
+- **レビュー観点チェックリスト**: `docs/review_criteria.md`
+- **仕様書（正当性検証）**: `../gateaccess-android/documents/` 配下の最新仕様書（読み取り専用）
+- **事前準備マスター（前提条件検証）**: `data/preconditions_master.md`
+- **機能一覧（範囲・過不足検証）**: `data/templates/機能一覧.csv`
+- **命名定義**: `docs/qa_naming_definition.md`
+- **削除ログ出力先**: `data/logs/ROOM_removed_cases_log.csv`
 
 ## Instructions
 あなたはシニアQAエンジニアとして、既存テストケースの品質レビュー・断捨離・修正提案を行ってください。
