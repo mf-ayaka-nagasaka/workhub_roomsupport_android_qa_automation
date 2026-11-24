@@ -325,11 +325,11 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <text class="t-screen" x="1112" y="516" text-anchor="middle">利用時間外画面</text>
       <text class="t-sub" x="1112" y="535" text-anchor="middle">⑩</text>
     </g>
-    <g class="hit" data-key="HOME" tabindex="0" role="button" aria-label="認証が必要な操作入室・退室・延長・予約（担当 ⑳ ㉑ ㉓ ㉔）">
+    <g class="hit" data-key="HOME" tabindex="0" role="button" aria-label="認証が必要な操作入室・退室・延長・予約（担当 判定⑪／実行 ⑳ ㉑ ㉓ ㉔）">
       <rect class="step" x="190" y="796" width="149" height="64" rx="8"/>
       <text class="t-name" x="264" y="818" text-anchor="middle">認証が必要な操作</text>
       <text class="t-name" x="264" y="834" text-anchor="middle">入室・退室・延長・予約</text>
-      <text class="t-sub" x="264" y="851" text-anchor="middle">⑳ ㉑ ㉓ ㉔</text>
+      <text class="t-sub" x="264" y="851" text-anchor="middle">判定⑪／実行⑳㉑㉓㉔</text>
     </g>
     <g class="hit" data-key="CAM" tabindex="0" role="button" aria-label="カメラ認証画面（担当 予約認証用／⑪⑫⑬⑲）">
       <rect class="screen" x="367" y="796" width="127" height="64" rx="10"/>
@@ -1060,6 +1060,14 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td>設定画面の「利用時間」セクションの操作であり、④の機能概要が同セクションを対象に含めているため。⑩は登録済みスケジュールによるホームの表示だけを扱う（⑩の対象外表で④へ移管済み）。設定画面は初期設定（②）と設定変更（④）で共通だが（④ルール⑬の注記）、②の成果物は利用時間セクションを扱っておらず一時停止スケジュールの実例も0件のため、②で同じ項目を扱うかは別途判断とする。追加できる条件は <code>DownTimeSetupSheetView.swift:18-20</code>。</td>
       <td class="no">2026-11-20</td>
     </tr>
+    <tr>
+      <td class="no">55</td>
+      <td class="nm">ホーム画面の操作からカメラ認証画面へ遷移するか・しないかの判定はどこで見るか</td>
+      <td>⑪ ⑦ ⑫ ⑳ ㉑ ㉓</td>
+      <td><span class="pill p-done">遷移するか否かの判定＝⑪ 顔認証で利用者を特定できる（⑫では持たない）／ボタンが出るか＝⑦（台帳 #17）／遷移しなかったときに走る処理の結果＝⑳ ㉑ ㉓</span></td>
+      <td>入室は解錠対象デバイスが登録済みで <code>enableUnlockKey</code> が true なら遷移し、そうでなければ <code>isRequireFaceWhenEnterReservation</code> を見て、どちらも満たさなければ <code>enterRoom()</code> を直接実行する（<code>MainMenuViewModel.swift:1947-1966</code>）。退室は確認ダイアログで「はい」を選んだ後に <code>isRequireFaceWhenLeaveReservation</code> を判定（<code>:1968-2002</code>）、予約延長は <code>isRequireFaceWhenExtendReservation</code>（<code>:2026-2035</code>）。今すぐ入室（<code>:1805-1819</code>）・予約削除（<code>:2006-2022</code>）・再入室（<code>:2038-2044</code>）は無条件に遷移し、設定はボタンの表示可否を決めるのみ（台帳 #17）。台帳 #38 と同じ構図で、各操作チケットに持たせると⑳㉑㉓で3回重複するため、カメラ認証画面を持つ⑪で1回だけ持つ。</td>
+      <td class="no">2026-11-24</td>
+    </tr>
   </table>
   </div>
 </section>
@@ -1080,7 +1088,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr><td class="nm">⑧ 当日の予約タイムラインを表示できる</td><td>ReservationTimeline</td><td>10本</td><td>28件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">⑨ 予約の参加者情報を表示できる</td><td>ParticipantInfo</td><td>10本</td><td>28件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">⑩ 利用不可・利用時間外を表示できる</td><td>Unavailable</td><td>5本</td><td>14件</td><td><span class="pill p-done">成果物あり</span></td></tr>
-    <tr><td class="nm">⑪ 顔認証で利用者を特定できる</td><td>FaceAuth</td><td>8本</td><td>19件</td><td><span class="pill p-done">成果物あり</span></td></tr>
+    <tr><td class="nm">⑪ 顔認証で利用者を特定できる</td><td>FaceAuth</td><td>9本</td><td>20件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">⑫ QR コードで利用者を特定できる</td><td>QrAuth</td><td>5本</td><td>11件</td><td><span class="pill p-done">成果物あり</span></td></tr>
     <tr><td class="nm">残り19チケット</td><td>—</td><td>—</td><td>—</td><td><span class="pill p-todo">未着手</span></td></tr>
   </table>
