@@ -689,7 +689,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td class="nm">起動準備中の「解錠デバイスの接続確認待ち」はどこで見るか</td>
       <td>③ ⑳ ㉕</td>
       <td><span class="pill p-done">③ の待ち合わせ対象に含める（解錠の実行そのものは⑳㉕）</span></td>
-      <td>顔情報の同期（⑱）以外の並列処理は揃うまでホーム画面へ遷移しない方針であり、接続確認もその対象となるため。</td>
+      <td>顔情報の同期（⑱）以外の並列処理は揃うまでホーム画面へ遷移しない方針であり、接続確認もその対象となるため。解錠デバイスが0件の場合は確認対象が無いため完了として扱う（正典の <code>CheckLockDeviceConnectionUseCase.execute()</code> はキャッシュ済みデバイスのループのみで、0件なら成功を返す。2026-11-24 に追記）。</td>
       <td class="no">2026-10-21</td>
     </tr>
     <tr>
