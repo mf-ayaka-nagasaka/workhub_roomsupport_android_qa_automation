@@ -161,7 +161,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
 <section>
 <figure>
   <div class="scroll">
-  <svg class="map" viewBox="0 0 1440 1250" role="img" aria-label="画面と、その画面で走る内部処理と、遷移先の流れ。実線の箱が画面、破線の箱が内部処理で、どちらにも担当チケットを記載している。ブート画面からログイン画面、組織選択画面を経て設定読み込み画面へ進む。設定読み込み画面で端末設定を取得し、未登録なら再インストール画面、初期設定が未完了なら初期設定画面、解決済みなら起動準備画面へ進む。起動準備画面で名前と空間を確認し、不備があれば設定画面、なければホーム画面へ進む。ホーム画面では利用時間外を判定して画面内の表示を切り替える。ホーム画面から認証が必要な操作でカメラ認証画面へ進み、その再判定で利用時間外画面へ進む。ホーム画面に着いたあとは7つの処理が裏側で動き続ける。常時認証モード専用の画面は対象外のため含まない。">
+  <svg class="map" viewBox="0 0 1440 1250" role="img" aria-label="画面と、その画面で走る内部処理と、遷移先の流れ。実線の箱が画面、破線の箱が内部処理で、どちらにも担当チケットを記載している。ブート画面からログイン画面、組織選択画面を経て設定読み込み画面へ進む。設定読み込み画面で端末設定を取得し、未登録なら再インストール画面、初期設定が未完了なら初期設定画面、解決済みなら起動準備画面へ進む。起動準備画面で名前と空間を確認し、不備があれば設定画面、なければホーム画面へ進む。ホーム画面では利用時間外を判定して画面内の表示を切り替える。ホーム画面から認証が必要な操作でカメラ認証画面へ進む。ただし今すぐ入室でサードプレイスのエリア設定が有効なときは、間に「ご利用手続きの前に」（顔認証準備画面）がホーム画面に重ねて表示される。その再判定で利用時間外画面へ進む。カメラ認証画面では、個人コードが必須のとき入力画面と登録案内をこの画面に重ねて表示し、戻るとホーム画面、確認が済むと操作ごとの画面へ進む。ホーム画面に着いたあとは7つの処理が裏側で動き続ける。常時認証モード専用の画面は対象外のため含まない。">
     <defs>
       <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-flow"/></marker>
     </defs>
@@ -176,7 +176,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <rect class="lane" x="0" y="896" width="1440" height="158" rx="12"/>
     <text class="lane-label" x="16" y="918">裏側で動き続ける処理</text>
     <path class="bus" d="M705 654 V756"/>
-    <path class="bus" d="M264 756 H842"/>
+    <path class="bus" d="M145 756 H1208"/>
     <path class="bus" d="M745 654 V716 H1093 V928"/>
     <path class="bus" d="M258 928 H1248"/>
     <path class="flow" marker-end="url(#arw)" d="M310 94 H334"/>
@@ -189,9 +189,11 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <path class="flow" marker-end="url(#arw)" d="M564 338 H656"/>
     <path class="flow" marker-end="url(#arw)" d="M310 622 H334"/>
     <path class="flow" marker-end="url(#arw)" d="M765 622 H789"/>
-    <path class="flow" marker-end="url(#arw)" d="M339 828 H363"/>
-    <path class="flow" marker-end="url(#arw)" d="M494 828 H518"/>
-    <path class="flow" marker-end="url(#arw)" d="M905 828 H929"/>
+    <path class="flow" marker-end="url(#arw)" d="M219 828 H239"/>
+    <path class="flow" marker-end="url(#arw)" d="M443 828 H463"/>
+    <path class="flow" marker-end="url(#arw)" d="M594 828 H614"/>
+    <path class="flow" marker-end="url(#arw)" d="M868 828 H888"/>
+    <path class="flow" marker-end="url(#arw)" d="M1271 828 H1291"/>
     <path class="flow" marker-end="url(#arw)" d="M1291 126 V160 H253 V302"/>
     <text class="lbl" x="1271" y="154" text-anchor="end">設定の読み込みへ</text>
     <path class="flow" marker-end="url(#arw)" d="M564 338 H608 V254 H656"/>
@@ -208,8 +210,8 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <text class="lbl" x="773" y="572" text-anchor="start">保存するとホームへ</text>
     <path class="flow" marker-end="url(#arw)" d="M956 622 H1000 V514 H1048"/>
     <path class="flow" marker-end="url(#arw)" d="M956 622 H1048"/>
-    <path class="flow" marker-end="url(#arw)" d="M264 756 V792"/>
-    <path class="flow" marker-end="url(#arw)" d="M842 756 V792"/>
+    <path class="flow" marker-end="url(#arw)" d="M145 756 V792"/>
+    <path class="flow" marker-end="url(#arw)" d="M1208 756 V792"/>
     <path class="flow" marker-end="url(#arw)" d="M258 928 V952"/>
     <path class="flow" marker-end="url(#arw)" d="M423 928 V952"/>
     <path class="flow" marker-end="url(#arw)" d="M588 928 V952"/>
@@ -326,34 +328,46 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <text class="t-sub" x="1112" y="535" text-anchor="middle">⑩</text>
     </g>
     <g class="hit" data-key="HOME" tabindex="0" role="button" aria-label="認証が必要な操作入室・退室・延長・予約（担当 判定⑪／実行 ⑳ ㉑ ㉓ ㉔）">
-      <rect class="step" x="190" y="796" width="149" height="64" rx="8"/>
-      <text class="t-name" x="264" y="818" text-anchor="middle">認証が必要な操作</text>
-      <text class="t-name" x="264" y="834" text-anchor="middle">入室・退室・延長・予約</text>
-      <text class="t-sub" x="264" y="851" text-anchor="middle">判定⑪／実行⑳㉑㉓㉔</text>
+      <rect class="step" x="70" y="796" width="149" height="64" rx="8"/>
+      <text class="t-name" x="145" y="818" text-anchor="middle">認証が必要な操作</text>
+      <text class="t-name" x="145" y="834" text-anchor="middle">入室・退室・延長・予約</text>
+      <text class="t-sub" x="145" y="851" text-anchor="middle">判定⑪／実行⑳㉑㉓㉔</text>
+    </g>
+    <g class="hit" data-key="HOME" tabindex="0" role="button" aria-label="ご利用手続きの前に（顔認証準備画面）／今すぐ入室かつサードプレイス有効時（担当 ㉙）">
+      <rect class="step" x="243" y="796" width="200" height="64" rx="8"/>
+      <text class="t-name" x="343" y="818" text-anchor="middle">ご利用手続きの前に</text>
+      <text class="t-name" x="343" y="834" text-anchor="middle">今すぐ入室×サードプレイス有効時</text>
+      <text class="t-sub" x="343" y="851" text-anchor="middle">㉙</text>
     </g>
     <g class="hit" data-key="CAM" tabindex="0" role="button" aria-label="カメラ認証画面（担当 予約認証用／⑪⑫⑬⑲）">
-      <rect class="screen" x="367" y="796" width="127" height="64" rx="10"/>
-      <rect class="screen-bar" x="415" y="804" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="430" y="830" text-anchor="middle">カメラ認証画面</text>
-      <text class="t-sub" x="430" y="849" text-anchor="middle">予約認証用／⑪⑫⑬⑲</text>
+      <rect class="screen" x="467" y="796" width="127" height="64" rx="10"/>
+      <rect class="screen-bar" x="516" y="804" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="531" y="830" text-anchor="middle">カメラ認証画面</text>
+      <text class="t-sub" x="531" y="849" text-anchor="middle">予約認証用／⑪⑫⑬⑲</text>
+    </g>
+    <g class="hit" data-key="CAM" tabindex="0" role="button" aria-label="個人コードの入力画面・登録案内／戻るとホーム画面、確認後は操作ごとの画面へ（担当 ⑬）">
+      <rect class="step" x="618" y="796" width="250" height="64" rx="8"/>
+      <text class="t-name" x="743" y="818" text-anchor="middle">個人コードの入力画面・登録案内</text>
+      <text class="t-name" x="743" y="834" text-anchor="middle">戻るとホーム画面／確認後は操作ごとの画面へ</text>
+      <text class="t-sub" x="743" y="851" text-anchor="middle">⑬</text>
     </g>
     <g class="hit" data-key="CAM" tabindex="0" role="button" aria-label="無操作を検知するとホーム画面へ戻る（利用時間外の再判定は二重のガード）（担当 ⑮）">
-      <rect class="step" x="522" y="796" width="229" height="64" rx="8"/>
-      <text class="t-name" x="636" y="818" text-anchor="middle">無操作を検知するとホーム画面へ戻る</text>
-      <text class="t-name" x="636" y="834" text-anchor="middle">（利用時間外の再判定は二重のガード）</text>
-      <text class="t-sub" x="636" y="851" text-anchor="middle">⑮</text>
+      <rect class="step" x="892" y="796" width="229" height="64" rx="8"/>
+      <text class="t-name" x="1007" y="818" text-anchor="middle">無操作を検知するとホーム画面へ戻る</text>
+      <text class="t-name" x="1007" y="834" text-anchor="middle">（利用時間外の再判定は二重のガード）</text>
+      <text class="t-sub" x="1007" y="851" text-anchor="middle">⑮</text>
     </g>
     <g class="hit" data-key="ADMIN" tabindex="0" role="button" aria-label="管理パスワード／顔認証による確認（担当 ⑤）">
-      <rect class="step" x="779" y="796" width="126" height="64" rx="8"/>
-      <text class="t-name" x="842" y="818" text-anchor="middle">管理パスワード</text>
-      <text class="t-name" x="842" y="834" text-anchor="middle">／顔認証による確認</text>
-      <text class="t-sub" x="842" y="851" text-anchor="middle">⑤</text>
+      <rect class="step" x="1145" y="796" width="126" height="64" rx="8"/>
+      <text class="t-name" x="1208" y="818" text-anchor="middle">管理パスワード</text>
+      <text class="t-name" x="1208" y="834" text-anchor="middle">／顔認証による確認</text>
+      <text class="t-sub" x="1208" y="851" text-anchor="middle">⑤</text>
     </g>
     <g class="hit" data-key="ADMIN" tabindex="0" role="button" aria-label="管理者メニュー（担当 ⑤）">
-      <rect class="screen" x="933" y="796" width="120" height="64" rx="10"/>
-      <rect class="screen-bar" x="978" y="804" width="30" height="3" rx="1.5"/>
-      <text class="t-screen" x="993" y="830" text-anchor="middle">管理者メニュー</text>
-      <text class="t-sub" x="993" y="849" text-anchor="middle">⑤</text>
+      <rect class="screen" x="1295" y="796" width="120" height="64" rx="10"/>
+      <rect class="screen-bar" x="1340" y="804" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="1355" y="830" text-anchor="middle">管理者メニュー</text>
+      <text class="t-sub" x="1355" y="849" text-anchor="middle">⑤</text>
     </g>
     <g class="hit" data-key="BG1" tabindex="0" role="button" aria-label="予約データのリアルタイム反映（担当 ⑦）">
       <rect class="step" x="190" y="956" width="137" height="64" rx="8"/>
@@ -472,7 +486,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr class="grp"><td colspan="5">C. 本人の特定（認証）</td></tr>
     <tr data-keys="CAM"><td class="no">⑪</td><td class="nm">顔認証で利用者を特定できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-done">成果物あり</span></td><td>FaceAuth</td></tr>
     <tr data-keys="CAM"><td class="no">⑫</td><td class="nm">QR コードで利用者を特定できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-done">成果物あり</span></td><td>QrAuth</td></tr>
-    <tr data-keys="CAM"><td class="no">⑬</td><td class="nm">個人コードで本人確認できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-done">成果物あり</span></td><td>PersonalCode</td></tr>
+    <tr data-keys="CAM"><td class="no">⑬</td><td class="nm">個人コードで本人確認できる</td><td><span class="scr">カメラ認証</span><br><span class="hint">この画面の上に<b>個人コードの入力画面</b>と<b>登録案内</b>が出る（独立した画面としては登録していない）。入力画面で「トップに戻る」と<b>ホーム画面</b>へ、確認が済むと<b>操作ごとの画面</b>（予約作成・延長など）へ進む</span></td><td><span class="pill p-done">成果物あり</span></td><td>PersonalCode</td></tr>
     <tr data-keys="CAM"><td class="no">⑲</td><td class="nm">カード認証で利用者を特定できる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
     <tr data-keys="CAM"><td class="no">⑭</td><td class="nm">認証失敗・顔未登録をハンドリングできる</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
     <tr data-keys="CAM"><td class="no">⑰</td><td class="nm">なりすまし防止を行える</td><td><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
@@ -487,7 +501,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr data-keys="HOME,CAM"><td class="no">㉓</td><td class="nm">入室中の予約を延長できる</td><td><span class="scr">ホーム</span><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
     <tr data-keys="HOME,CAM"><td class="no">㉔</td><td class="nm">予約をキャンセル・削除できる</td><td><span class="scr">ホーム</span><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
     <tr data-keys="HOME,CAM,BG5"><td class="no">㉕</td><td class="nm">入室中の部屋を再解錠できる</td><td><span class="scr">ホーム</span><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
-    <tr data-keys="HOME,CAM"><td class="no">㉙</td><td class="nm">サードプレイス(有料)予約を作成できる</td><td><span class="scr">ホーム</span><span class="scr">カメラ認証</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
+    <tr data-keys="HOME,CAM"><td class="no">㉙</td><td class="nm">サードプレイス(有料)予約を作成できる</td><td><span class="scr">ホーム</span><span class="scr">カメラ認証</span><br><span class="hint">今すぐ入室のとき、ホーム画面の上に<b>「ご利用手続きの前に」</b>（顔認証準備画面）が出る（独立した画面としては登録していない）。台帳 #59・#60</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
     <tr data-keys="HOME,BG2"><td class="no">㉖</td><td class="nm">チェックインの無い予約を自動キャンセルできる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
     <tr data-keys="HOME,BG3"><td class="no">㉗</td><td class="nm">入室中の予約を自動延長できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
     <tr data-keys="HOME,BG4"><td class="no">㉘</td><td class="nm">予約終了リマインドを通知できる</td><td><span class="scr">ホーム</span></td><td><span class="pill p-todo">未着手</span></td><td>—</td></tr>
@@ -585,6 +599,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr data-keys="HOME"><td class="nm">サードプレイスの契約・決済の確認</td><td>予約作成時</td><td class="path"><code>thirdPlaceUseCase.getContractAndPayment() / supportPaymentMethodType</code></td><td>㉙</td></tr>
     <tr data-keys="HOME"><td class="nm">ネットワーク状態の表示</td><td>常駐</td><td class="path"><code>setDisconnectedNetworkState() / addOperationError()</code></td><td>㉛</td></tr>
     <tr data-keys="HOME"><td class="nm">認証画面への遷移</td><td>ボタン操作時</td><td class="path"><code>ReservationCameraAuthenticationRoute</code></td><td>⑪ ⑫ ⑬ ⑲</td></tr>
+    <tr data-keys="HOME"><td class="nm">顔認証準備画面（ご利用手続きの前に）の表示</td><td>今すぐ入室の操作時（サードプレイスのエリア設定が有効なとき）</td><td class="path"><code>moveToFaceAuthentiocation(viaPrepare:) → isShowFaceAuthPreparation</code></td><td>㉙（台帳 #59 #60）</td></tr>
     <tr data-keys="HOME"><td class="nm">参加者情報の取得と表示（予約情報の表示が有効、かつ入室待ち・利用中のとき）</td><td>常駐（メインループ）</td><td class="path"><code>updateParticipantInfo() / GetReservationParticipantInfoUseCase.execute() / ReservationParticipantInfoContent</code></td><td>⑨</td></tr>
     <tr class="grp"><td colspan="4">設定画面</td></tr>
     <tr data-keys="SET"><td class="nm">設定値の保存</td><td>保存操作時</td><td class="path"><code>SettingViewModel</code></td><td>④</td></tr>
@@ -1091,6 +1106,22 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td><span class="pill p-done">⑬は「個人コードの入力を確定してから画面が切り替わるまで」に限定して持つ。利用者が入力している時間は区間に含めない。⑪⑫と同じく観点の要素に留めシナリオ化しない</span></td>
       <td>照合はローカルでの比較のみでサーバ問い合わせを伴わない（<code>:428</code> の <code>personalCodes.contains</code>）。台帳 #47 で決めた区間（利用者のボタン押下→操作ごとの画面への到達）に人の入力時間が混ざると統計値として成立しないため。</td>
       <td class="no">2026-11-24</td>
+    </tr>
+    <tr>
+      <td class="no">59</td>
+      <td class="nm">「ご利用手続きの前に」（顔認証準備画面）はどのチケットが持つか</td>
+      <td>㉙ ㉒ ⑪</td>
+      <td><span class="pill p-done">㉙ サードプレイス(有料)予約を作成できる（㉒では見ない）</span></td>
+      <td>この画面はサードプレイスのエリア設定が有効なときだけ現れ、無効なら「今すぐ入室」はカメラ認証画面へ直行する（<code>MainMenuViewModel.swift:2437-2453</code>）。また <code>targetReservation</code> が入る操作（予約削除・退室・延長）では出ず、<b>今すぐ入室のときだけ</b>に限られる。㉒が扱うのは設定に依存しない「今すぐ入室」の動線そのもので、サードプレイス限定の導線は㉙へ寄せる（台帳 #18・#30 と同じ切り分け）。実体は <code>MainMenuView</code> 上のオーバーレイでRouteを持たないため、画面の一覧には立てず、ホーム画面の処理として扱う（<code>ReservationFaceAuthPreparationPage.swift</code> / <code>legacy_face-auth-preparation.md</code>）。</td>
+      <td class="no">2026-11-25</td>
+    </tr>
+    <tr>
+      <td class="no">60</td>
+      <td class="nm">「ご利用手続きの前に」に出る個人コードの事前案内（「パーソナルコードは設定済みですか？」）はどこで見るか</td>
+      <td>㉙ ⑬</td>
+      <td><span class="pill p-done">㉙（⑬では見ない）</span></td>
+      <td>ヒントの2項目（顔登録・パーソナルコード）は<b>固定文言で、個人コードを要求する設定にも登録の有無にも連動せず無条件に描画される</b>（<code>ReservationFaceAuthPreparationPage.swift:77-86</code>）。⑬が「登録案内」を持つのは、それが個人コードの照会結果（登録なし）に応じて出し分けられるからであり（⑬ルール④）、出し分けの無い固定文言は⑬の判定対象にならない。加えて台帳 #57 で⑬はカメラ認証画面で人物特定が成立した後だけを扱うと決めており、この案内はその手前（ホーム画面の上）に出る。なお「トップに戻る」はローカライズキーを⑬の入力画面と共有しているが（<code>CameraAuthenticationOverwritePersonalCodeCheckContent.swift:32</code>）、文言の共有は責務の共有を意味しない。</td>
+      <td class="no">2026-11-25</td>
     </tr>
   </table>
   </div>
