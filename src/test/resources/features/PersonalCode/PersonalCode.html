@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>個人コードで本人確認できる</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #F4F6F9;
+  --lane: #EAEEF3;
+  --surface: #FFFFFF;
+  --ink: #1B2430;
+  --muted: #5E6B7A;
+  --line: #D3DAE3;
+  --flow: #0F7C7B;
+  --flow-soft: #DCF0EE;
+  --save: #3B57C4;
+  --save-soft: #E4E9FA;
+  --err: #C43C3C;
+  --err-soft: #FBE5E5;
+  --hot: #D98E04;
+  --hot-ink: #7E5300;
+  --hot-soft: #FCEFD3;
+  --ok: #2E8B57;
+  --font-display: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-body: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #11161D; --lane: #181F28; --surface: #1F2732; --ink: #E7ECF2; --muted: #9DA9B7; --line: #2E3843;
+    --flow: #4FC3C0; --flow-soft: #163A39; --save: #93A6F5; --save-soft: #232D52;
+    --err: #F08080; --err-soft: #4A2424; --hot: #F2B441; --hot-ink: #F2B441; --hot-soft: #4A3A14; --ok: #6CCB8C;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #11161D; --lane: #181F28; --surface: #1F2732; --ink: #E7ECF2; --muted: #9DA9B7; --line: #2E3843;
+  --flow: #4FC3C0; --flow-soft: #163A39; --save: #93A6F5; --save-soft: #232D52;
+  --err: #F08080; --err-soft: #4A2424; --hot: #F2B441; --hot-ink: #F2B441; --hot-soft: #4A3A14; --ok: #6CCB8C;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  padding-inline: 16px;
+  padding-block: 24px 48px;
+}
+.wrap { max-width: 1400px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.3; }
+h1 { font-size: 26px; font-weight: 700; }
+h2 { font-size: 18px; font-weight: 700; }
+h3 { font-size: 14px; font-weight: 700; }
+p { margin: 0; }
+.eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.lead { color: var(--muted); max-width: 60ch; }
+
+header { display: grid; gap: 8px; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 6px; }
+.controls label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; }
+.controls input { accent-color: var(--flow); width: 16px; height: 16px; }
+#status { font-size: 13px; color: var(--muted); }
+button.link {
+  font: inherit; font-size: 13px; color: var(--flow); background: none; border: 1px solid var(--flow);
+  border-radius: 999px; padding: 3px 12px; cursor: pointer;
+}
+button.link:hover { background: var(--flow-soft); }
+button.link:focus-visible, .hit:focus-visible, .card:focus-visible { outline: 2px solid var(--hot); outline-offset: 2px; }
+
+/* ---- map ---- */
+figure { margin: 0; display: grid; gap: 10px; }
+.scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+svg.map { display: block; min-width: 1100px; width: 100%; height: auto; }
+figcaption { color: var(--muted); font-size: 13px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 12px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 26px; height: 0; border-top: 3px solid; border-radius: 2px; }
+.sw.flow { border-color: var(--flow); }
+.sw.save { border-color: var(--save); border-top-style: dashed; }
+.sw.err { border-color: var(--err); }
+
+.lane { fill: var(--lane); stroke: var(--line); }
+.lane-label { font: 700 12px var(--font-display); fill: var(--muted); }
+.screen { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
+.screen-bar { fill: var(--ink); opacity: .85; }
+.step { fill: var(--surface); stroke: var(--flow); stroke-width: 1.6; }
+.step-diamond { fill: var(--flow-soft); stroke: var(--flow); stroke-width: 1.6; }
+.t-name { font: 700 13px var(--font-body); fill: var(--ink); }
+.t-sub { font: 400 11px var(--font-body); fill: var(--muted); }
+.t-screen { font: 700 13px var(--font-display); fill: var(--ink); }
+.flow { fill: none; stroke: var(--flow); stroke-width: 2; }
+.lbl { font: 500 11px var(--font-body); fill: var(--flow); }
+.save { fill: none; stroke: var(--save); stroke-width: 1.6; stroke-dasharray: 5 4; }
+.save-box { fill: var(--save-soft); stroke: var(--save); stroke-width: 1.5; }
+.t-save { font: 700 12px var(--font-body); fill: var(--ink); }
+.t-save-note { font: 500 11px var(--font-body); fill: var(--save); }
+.err { font: 500 11px var(--font-body); fill: var(--err); }
+.err-line { fill: none; stroke: var(--err); stroke-width: 1.6; }
+.arw-flow { fill: var(--flow); }
+.arw-save { fill: var(--save); }
+.arw-err { fill: var(--err); }
+
+.hit { cursor: pointer; transition: opacity .15s; }
+.hit:hover .step, .hit:hover .screen, .hit:hover .step-diamond, .hit:hover .save-box { stroke-width: 2.5; }
+.hit.active .step, .hit.active .screen, .hit.active .step-diamond, .hit.active .save-box { stroke: var(--hot); stroke-width: 3.5; }
+.has-sel .hit:not(.active) { opacity: .38; }
+@media (prefers-reduced-motion: reduce) { .hit, .card { transition: none; } }
+
+/* ---- test index ---- */
+.index { display: grid; gap: 14px; }
+.hint { font-size: 13px; color: var(--muted); }
+.group { display: grid; gap: 8px; }
+.group h3 { color: var(--muted); font-size: 12px; letter-spacing: .06em; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  display: grid; gap: 6px; cursor: pointer; transition: opacity .15s, border-color .15s;
+}
+.card:hover { border-color: var(--flow); }
+.card .ttl { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; font-weight: 500; line-height: 1.4; }
+.dot { flex: 0 0 auto; width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; }
+.dot.ok { background: var(--ok); }
+.dot.ng { background: var(--err); }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-start; align-content: flex-start; }
+.card { align-content: start; }
+.chip { font-size: 11px; padding: 1px 8px; border-radius: 999px; background: var(--flow-soft); color: var(--flow); font-weight: 500; white-space: nowrap; }
+.chip[data-k="H"], .chip[data-k="CAM"], .chip[data-k="PIN"], .chip[data-k="INFO"], .chip[data-k="D"] { background: var(--lane); color: var(--ink); border: 1px solid var(--line); }
+.has-sel .card:not(.match) { opacity: .3; }
+.has-sel .card.match { border-color: var(--hot); box-shadow: 0 0 0 2px var(--hot-soft); }
+
+/* ---- message table ---- */
+table { border-collapse: collapse; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: 13px; }
+th, td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+th { background: var(--lane); color: var(--muted); font-size: 12px; font-weight: 700; }
+tr:first-child th { border-top: 0; }
+td.msg { font-weight: 500; }
+.tbl-wrap { overflow-x: auto; }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">PersonalCode ／ 全体マップ</p>
+  <h1>個人コードで本人確認できる</h1>
+  <p class="lead">カメラ認証画面で顔やQRから人が特定されたあと、個人コードの入力を求めるかどうかを決め、入力が合っていたときだけ次の画面へ進むまでを1枚にしたもの。図の箱やテストケースをクリックすると、対応する場所が光ります。</p>
+  <div class="controls">
+    <button class="link" id="clearBtn" type="button">選択を解除</button>
+    <span id="status">箱をクリックすると、その場所に関係するテストだけが残ります</span>
+  </div>
+</header>
+
+<section>
+<figure>
+  <div class="scroll">
+  <svg class="map" viewBox="0 0 1440 470" role="img" aria-label="個人コードで本人確認する流れ。上段は利用者が見る画面、下段は裏側で起きる処理。顔やQRで人が特定されたあと、個人コードを要求する設定かを見て、登録されているコードを調べ、登録があれば入力画面を出し、入力が登録と合っていたときだけ操作ごとの画面へ進む。要求しない設定のとき、調べられなかったとき、案内の対象でないときは、本人確認を挟まずにそのまま進む。">
+    <defs>
+      <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-flow"/></marker>
+      <marker id="arwS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-save"/></marker>
+      <marker id="arwE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arw-err"/></marker>
+    </defs>
+
+    <!-- lanes -->
+    <rect class="lane" x="0" y="16" width="1440" height="152" rx="12"/>
+    <rect class="lane" x="0" y="180" width="1440" height="270" rx="12"/>
+    <text class="lane-label" x="16" y="38">画面（利用者が見るもの）</text>
+    <text class="lane-label" x="16" y="202">裏側で起きていること</text>
+
+    <!-- flow arrows -->
+    <path class="flow" marker-end="url(#arw)" d="M200 84 H242"/>
+    <text class="lbl" x="221" y="46" text-anchor="middle">操作を押す</text>
+    <path class="flow" marker-end="url(#arw)" d="M335 116 V224"/>
+    <text class="lbl" x="343" y="180">顔またはQRで人が特定される</text>
+    <path class="flow" marker-end="url(#arw)" d="M440 272 H472"/>
+    <text class="lbl" x="456" y="226" text-anchor="middle">要求する</text>
+    <path class="flow" marker-end="url(#arw)" d="M640 272 H667"/>
+    <text class="lbl" x="653" y="226" text-anchor="middle">調べられた</text>
+    <path class="flow" marker-end="url(#arw)" d="M760 230 V124"/>
+    <text class="lbl" x="768" y="186">登録あり</text>
+    <path class="flow" marker-end="url(#arw)" d="M845 272 H882"/>
+    <text class="lbl" x="863" y="226" text-anchor="middle">登録なし</text>
+    <path class="flow" marker-end="url(#arw)" d="M975 230 V124"/>
+    <text class="lbl" x="983" y="186">会員で、エリアの設定が有効</text>
+    <path class="flow" marker-end="url(#arw)" d="M790 116 V128 H1235 V234"/>
+    <text class="lbl" x="1155" y="122" text-anchor="middle">入力して確定する</text>
+    <path class="flow" marker-end="url(#arw)" d="M1235 240 V124"/>
+    <text class="lbl" x="1243" y="190">一致した</text>
+
+    <!-- bypass: 本人確認を挟まずに進む -->
+    <path class="flow" d="M360 314 V404"/>
+    <path class="flow" d="M560 304 V404"/>
+    <path class="flow" d="M975 314 V404"/>
+    <path class="flow" marker-end="url(#arw)" d="M360 404 H1400 V124"/>
+    <text class="lbl" x="600" y="396">本人確認を挟まずに、そのまま操作ごとの画面へ</text>
+    <text class="lbl" x="368" y="340">要求しない</text>
+    <text class="lbl" x="983" y="340">案内の対象でない</text>
+
+    <!-- 戻る（本人確認を終えずに離脱） -->
+    <path class="flow" marker-end="url(#arw)" d="M690 116 V144 H130 V124"/>
+    <text class="lbl" x="400" y="140" text-anchor="middle">トップに戻る（本人確認は成立しない）</text>
+    <path class="flow" marker-end="url(#arw)" d="M930 116 V158 H335 V124"/>
+    <text class="lbl" x="700" y="154" text-anchor="middle">認証に戻る（認証待ちへ）</text>
+
+    <!-- lane A: screens -->
+    <g class="hit" data-key="H" tabindex="0" role="button" aria-label="ホーム画面">
+      <rect class="screen" x="60" y="52" width="140" height="64" rx="10"/>
+      <rect class="screen-bar" x="115" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="130" y="82" text-anchor="middle">ホーム画面</text>
+      <text class="t-sub" x="130" y="102" text-anchor="middle">入室・退室・予約延長など</text>
+    </g>
+    <g class="hit" data-key="CAM" tabindex="0" role="button" aria-label="カメラ認証画面">
+      <rect class="screen" x="250" y="52" width="170" height="64" rx="10"/>
+      <rect class="screen-bar" x="320" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="335" y="82" text-anchor="middle">カメラ認証画面</text>
+      <text class="t-sub" x="335" y="102" text-anchor="middle">顔・QRで人を特定する</text>
+    </g>
+    <g class="hit" data-key="PIN" tabindex="0" role="button" aria-label="個人コードの入力画面">
+      <rect class="screen" x="640" y="52" width="190" height="64" rx="10"/>
+      <rect class="screen-bar" x="720" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="735" y="78" text-anchor="middle">個人コードの入力画面</text>
+      <text class="t-sub" x="735" y="96" text-anchor="middle">伏せ字で入力する</text>
+      <text class="t-sub" x="735" y="110" text-anchor="middle">押すと見える／また隠せる</text>
+    </g>
+    <g class="hit" data-key="INFO" tabindex="0" role="button" aria-label="個人コードの登録案内">
+      <rect class="screen" x="880" y="52" width="190" height="64" rx="10"/>
+      <rect class="screen-bar" x="960" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="975" y="82" text-anchor="middle">個人コードの登録案内</text>
+      <text class="t-sub" x="975" y="102" text-anchor="middle">登録の手順を見せる</text>
+    </g>
+    <g class="hit" data-key="D" tabindex="0" role="button" aria-label="操作ごとの画面">
+      <rect class="screen" x="1240" y="52" width="180" height="64" rx="10"/>
+      <rect class="screen-bar" x="1315" y="58" width="30" height="3" rx="1.5"/>
+      <text class="t-screen" x="1330" y="82" text-anchor="middle">操作ごとの画面</text>
+      <text class="t-sub" x="1330" y="102" text-anchor="middle">ホーム／予約作成／延長</text>
+    </g>
+
+    <!-- lane B: steps -->
+    <g class="hit" data-key="1" tabindex="0" role="button" aria-label="個人コードを要求する設定か">
+      <polygon class="step-diamond" points="360,230 440,272 360,314 280,272"/>
+      <text class="t-name" x="360" y="269" text-anchor="middle">① 個人コードを</text>
+      <text class="t-name" x="360" y="285" text-anchor="middle">要求する？</text>
+    </g>
+    <g class="hit" data-key="2" tabindex="0" role="button" aria-label="個人コードを調べる">
+      <rect class="step" x="480" y="240" width="160" height="64" rx="8"/>
+      <text class="t-name" x="560" y="264" text-anchor="middle">② 個人コードを調べる</text>
+      <text class="t-sub" x="560" y="282" text-anchor="middle">登録されているか問い合わせる</text>
+      <text class="err" x="480" y="332">✕ サーバーエラー</text>
+      <text class="err" x="480" y="348">✕ オフライン</text>
+      <text class="err" x="480" y="364">→ 調べられないまま進む</text>
+    </g>
+    <g class="hit" data-key="3" tabindex="0" role="button" aria-label="登録があるか">
+      <polygon class="step-diamond" points="760,230 845,272 760,314 675,272"/>
+      <text class="t-name" x="760" y="269" text-anchor="middle">③ 登録が</text>
+      <text class="t-name" x="760" y="285" text-anchor="middle">ある？</text>
+    </g>
+    <g class="hit" data-key="5" tabindex="0" role="button" aria-label="案内を出す相手か">
+      <polygon class="step-diamond" points="975,230 1060,272 975,314 890,272"/>
+      <text class="t-name" x="975" y="269" text-anchor="middle">⑤ 案内の</text>
+      <text class="t-name" x="975" y="285" text-anchor="middle">対象？</text>
+    </g>
+    <g class="hit" data-key="4" tabindex="0" role="button" aria-label="入力と照らし合わせる">
+      <rect class="step" x="1150" y="240" width="170" height="64" rx="8"/>
+      <text class="t-name" x="1235" y="264" text-anchor="middle">④ 照らし合わせる</text>
+      <text class="t-sub" x="1235" y="282" text-anchor="middle">登録されたコードと同じか</text>
+      <text class="err" x="1150" y="332">✕ 一致しない</text>
+      <text class="err" x="1150" y="348">✕ 中身が無いまま確定</text>
+      <text class="err" x="1150" y="364">→ 入力画面に残り再入力</text>
+    </g>
+  </svg>
+  </div>
+  <figcaption>緑の線が「うまくいく道」。赤の ✕ は「ここで止まる理由」。下に回り込む緑の線は「本人確認を求めずに、そのまま次の画面へ進む道」。</figcaption>
+  <div class="legend">
+    <span><i class="sw flow"></i>うまくいく道</span>
+    <span><i class="sw err"></i>止まる場所とその理由</span>
+  </div>
+</figure>
+</section>
+
+
+<section class="index">
+  <h2>テストケースは、図のどこの話？</h2>
+  <p class="hint">カードをクリックすると図の該当箇所が光ります。図の箱をクリックすると、その箱に関係するカードだけが残ります。● 緑＝うまくいく確認、● 赤＝うまくいかないときの確認。</p>
+
+  <div class="group">
+    <h3>ルール① 入力画面が出る条件</h3>
+    <div class="cards">
+      <div class="card" data-keys="CAM,1,2,3,PIN"><div class="ttl"><i class="dot ok"></i>要求する設定が有効・コード登録あり → 入力画面が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="CAM,1,D"><div class="ttl"><i class="dot ok"></i>要求する設定が無効 → 入力画面は出ず、そのまま進む</div><div class="chips"></div></div>
+      <div class="card" data-keys="CAM,1,2,3,5,D"><div class="ttl"><i class="dot ok"></i>コードを登録していない従業員 → そのまま進む</div><div class="chips"></div></div>
+      <div class="card" data-keys="CAM,1,2,3,PIN"><div class="ttl"><i class="dot ok"></i>顔で特定されたとき → 入力画面が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="CAM,1,2,3,PIN"><div class="ttl"><i class="dot ok"></i>QRコードで特定されたとき → 入力画面が出る</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール② 入力したコードを照らし合わせる</h3>
+    <div class="cards">
+      <div class="card" data-keys="PIN,4,D"><div class="ttl"><i class="dot ok"></i>登録が1件で、そのコードを入力 → 次の画面へ進む</div><div class="chips"></div></div>
+      <div class="card" data-keys="PIN,4,D"><div class="ttl"><i class="dot ok"></i>登録が複数で、そのうち1つを入力 → 次の画面へ進む</div><div class="chips"></div></div>
+      <div class="card" data-keys="PIN,4"><div class="ttl"><i class="dot ng"></i>違うコードを入力 → 入力画面に残り、もう一度入れ直せる</div><div class="chips"></div></div>
+      <div class="card" data-keys="PIN,4"><div class="ttl"><i class="dot ng"></i>何も入れずに確定 → 合わなかったものとして扱われる</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール③ 入力したコードの見え方</h3>
+    <div class="cards">
+      <div class="card" data-keys="PIN"><div class="ttl"><i class="dot ok"></i>入力すると、文字数ぶん伏せ字で表示される</div><div class="chips"></div></div>
+      <div class="card" data-keys="PIN"><div class="ttl"><i class="dot ok"></i>切り替えると、入れた文字がそのまま見える</div><div class="chips"></div></div>
+      <div class="card" data-keys="PIN"><div class="ttl"><i class="dot ok"></i>もう一度切り替えると、伏せ字に戻る</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール④ 登録していない人への案内</h3>
+    <div class="cards">
+      <div class="card" data-keys="CAM,1,2,3,5,INFO"><div class="ttl"><i class="dot ok"></i>会員・エリアの設定が有効・登録なし → 登録の案内が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="CAM,1,2,3,5,D"><div class="ttl"><i class="dot ok"></i>従業員・登録なし → 案内は出ず、そのまま進む</div><div class="chips"></div></div>
+      <div class="card" data-keys="CAM,1,2,3,5,D"><div class="ttl"><i class="dot ok"></i>会員でもエリアの設定が無効 → 案内は出ず、そのまま進む</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑤ 本人確認を終えずに戻る</h3>
+    <div class="cards">
+      <div class="card" data-keys="PIN,H"><div class="ttl"><i class="dot ok"></i>入力画面で「トップに戻る」 → ホーム画面へ戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="INFO,CAM"><div class="ttl"><i class="dot ok"></i>案内で「認証に戻る」 → カメラ認証画面の認証待ちへ戻る</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ルール⑥ 調べられなかったとき</h3>
+    <div class="cards">
+      <div class="card" data-keys="CAM,1,2,D"><div class="ttl"><i class="dot ng"></i>問い合わせがサーバーエラー・オフラインで失敗 → そのまま進む</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>通し（実機で最後まで）</h3>
+    <div class="cards">
+      <div class="card" data-keys="CAM,1,2,3,PIN,4,D"><div class="ttl"><i class="dot ok"></i>顔で特定され、個人コードを入れて入室の操作に進む</div><div class="chips"></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div style="display:grid;gap:10px">
+  <h2>画面に出る言葉で、どこの話かがわかる</h2>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>画面に出る言葉</th><th>どこの話か</th></tr>
+    <tr><td class="msg">パーソナルコードを入力してください</td><td>③ 登録があったとき（入力画面の見出し）</td></tr>
+    <tr><td class="msg">パーソナルコードに誤りがあります</td><td>④ 照らし合わせて合わなかったとき</td></tr>
+    <tr><td class="msg">パーソナルコードの登録</td><td>⑤ 案内の対象だったとき（登録案内の見出し）</td></tr>
+    <tr><td class="msg">何も出ないまま次の画面へ進む</td><td>① 要求しない設定のとき ／ ② 調べられなかったとき ／ ⑤ 案内の対象でないとき</td></tr>
+  </table>
+  </div>
+  </div>
+</section>
+
+
+</div>
+
+<script>
+(function () {
+  var LABEL = {
+    H: "ホーム画面", CAM: "カメラ認証画面", 1: "① 要求する？", 2: "② 個人コードを調べる",
+    3: "③ 登録がある？", PIN: "入力画面", 5: "⑤ 案内の対象？", INFO: "登録案内",
+    4: "④ 照らし合わせる", D: "操作ごとの画面"
+  };
+  var root = document.documentElement;
+  var hits = Array.prototype.slice.call(document.querySelectorAll(".hit"));
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card"));
+  var status = document.getElementById("status");
+
+  cards.forEach(function (c) {
+    var keys = c.getAttribute("data-keys").split(",");
+    var box = c.querySelector(".chips");
+    keys.forEach(function (k) {
+      var s = document.createElement("span");
+      s.className = "chip"; s.setAttribute("data-k", k); s.textContent = LABEL[k] || k;
+      box.appendChild(s);
+    });
+    c.setAttribute("tabindex", "0");
+    c.addEventListener("click", function () { selectCard(c, keys); });
+    c.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectCard(c, keys); } });
+  });
+
+  hits.forEach(function (h) {
+    var k = h.getAttribute("data-key");
+    h.addEventListener("click", function () { selectKey(k); });
+    h.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectKey(k); } });
+  });
+
+  function clear() {
+    root.classList.remove("has-sel");
+    hits.forEach(function (h) { h.classList.remove("active"); });
+    cards.forEach(function (c) { c.classList.remove("match"); });
+    status.textContent = "箱をクリックすると、その場所に関係するテストだけが残ります";
+  }
+  var lastKey = null, lastCard = null;
+  function selectKey(k) {
+    if (lastKey === k && !lastCard) { clear(); lastKey = null; return; }
+    clear(); lastKey = k; lastCard = null;
+    root.classList.add("has-sel");
+    var n = 0;
+    hits.forEach(function (h) { if (h.getAttribute("data-key") === k) h.classList.add("active"); });
+    cards.forEach(function (c) {
+      if (c.getAttribute("data-keys").split(",").indexOf(k) >= 0) { c.classList.add("match"); n++; }
+    });
+    status.textContent = "「" + (LABEL[k] || k) + "」に関係するテスト：" + n + " 件";
+  }
+  function selectCard(c, keys) {
+    if (lastCard === c) { clear(); lastCard = null; lastKey = null; return; }
+    clear(); lastCard = c; lastKey = null;
+    root.classList.add("has-sel");
+    c.classList.add("match");
+    hits.forEach(function (h) { if (keys.indexOf(h.getAttribute("data-key")) >= 0) h.classList.add("active"); });
+    status.textContent = "このテストが通る場所：" + keys.map(function (k) { return LABEL[k] || k; }).join(" → ");
+    var fig = document.querySelector("figure");
+    if (fig && fig.getBoundingClientRect().top < 0) fig.scrollIntoView({ block: "start" });
+  }
+  document.getElementById("clearBtn").addEventListener("click", function () { clear(); lastKey = null; lastCard = null; });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { clear(); lastKey = null; lastCard = null; } });
+
+})();
+</script>
+</body>
+</html>
