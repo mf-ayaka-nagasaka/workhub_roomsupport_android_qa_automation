@@ -190,7 +190,7 @@ td.msg { font-weight: 500; }
     <path class="flow" marker-end="url(#arw)" d="M845 272 H882"/>
     <text class="lbl" x="863" y="226" text-anchor="middle">登録なし</text>
     <path class="flow" marker-end="url(#arw)" d="M975 230 V124"/>
-    <text class="lbl" x="983" y="186">会員で、エリアの設定が有効</text>
+    <text class="lbl" x="983" y="186">会員で、会員予約設定が有効</text>
     <path class="flow" marker-end="url(#arw)" d="M790 116 V128 H1235 V234"/>
     <text class="lbl" x="1155" y="122" text-anchor="middle">入力して確定する</text>
     <path class="flow" marker-end="url(#arw)" d="M1235 240 V124"/>
@@ -296,7 +296,7 @@ td.msg { font-weight: 500; }
     <div class="cards">
       <div class="card" data-keys="CAM,1,2,3,PIN"><div class="ttl"><i class="dot ok"></i>要求する設定が有効・コード登録あり → 入力画面が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="CAM,1,D"><div class="ttl"><i class="dot ok"></i>要求する設定が無効 → 入力画面は出ず、そのまま進む</div><div class="chips"></div></div>
-      <div class="card" data-keys="CAM,1,2,3,5,D"><div class="ttl"><i class="dot ok"></i>コードを登録していない従業員 → そのまま進む</div><div class="chips"></div></div>
+      <div class="card" data-keys="CAM,1,2,3,5,D"><div class="ttl"><i class="dot ok"></i>コードを登録していない会員（会員予約設定は無効）→ そのまま進む</div><div class="chips"></div></div>
       <div class="card" data-keys="CAM,1,2,3,PIN"><div class="ttl"><i class="dot ok"></i>顔で特定されたとき → 入力画面が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="CAM,1,2,3,PIN"><div class="ttl"><i class="dot ok"></i>QRコードで特定されたとき → 入力画面が出る</div><div class="chips"></div></div>
     </div>
@@ -305,10 +305,8 @@ td.msg { font-weight: 500; }
   <div class="group">
     <h3>ルール② 入力したコードを照らし合わせる</h3>
     <div class="cards">
-      <div class="card" data-keys="PIN,4,D"><div class="ttl"><i class="dot ok"></i>登録が1件で、そのコードを入力 → 次の画面へ進む</div><div class="chips"></div></div>
-      <div class="card" data-keys="PIN,4,D"><div class="ttl"><i class="dot ok"></i>登録が複数で、そのうち1つを入力 → 次の画面へ進む</div><div class="chips"></div></div>
+      <div class="card" data-keys="PIN,4,D"><div class="ttl"><i class="dot ok"></i>登録されているコードを入力 → 次の画面へ進む</div><div class="chips"></div></div>
       <div class="card" data-keys="PIN,4"><div class="ttl"><i class="dot ng"></i>違うコードを入力 → 入力画面に残り、もう一度入れ直せる</div><div class="chips"></div></div>
-      <div class="card" data-keys="PIN,4"><div class="ttl"><i class="dot ng"></i>何も入れずに確定 → 合わなかったものとして扱われる</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -318,15 +316,16 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="PIN"><div class="ttl"><i class="dot ok"></i>入力すると、文字数ぶん伏せ字で表示される</div><div class="chips"></div></div>
       <div class="card" data-keys="PIN"><div class="ttl"><i class="dot ok"></i>切り替えると、入れた文字がそのまま見える</div><div class="chips"></div></div>
       <div class="card" data-keys="PIN"><div class="ttl"><i class="dot ok"></i>もう一度切り替えると、伏せ字に戻る</div><div class="chips"></div></div>
+      <div class="card" data-keys="PIN"><div class="ttl"><i class="dot ok"></i>切り替えた後に入力しても、そのまま見えたまま</div><div class="chips"></div></div>
     </div>
   </div>
 
   <div class="group">
     <h3>ルール④ 登録していない人への案内</h3>
     <div class="cards">
-      <div class="card" data-keys="CAM,1,2,3,5,INFO"><div class="ttl"><i class="dot ok"></i>会員・エリアの設定が有効・登録なし → 登録の案内が出る</div><div class="chips"></div></div>
+      <div class="card" data-keys="CAM,1,2,3,5,INFO"><div class="ttl"><i class="dot ok"></i>会員・会員予約設定が有効・登録なし → 登録の案内が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="CAM,1,2,3,5,D"><div class="ttl"><i class="dot ok"></i>従業員・登録なし → 案内は出ず、そのまま進む</div><div class="chips"></div></div>
-      <div class="card" data-keys="CAM,1,2,3,5,D"><div class="ttl"><i class="dot ok"></i>会員でもエリアの設定が無効 → 案内は出ず、そのまま進む</div><div class="chips"></div></div>
+      <div class="card" data-keys="CAM,1,2,3,5,D"><div class="ttl"><i class="dot ok"></i>会員でも会員予約設定が無効 → 案内は出ず、そのまま進む</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -346,9 +345,19 @@ td.msg { font-weight: 500; }
   </div>
 
   <div class="group">
+    <h3>ルール⑦ 入力できる文字と長さ</h3>
+    <div class="cards">
+      <div class="card" data-keys="PIN"><div class="ttl"><i class="dot ng"></i>何も入れていない／5文字だけ／入れてから全部消した → 確定は押せない</div><div class="chips"></div></div>
+      <div class="card" data-keys="PIN"><div class="ttl"><i class="dot ok"></i>6文字まで入れる → 確定が押せるようになる</div><div class="chips"></div></div>
+      <div class="card" data-keys="PIN"><div class="ttl"><i class="dot ok"></i>キーボードにあるのは半角の数字と英字だけ → 全角・空白・記号は打てない</div><div class="chips"></div></div>
+    </div>
+  </div>
+
+  <div class="group">
     <h3>通し（実機で最後まで）</h3>
     <div class="cards">
       <div class="card" data-keys="CAM,1,2,3,PIN,4,D"><div class="ttl"><i class="dot ok"></i>顔で特定され、個人コードを入れて入室の操作に進む</div><div class="chips"></div></div>
+      <div class="card" data-keys="CAM,1,2,3,PIN,4,D"><div class="ttl"><i class="dot ok"></i>workhub Pass でコードを変えた後 → 新しいコードだけで進める</div><div class="chips"></div></div>
     </div>
   </div>
 </section>
