@@ -1068,6 +1068,30 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
       <td>入室は解錠対象デバイスが登録済みで <code>enableUnlockKey</code> が true なら遷移し、そうでなければ <code>isRequireFaceWhenEnterReservation</code> を見て、どちらも満たさなければ <code>enterRoom()</code> を直接実行する（<code>MainMenuViewModel.swift:1947-1966</code>）。退室は確認ダイアログで「はい」を選んだ後に <code>isRequireFaceWhenLeaveReservation</code> を判定（<code>:1968-2002</code>）、予約延長は <code>isRequireFaceWhenExtendReservation</code>（<code>:2026-2035</code>）。今すぐ入室（<code>:1805-1819</code>）・予約削除（<code>:2006-2022</code>）・再入室（<code>:2038-2044</code>）は無条件に遷移し、設定はボタンの表示可否を決めるのみ（台帳 #17）。台帳 #38 と同じ構図で、各操作チケットに持たせると⑳㉑㉓で3回重複するため、カメラ認証画面を持つ⑪で1回だけ持つ。</td>
       <td class="no">2026-11-24</td>
     </tr>
+    <tr>
+      <td class="no">56</td>
+      <td class="nm">個人コードが一致しなかったときの扱いは⑬と⑭のどちらで見るか</td>
+      <td>⑬ ⑭</td>
+      <td><span class="pill p-done">照合して一致・不一致を決めること＝⑬ ／ 失敗表示そのものの見え方・認証待ちへの復帰＝⑭</span></td>
+      <td>実装は入力画面を閉じたうえで <code>onFailed(message: .personalCodeError)</code> を呼び、⑭が扱う失敗表示の経路に合流するため（<code>ReservationCameraAuthenticationViewModel.swift:424-441</code>）。台帳 #51（QRの失敗の振り分けは⑫、表示は⑭）と同じ切り分け。なお仕様書 <code>legacy_camera-auth.md</code> 3-7 は「ダイアログは閉じない／再入力を促す」と記載しており実装と食い違うため、再入力を許すかどうかは⑬の赤カードとして残す。<b>この決定は⑬の赤カード①の結論に依存する</b>：「再入力を促す」で決着した場合、エラーメッセージは個人コードの入力画面の中に出るため⑭には合流せず、本決定の見直しが要る（2026-11-25 追記）。</td>
+      <td class="no">2026-11-24</td>
+    </tr>
+    <tr>
+      <td class="no">57</td>
+      <td class="nm">個人コードによる本人確認はどの操作に及ぶか</td>
+      <td>⑬ ⑪ ⑳ ㉑ ㉓</td>
+      <td><span class="pill p-done">⑬はカメラ認証画面で人物特定が成立した後だけを扱う。カメラ認証を経由しない操作では個人コードは要求されない（台帳 #55 で「進まない」と判定される操作）</span></td>
+      <td>個人コードの分岐は人物特定の共通経路 <code>searchPeople()</code> にあり、顔（<code>:288</code>）・QR（<code>:707</code>）のどちらから来ても通るが、カメラ認証画面に到達しない操作には及ばないため（<code>ReservationCameraAuthenticationViewModel.swift:886-935</code>）。<code>Thing.swift:85</code> のコメントは「予約作成時に要求するか」だが、実装は操作の種類を問わない。必須運用でも本人確認が挟まらない経路が残ることの是非は⑬の赤カードとして仕様担当に確認する。</td>
+      <td class="no">2026-11-24</td>
+    </tr>
+    <tr>
+      <td class="no">58</td>
+      <td class="nm">PE-01（E2E応答時間）で⑬が持つ区間はどこか</td>
+      <td>⑬ ⑪ ⑫</td>
+      <td><span class="pill p-done">⑬は「個人コードの入力を確定してから画面が切り替わるまで」に限定して持つ。利用者が入力している時間は区間に含めない。⑪⑫と同じく観点の要素に留めシナリオ化しない</span></td>
+      <td>照合はローカルでの比較のみでサーバ問い合わせを伴わない（<code>:428</code> の <code>personalCodes.contains</code>）。台帳 #47 で決めた区間（利用者のボタン押下→操作ごとの画面への到達）に人の入力時間が混ざると統計値として成立しないため。</td>
+      <td class="no">2026-11-24</td>
+    </tr>
   </table>
   </div>
 </section>
@@ -1110,7 +1134,7 @@ td.path code { background: none; padding: 0; font-size: 11.5px; white-space: nor
     <tr><td class="no">RE-02</td><td class="nm">ANR発生率</td><td>⑦ ⑪ ⑫ ⑬ ⑲</td><td>信頼性</td><td>観点なし（測定で判定）。メインスレッド処理が集中するのは⑦の常駐ループ</td></tr>
     <tr><td class="no">RE-03</td><td class="nm">ロングラン検証（ソークテスト）</td><td>⑦</td><td>信頼性</td><td>観点なし（測定で判定）</td></tr>
     <tr><td class="no">RE-04</td><td class="nm">クラッシュ復帰時間</td><td>⑥ ③ ⑦</td><td>信頼性</td><td>復帰の経路は⑥③の成果物で担保済み。時間の基準は観点に無い</td></tr>
-    <tr><td class="no">PE-01</td><td class="nm">E2E応答時間（認証→解錠完了）</td><td>⑪ ⑫ ⑬ ⑲ ⑳ ㉕</td><td>性能効率性</td><td>⑪⑫は観点「認証成功」の要素『ボタン押下から次の画面に到達するまでの応答時間』に留める（統計値のためシナリオ化しない）。区間は「利用者のボタン押下→操作ごとの画面への到達」までで、解錠完了までの後半は⑳㉕（台帳 #47）。⑬⑲⑳㉕は未着手</td></tr>
+    <tr><td class="no">PE-01</td><td class="nm">E2E応答時間（認証→解錠完了）</td><td>⑪ ⑫ ⑬ ⑲ ⑳ ㉕</td><td>性能効率性</td><td>⑪⑫は観点「認証成功」の要素『ボタン押下から次の画面に到達するまでの応答時間』に留める（統計値のためシナリオ化しない）。区間は「利用者のボタン押下→操作ごとの画面への到達」までで、解錠完了までの後半は⑳㉕（台帳 #47）。⑬は「個人コードの入力を確定してから画面が切り替わるまで」に限定して持ち、観点の要素に留める（台帳 #58）。⑲⑳㉕は未着手</td></tr>
     <tr><td class="no">PE-02</td><td class="nm">E2E応答時間（予約作成）</td><td>㉒</td><td>性能効率性</td><td>未着手。着手時に渡す</td></tr>
     <tr><td class="no">PE-03</td><td class="nm">メモリ使用量</td><td>⑦ ⑪ ⑫</td><td>性能効率性</td><td>設計対象外（プロファイラで測定）</td></tr>
     <tr><td class="no">PE-04</td><td class="nm">長時間稼働時のメモリ増加量</td><td>⑦</td><td>性能効率性</td><td>設計対象外（プロファイラで測定）</td></tr>
