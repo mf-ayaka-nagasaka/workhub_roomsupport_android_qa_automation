@@ -269,7 +269,7 @@ td.msg { font-weight: 500; }
       <div class="card" data-keys="CAM,1,2,3,4,D"><div class="ttl"><i class="dot ok"></i>登録済みの本人の顔 → 操作ごとの画面へ進む</div><div class="chips"></div></div>
       <div class="card" data-keys="3"><div class="ttl"><i class="dot ok"></i>似ている度合いの境目（ちょうどは一致しない／上限では誰も通らない）</div><div class="chips"></div></div>
       <div class="card" data-keys="1,2,3,4,D"><div class="ttl"><i class="dot ok"></i>顔の控えが想定の最大件数あっても特定できる</div><div class="chips"></div></div>
-      <div class="card" data-keys="3"><div class="ttl"><i class="dot ng"></i>顔を登録していない人 → 顔情報が未登録です</div><div class="chips"></div></div>
+      <div class="card" data-keys="3"><div class="ttl"><i class="dot ng"></i>端末に顔の控えが無い人（workhub 未登録／登録済みでも端末に届いていない） → 顔情報が未登録です</div><div class="chips"></div></div>
     </div>
   </div>
 
@@ -278,8 +278,9 @@ td.msg { font-weight: 500; }
     <div class="cards">
       <div class="card" data-keys="2"><div class="ttl"><i class="dot ok"></i>遠い・近い・上下左右・正面でない → それぞれの案内が出る</div><div class="chips"></div></div>
       <div class="card" data-keys="2"><div class="ttl"><i class="dot ok"></i>暗い・明るい → 環境についての案内が出る</div><div class="chips"></div></div>
-      <div class="card" data-keys="1,2"><div class="ttl"><i class="dot ok"></i>同じ状態が1秒続いてから案内が出る（1秒未満では出ない）</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,2"><div class="ttl"><i class="dot ok"></i>映り方がくずれるとすぐに案内が出る（待ち時間なし）</div><div class="chips"></div></div>
       <div class="card" data-keys="2"><div class="ttl"><i class="dot ok"></i>映り方が直ると案内が消える</div><div class="chips"></div></div>
+      <div class="card" data-keys="1,2"><div class="ttl"><i class="dot ok"></i>案内が出ている間にカメラの前から離れても案内が消える</div><div class="chips"></div></div>
       <div class="card" data-keys="1"><div class="ttl"><i class="dot ok"></i>誰も映っていない間は案内が出ない</div><div class="chips"></div></div>
     </div>
   </div>
